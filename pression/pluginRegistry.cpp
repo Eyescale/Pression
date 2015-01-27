@@ -30,7 +30,7 @@
 #include <lunchbox/file.h>
 
 #ifdef _WIN32
-#  include "lunchbox/os.h" // GetModuleFileName
+#  include <lunchbox/os.h> // GetModuleFileName
 #  include <direct.h>
 #  define getcwd _getcwd
 #else
@@ -59,11 +59,8 @@ public:
             directories.push_back( getcwd( cwd, MAXPATHLEN ));
 
 #ifdef _WIN32
-            //rgh: does not compile, and seems to be handled by code above.
-            /*
-            if( GetModuleFileName( 0, cwd, MAXPATHLEN ) > 0 )
-                directories.push_back( pression::getDirname( cwd ));
-                */
+        if( GetModuleFileName( 0, cwd, MAXPATHLEN ) > 0 )
+                directories.push_back( lunchbox::getDirname( cwd ));
 #else
 #  ifdef Darwin
             env = getenv( "DYLD_LIBRARY_PATH" );
