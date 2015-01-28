@@ -59,7 +59,7 @@ public:
             directories.push_back( getcwd( cwd, MAXPATHLEN ));
 
 #ifdef _WIN32
-        if( GetModuleFileName( 0, cwd, MAXPATHLEN ) > 0 )
+            if( GetModuleFileName( 0, cwd, MAXPATHLEN ) > 0 )
                 directories.push_back( lunchbox::getDirname( cwd ));
 #else
 #  ifdef Darwin
