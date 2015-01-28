@@ -30,7 +30,7 @@
 #include <lunchbox/file.h>
 
 #ifdef _WIN32
-#  include "os.h" // GetModuleFileName
+#  include <lunchbox/os.h> // GetModuleFileName
 #  include <direct.h>
 #  define getcwd _getcwd
 #else
@@ -60,7 +60,7 @@ public:
 
 #ifdef _WIN32
             if( GetModuleFileName( 0, cwd, MAXPATHLEN ) > 0 )
-                directories.push_back( pression::getDirname( cwd ));
+                directories.push_back( lunchbox::getDirname( cwd ));
 #else
 #  ifdef Darwin
             env = getenv( "DYLD_LIBRARY_PATH" );
