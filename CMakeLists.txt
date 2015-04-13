@@ -1,11 +1,11 @@
 
-# Copyright (c) 2012-2014 Stefan Eilemann <eile@eyescale.ch>
+# Copyright (c) 2012-2015 Stefan Eilemann <eile@eyescale.ch>
 
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 project(Pression)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake
-                              ${PROJECT_SOURCE_DIR}/CMake/common)
+                              ${CMAKE_SOURCE_DIR}/CMake/common)
 
 include(GitExternal)
 include(SubProject)
