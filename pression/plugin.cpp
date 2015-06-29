@@ -155,8 +155,11 @@ Plugin::Plugin( const std::string& libraryName )
 #endif
     }
 
-    LBINFO << "Loaded " << nCompressors << " plugins from " << libraryName
-           << std::endl;
+    if( nCompressors == 0 )
+        LBERROR << "No plugins found in  " << libraryName << std::endl;
+    else
+        LBDEBUG << "Loaded " << nCompressors << " plugins from " << libraryName
+                << std::endl;
 }
 
 Plugin::~Plugin()
