@@ -1,6 +1,7 @@
-CMake/common
-Makefile
+/CMake/common
+/Lunchbox/
+/Servus/
 CMakeLists.txt.user
-build/
-Lunchbox/
+Makefile
 ___*
+build/
