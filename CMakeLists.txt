@@ -22,14 +22,14 @@ set(COMMON_PROJECT_DOMAIN ch.eyescale)
 
 include(Common)
 
-list(APPEND CPPCHECK_EXTRA_ARGS -DLB_GCC_4_1_OR_LATER=1)
-
 set(PROJECT_INCLUDE_NAME pression)
 include(FindPackages)
 
 if(OPENMP_FOUND)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+  set(CMAKE_SHARED_LINKER_FLAGS
+    "${CMAKE_SHARED_LINKER_FLAGS} ${OpenMP_CXX_FLAGS}")
 endif()
 
 set(PRESSION_DEFINITIONS ${PRESSION_DEFINITIONS}
@@ -45,6 +45,8 @@ add_subdirectory(pression)
 add_subdirectory(tests)
 add_subdirectory(doc)
 
+set(DOXYGEN_MAINPAGE_MD README.md)
+set(DOXYGEN_EXTRA_INPUT ${PROJECT_SOURCE_DIR}/README.md)
 include(DoxygenRule) # must be after all targets
 include(PressionCPack)
 include(PackageConfig)
