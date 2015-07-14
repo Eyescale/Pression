@@ -2,7 +2,6 @@
 # Copyright (c) 2012-2014 Stefan Eilemann <eile@eyescale.ch>
 
 set(PRESSION_PUBLIC_HEADERS
-  ${COMMON_INCLUDES}
   compressor.h
   compressorResult.h
   decompressor.h
@@ -66,7 +65,6 @@ set(PRESSION_HEADERS
 
 set(PRESSION_SOURCES
   ${PRESSION_COMPRESSORS}
-  ${COMMON_SOURCES}
   compressor.cpp
   decompressor.cpp
   downloader.cpp

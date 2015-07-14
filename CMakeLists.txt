@@ -22,15 +22,13 @@ set(COMMON_PROJECT_DOMAIN ch.eyescale)
 
 include(Common)
 
-set(PROJECT_INCLUDE_NAME pression)
-include(FindPackages)
+set(PRESSION_INCLUDE_NAME pression)
 
-if(OPENMP_FOUND)
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-  set(CMAKE_SHARED_LINKER_FLAGS
-    "${CMAKE_SHARED_LINKER_FLAGS} ${OpenMP_CXX_FLAGS}")
-endif()
+common_package(Boost REQUIRED )
+common_package(LibJpegTurbo)
+common_package(Lunchbox REQUIRED)
+common_package(OpenMP)
+common_package_post()
 
 set(PRESSION_DEFINITIONS ${PRESSION_DEFINITIONS}
   -DPRESSION_BUILD_DIR="${CMAKE_BINARY_DIR}/")

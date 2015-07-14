@@ -204,7 +204,7 @@ inline void UnalignedCopy64(const void *src, void *dst) {
 }
 
 // The following guarantees declaration of the byte swap functions.
-#ifdef PRESSION_BIGENDIAN
+#ifdef COMMON_BIGENDIAN
 
 #ifdef HAVE_SYS_BYTEORDER_H
 #include <sys/byteorder.h>
@@ -261,7 +261,7 @@ inline uint64 bswap_64(uint64 x) {
 
 #endif
 
-#endif  // WORDS_BIGENDIAN
+#endif  // COMMON_BIGENDIAN
 
 // Convert to little-endian storage, opposite of network format.
 // Convert x from host to little endian: x = LittleEndian.FromHost(x);
@@ -275,7 +275,7 @@ inline uint64 bswap_64(uint64 x) {
 class LittleEndian {
  public:
   // Conversion functions.
-#ifdef Pression_BIGENDIAN
+#ifdef COMMON_BIGENDIAN
 
   static uint16 FromHost16(uint16 x) { return bswap_16(x); }
   static uint16 ToHost16(uint16 x) { return bswap_16(x); }
@@ -285,7 +285,7 @@ class LittleEndian {
 
   static bool IsLittleEndian() { return false; }
 
-#else  // !defined(WORDS_BIGENDIAN)
+#else  // !defined(COMMON_BIGENDIAN)
 
   static uint16 FromHost16(uint16 x) { return x; }
   static uint16 ToHost16(uint16 x) { return x; }
@@ -295,7 +295,7 @@ class LittleEndian {
 
   static bool IsLittleEndian() { return true; }
 
-#endif  // !defined(WORDS_BIGENDIAN)
+#endif  // !defined(COMMON_BIGENDIAN)
 
   // Functions to do unaligned loads and stores in little-endian order.
   static uint16 Load16(const void *p) {
