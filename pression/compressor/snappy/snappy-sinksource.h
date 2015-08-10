@@ -63,7 +63,7 @@ class Sink {
 
  private:
   // No copying
-  Sink(const Sink&);
+  explicit Sink(const Sink&);
   void operator=(const Sink&);
 };
 
@@ -98,7 +98,7 @@ class Source {
 
  private:
   // No copying
-  Source(const Source&);
+  explicit Source(const Source&);
   void operator=(const Source&);
 };
 
