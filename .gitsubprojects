@@ -1,2 +1,2 @@
 # -*- mode: cmake -*-
-git_subproject(Lunchbox https://github.com/Eyescale/Lunchbox.git 5665cb6)
+git_subproject(Lunchbox https://github.com/Eyescale/Lunchbox.git 03481bc)
