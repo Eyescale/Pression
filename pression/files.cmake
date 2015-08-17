@@ -52,7 +52,7 @@ set(PRESSION_COMPRESSORS
 )
 
 if(LibJpegTurbo_FOUND)
-  list(APPEND PRESSION_LINK_LIBRARIES ${LibJpegTurbo_LIBRARIES})
+  list(APPEND PRESSION_LINK_LIBRARIES PRIVATE ${LibJpegTurbo_LIBRARIES})
   list(APPEND PRESSION_COMPRESSORS
     compressor/compressorTurboJPEG.h compressor/compressorTurboJPEG.cpp)
 endif()

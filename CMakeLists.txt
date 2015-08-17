@@ -30,6 +30,8 @@ common_package(Lunchbox REQUIRED)
 common_package(OpenMP)
 common_package_post()
 
+set(PRESSION_DEPENDENT_LIBRARIES Lunchbox)
+
 set(PRESSION_DEFINITIONS ${PRESSION_DEFINITIONS}
   -DPRESSION_BUILD_DIR="${CMAKE_BINARY_DIR}/")
 add_definitions(${PRESSION_DEFINITIONS})
@@ -47,7 +49,6 @@ set(DOXYGEN_MAINPAGE_MD README.md)
 set(DOXYGEN_EXTRA_INPUT ${PROJECT_SOURCE_DIR}/README.md)
 include(DoxygenRule) # must be after all targets
 include(PressionCPack)
-include(PackageConfig)
 
 set(CTEST_CUSTOM_WARNING_EXCEPTION ${CTEST_CUSTOM_WARNING_EXCEPTION}
   # http://public.kitware.com/Bug/view.php?id=10179
