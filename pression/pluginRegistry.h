@@ -24,7 +24,6 @@
 #include <pression/api.h>
 #include <pression/types.h>
 
-#include <boost/noncopyable.hpp>
 #include <string>
 
 namespace pression
@@ -41,7 +40,7 @@ namespace detail { class PluginRegistry; }
  *
  * Example: @include tests/compressor.cpp
  */
-class PluginRegistry : public boost::noncopyable
+class PluginRegistry
 {
 public:
     /** Construct a new plugin registry. @version 1.7.1 */
@@ -106,6 +105,8 @@ public:
     PRESSION_API bool addPlugin( const std::string& filename );
 
 private:
+    PluginRegistry( const PluginRegistry& );
+    PluginRegistry operator=( const PluginRegistry& );
     detail::PluginRegistry* const impl_;
 };
 }

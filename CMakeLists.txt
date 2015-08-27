@@ -24,7 +24,6 @@ include(Common)
 
 set(PRESSION_INCLUDE_NAME pression)
 
-common_package(Boost REQUIRED )
 common_package(LibJpegTurbo)
 common_package(Lunchbox REQUIRED)
 common_package(OpenMP)

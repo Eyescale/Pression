@@ -33,7 +33,7 @@ namespace detail { class Decompressor; }
  *
  * Example: @include tests/compressor.cpp
  */
-class Decompressor : public boost::noncopyable
+class Decompressor
 {
     typedef detail::Decompressor* const Decompressor::*bool_t;
 
@@ -125,6 +125,8 @@ public:
         LB_DEPRECATED;
 
 private:
+    Decompressor( const Decompressor& );
+    Decompressor operator=( const Decompressor& );
     detail::Decompressor* const impl_;
     LB_TS_VAR( _thread );
 };

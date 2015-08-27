@@ -34,7 +34,7 @@ namespace detail { class Compressor; }
  *
  * Example: @include tests/compressor.cpp
  */
-class Compressor : public boost::noncopyable
+class Compressor
 {
     typedef detail::Compressor* const Compressor::*bool_t;
 
@@ -156,6 +156,8 @@ public:
                                  uint64_t* const outSize ) const LB_DEPRECATED;
 
 private:
+    Compressor( const Compressor& );
+    Compressor operator=( const Compressor& );
     detail::Compressor* const impl_;
     LB_TS_VAR( _thread );
 };

@@ -22,7 +22,6 @@
 
 #include <pression/plugins/compressorTypes.h> // EQ_COMPRESSOR_INVALID
 #include <lunchbox/array.h> // used inline as CompressorChunk
-#include <boost/foreach.hpp>
 
 namespace pression
 {
@@ -42,7 +41,7 @@ struct CompressorResult
     uint64_t getSize() const
     {
         uint64_t size = 0;
-        BOOST_FOREACH( const CompressorChunk& chunk, chunks )
+        for( const CompressorChunk& chunk : chunks )
             size += chunk.getNumBytes();
         return size;
     }
