@@ -29,7 +29,7 @@ namespace pression
 namespace detail { class Uploader; }
 
 /** A C++ class to handle one uploader plugin instance. */
-class Uploader : public boost::noncopyable
+class Uploader
 {
 public:
     /** Construct a new, invalid uploader instance. @version 1.7.1 */
@@ -122,6 +122,8 @@ public:
                               const unsigned destination,
                               const GLEWContext* gl );
 private:
+    Uploader( const Uploader& );
+    Uploader operator=( const Uploader& );
     detail::Uploader* const impl_;
     LB_TS_VAR( _thread );
 };

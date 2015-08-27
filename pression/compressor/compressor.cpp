@@ -17,7 +17,6 @@
  */
 
 #include "compressor.h"
-#include <boost/foreach.hpp>
 
 namespace pression
 {
@@ -30,7 +29,7 @@ static Compressors* _functions;
 
 const Compressor::Functions& _findFunctions( const unsigned name )
 {
-    BOOST_FOREACH( const Compressor::Functions& functions, *_functions )
+    for( const Compressor::Functions& functions : *_functions )
         if( functions.name == name )
             return functions;
 

@@ -29,7 +29,7 @@ namespace pression
 namespace detail { class Downloader; }
 
 /** A C++ class to handle one downloader plugin instance. */
-class Downloader : public boost::noncopyable
+class Downloader
 {
 public:
     /** Construct a new, invalid downloader instance. @version 1.7.1 */
@@ -150,6 +150,8 @@ public:
                               const GLEWContext* gl );
 
 private:
+    Downloader( const Downloader& );
+    Downloader operator=( const Downloader& );
     detail::Downloader* const impl_;
     LB_TS_VAR( _thread );
 };
