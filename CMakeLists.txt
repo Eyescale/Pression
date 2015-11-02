@@ -10,14 +10,16 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake
 include(GitExternal)
 
 set(VERSION_MAJOR "1")
-set(VERSION_MINOR "0")
+set(VERSION_MINOR "1")
 set(VERSION_PATCH "0")
-set(VERSION_ABI 1)
+set(VERSION_ABI 2)
 
 set(GITTARGETS_RELEASE_BRANCH minor)
 set(DPUT_HOST "ppa:eilemann/equalizer-dev")
 
 set(PRESSION_DESCRIPTION "Compressor, decompressor, uploader and downloader plugins")
+set(PRESSION_MAINTAINER "Stefan Eilemann <eile@eyescale.ch>")
+set(PRESSION_LICENSE LGPL)
 set(COMMON_PROJECT_DOMAIN ch.eyescale)
 
 include(Common)
@@ -47,7 +49,7 @@ add_subdirectory(doc)
 set(DOXYGEN_MAINPAGE_MD README.md)
 set(DOXYGEN_EXTRA_INPUT ${PROJECT_SOURCE_DIR}/README.md)
 include(DoxygenRule) # must be after all targets
-include(PressionCPack)
+include(CPackConfig)
 
 set(CTEST_CUSTOM_WARNING_EXCEPTION ${CTEST_CUSTOM_WARNING_EXCEPTION}
   # http://public.kitware.com/Bug/view.php?id=10179

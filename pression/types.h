@@ -15,20 +15,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-/** @mainpage Pression API Documentation
- *
- * Welcome to Pression, a C++ library serving several plugins for compressing
- * CPU and GPU data. Pression provides the following functionality:
- *
- * - Compression and CPU-GPU transfer plugin handling: pression::Compressor,
- *   pression::Decompressor, pression::Downloader, pression::Plugin,
- *   pression::PluginRegistry, pression::Uploader
- *
- * @ref RelNotes
- * <br><a class="el" href="CoverageReport/index.html">Test Code Coverage
- * Report</a> (may be missing from documentation)
- */
-
 #ifndef PRESSION_TYPES_H
 #define PRESSION_TYPES_H
 

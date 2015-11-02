@@ -3,13 +3,13 @@
 # Introduction {#Introduction}
 
 Welcome to Pression, a C++ library for implementing and loading
-compression and CPU-GPU data transfer plugins
+compression and CPU-GPU data transfer plugins.
 
 The
-[API documentation](http://eyescale.github.io/Pression-1.0/index.html) can be
+[API documentation](http://eyescale.github.io/Pression-1.1/index.html) can be
 found on [eyescale.github.io](http://eyescale.github.io/). As with any open
 source project, the available source code, in particular the
-[unit tests](https://github.com/Eyescale/Pression/tree/1.0/tests) provide a
+[unit tests](https://github.com/Eyescale/Pression/tree/1.1/tests) provide a
 reference for developing applications.
 
 Technical questions can be posted to the Equalizer
@@ -22,6 +22,15 @@ available from [Eyescale](http://www.eyescale.ch). Please contact
 [info@eyescale.ch](mailto:info@eyescale.ch?subject=Pression%20support)
 for further information.
 
+# Features {#Features}
+
+Pression provides the following major features:
+
+* Compression and CPU-GPU transfer plugin handling: pression::Compressor,
+  pression::Decompressor, pression::Downloader, pression::Plugin,
+  pression::PluginRegistry, pression::Uploader
+* Detailed @ref Changelog
+
 # Building {#Building}
 
 Pression is a cross-platform library, designed to run on any modern
@@ -33,17 +42,11 @@ environment. The following platforms and build environments are tested:
 * Windows: 7 (Visual Studio 2012)
 * Mac OS X: 10.8 (Makefile, Ninja)
 
-~~~
-git clone https://github.com/Eyescale/Pression.git
-cd Pression
-mkdir build
-cd build
-cmake ..
-make
-~~~
+Building from source is as simple as:
 
-# Changes {#Changes}
 
-## Version 1.0 {#Version10}
-
-* Initial release as a separate project from Lunchbox
+    git clone https://github.com/Eyescale/Pression.git
+    mkdir Pression/build
+    cd Pression/build
+    cmake ..
+    make
