@@ -1,5 +1,5 @@
 
-/* Copyright (c) 2010-2012, Stefan Eilemann <eile@eyescale.ch>
+/* Copyright (c) 2010-2016, Stefan Eilemann <eile@eyescale.ch>
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License version 2.1 as published
@@ -22,10 +22,11 @@
 
 namespace pression
 {
-    /** Defines selective logging classes enabled by setting LB_LOG_TOPICS. */
-    enum LogTopics
-    {
-        LOG_PLUGIN = lunchbox::LOG_CUSTOM << 0 //!< Log plugin handling (16)
-    };
+/** Defines selective logging classes enabled by setting LB_LOG_TOPICS. */
+enum LogTopics
+{
+    LOG_PLUGIN = lunchbox::LOG_CUSTOM << 0, //!< Log plugin handling (16)
+    LOG_CUSTOM = lunchbox::LOG_CUSTOM << 1 // 32
+};
 }
 #endif // PRESSION_LOG_H
