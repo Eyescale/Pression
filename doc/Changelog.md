@@ -1,6 +1,7 @@
 # Changelog {#Changelog}
 
 
+# Version 1.1.1 (8-Mar-2016)
 # Version 1.1 (2-Nov-2015)
 
 * Removed dependency to boost
