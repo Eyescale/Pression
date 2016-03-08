@@ -1,5 +1,5 @@
 
-# Copyright (c) 2012-2015 Stefan Eilemann <eile@eyescale.ch>
+# Copyright (c) 2012-2016 Stefan Eilemann <eile@eyescale.ch>
 
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 project(Pression)
@@ -11,10 +11,9 @@ include(GitExternal)
 
 set(VERSION_MAJOR "1")
 set(VERSION_MINOR "1")
-set(VERSION_PATCH "0")
+set(VERSION_PATCH "1")
 set(VERSION_ABI 2)
 
-set(GITTARGETS_RELEASE_BRANCH minor)
 set(DPUT_HOST "ppa:eilemann/equalizer-dev")
 
 set(PRESSION_DESCRIPTION "Compressor, decompressor, uploader and downloader plugins")
