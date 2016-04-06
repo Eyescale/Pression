@@ -1,18 +1,14 @@
 
 # Copyright (c) 2012-2016 Stefan Eilemann <eile@eyescale.ch>
 
-cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
-project(Pression)
+cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
+project(Pression VERSION 1.1.1)
+set(Pression_VERSION_ABI 2)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake
                               ${CMAKE_SOURCE_DIR}/CMake/common)
 
 include(GitExternal)
-
-set(VERSION_MAJOR "1")
-set(VERSION_MINOR "1")
-set(VERSION_PATCH "1")
-set(VERSION_ABI 2)
 
 set(DPUT_HOST "ppa:eilemann/equalizer-dev")
 
@@ -25,10 +21,10 @@ include(Common)
 
 set(PRESSION_INCLUDE_NAME pression)
 
-common_package(LibJpegTurbo)
-common_package(Lunchbox REQUIRED)
-common_package(OpenMP)
-common_package_post()
+common_find_package(LibJpegTurbo)
+common_find_package(Lunchbox REQUIRED)
+common_find_package(OpenMP)
+common_find_package_post()
 
 set(PRESSION_DEPENDENT_LIBRARIES Lunchbox)
 

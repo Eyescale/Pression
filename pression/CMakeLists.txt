@@ -11,7 +11,3 @@ if(NOT WIN32 AND NOT CMAKE_COMPILER_IS_XLCXX)
 endif()
 
 common_library(Pression)
-
-source_group(\\ FILES CMakeLists.txt)
-source_group(pression FILES ${PRESSION_PUBLIC_HEADERS}
-  ${PRESSION_HEADERS} ${PRESSION_SOURCES})
