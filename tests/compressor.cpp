@@ -17,7 +17,7 @@
  */
 
 #define TEST_RUNTIME 600 // seconds
-#include <test.h>
+#include <lunchbox/test.h>
 
 #include <pression/compressor.h>
 #include <pression/compressorInfo.h>
