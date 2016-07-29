@@ -71,7 +71,7 @@ namespace
         return true;                                                         \
     }                                                                        \
                                                                              \
-    static bool _initialized ## token_ ## name_ ## alpha =                   \
+    static bool LB_UNUSED _initialized ## token_ ## name_ ## alpha =                   \
         _registerTurbo ## token_ ## name_ ## alpha();
 
 REGISTER_ENGINE( RGBA, 100, 0.95, 0.33, 0.34, true );
