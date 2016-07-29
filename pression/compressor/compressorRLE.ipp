@@ -62,7 +62,7 @@ public:
         return true;                                                    \
     }                                                                   \
                                                                         \
-    static const bool _initialized ## cls ## type = _register ## cls ## type();
+    static const bool LB_UNUSED _initialized ## cls ## type = _register ## cls ## type();
 
 template< typename T >
 inline void _write( const T token, const T numTokens, T*& out )

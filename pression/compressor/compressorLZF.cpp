@@ -49,7 +49,7 @@ static bool _register()
     return true;
 }
 
-static const bool _initialized = _register();
+static const bool LB_UNUSED _initialized = _register();
 }
 
 void CompressorLZF::compress( const void* const inData,
