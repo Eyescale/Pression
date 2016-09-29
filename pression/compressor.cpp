@@ -1,6 +1,6 @@
 
-/* Copyright (c) 2010, Cedric Stalder <cedric.stalder@gmail.com>
- *               2010-2014, Stefan Eilemann <eile@eyescale.ch>
+/* Copyright (c) 2010-2016, Cedric Stalder <cedric.stalder@gmail.com>
+ *                          Stefan Eilemann <eile@eyescale.ch>
  *
  * This file is part of Pression <https://github.com/Eyescale/Pression>
  *
@@ -43,10 +43,7 @@ public:
         setup( registry, name );
     }
 
-    ~Compressor()
-    {
-        clear();
-    }
+    ~Compressor() { clear(); }
 
     void clear()
     {
@@ -126,14 +123,11 @@ uint32_t Compressor::choose( const PluginRegistry& registry,
     candidate.speed = 1.0f;
 
     const Plugins& plugins = registry.getPlugins();
-    for( Plugins::const_iterator i = plugins.begin(); i != plugins.end(); ++i )
+    for( const Plugin* plugin : plugins )
     {
-        const Plugin* plugin = *i;
         const CompressorInfos& infos = plugin->getInfos();
-
-        for( CompressorInfosCIter j = infos.begin(); j != infos.end(); ++j )
+        for( const CompressorInfo& info : infos )
         {
-            const CompressorInfo& info = *j;
             if( info.tokenType != tokenType || info.quality < minQuality ||
                 ( info.capabilities & EQ_COMPRESSOR_TRANSFER ))
             {
@@ -149,7 +143,6 @@ uint32_t Compressor::choose( const PluginRegistry& registry,
             }
         }
     }
-
     return candidate.name;
 }
 

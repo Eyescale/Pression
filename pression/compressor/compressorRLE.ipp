@@ -1,6 +1,6 @@
 
-/* Copyright (c) 2009, Cedric Stalder <cedric.stalder@gmail.com>
- *               2009-2014, Stefan Eilemann <eile@equalizergraphics.com>
+/* Copyright (c) 2009-2016, Cedric Stalder <cedric.stalder@gmail.com>
+ *                          Stefan Eilemann <eile@equalizergraphics.com>
  *
  * Template functions used by all compression routines
  *
@@ -18,9 +18,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include <lunchbox/omp.h>
-
 #include <limits>
+#ifdef PRESSION_USE_OPENMP
+#  include <omp.h>
+#endif
 
 namespace
 {
@@ -290,7 +291,7 @@ static unsigned _setupResults( const unsigned nChannels,
 {
     // determine number of chunks and set up output data structure
 #ifdef PRESSION_USE_OPENMP
-    const unsigned cpuChunks = nChannels * lunchbox::OMP::getNThreads();
+    const unsigned cpuChunks = nChannels * omp_get_num_procs();
     const size_t sizeChunks = inSize / 4096 * nChannels;
     const unsigned minChunks = unsigned( nChannels > sizeChunks ?
                                          nChannels : sizeChunks );
