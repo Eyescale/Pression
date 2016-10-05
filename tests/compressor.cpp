@@ -139,7 +139,9 @@ void _testData( const uint32_t compressorName, const std::string& name,
                << std::setfill( '0' ) << std::hex << compressorName << std::dec
                << std::setfill(' ') << ", " << std::setw(10) << size << ", "
                << std::setw(10) << compressedSize << ", " << std::setw(10)
-               << compressTime << ", " << std::setw(10) << decompressTime
+               << float(size) / 1024.f / 1024.f * 1000.f / compressTime
+               << ", " << std::setw(10)
+               << float(size) / 1024.f / 1024.f * 1000.f / decompressTime
                << std::endl;
     _size += size;
     _result += compressedSize;
@@ -181,7 +183,7 @@ void _testFile()
     std::cout.setf( std::ios::right, std::ios::adjustfield );
     std::cout.precision( 5 );
     std::cout << "                File, Compressor, Uncompress, "
-              << "Compressed,     t_comp,   t_decomp" << std::endl;
+              << "Compressed,   comp MB/s, decomp MB/s" << std::endl;
     for( std::vector< uint32_t >::const_iterator i = compressorNames.begin();
          i != compressorNames.end(); ++i )
     {
@@ -213,8 +215,10 @@ void _testFile()
                   << std::setfill( '0' ) << std::hex << *i << std::dec
                   << std::setfill(' ') << ", " << std::setw(10) << _size << ", "
                   << std::setw(10) << _result << ", " << std::setw(10)
-                  << _compressionTime << ", " << std::setw(10)
-                  << _decompressionTime << std::endl
+                  << float(_size) / 1024.f / 1024.f * 1000.f / _compressionTime
+                  << ", " << std::setw(10)
+                  << float(_size) / 1024.f / 1024.f * 1000.f /_decompressionTime
+                  << std::endl
                   << "    info->ratio = " << float(_result) / float(_size)
                   << "f;" << std::endl
                   << "    info->speed = " << float(_baseTime) /
@@ -252,8 +256,10 @@ void _testRandom()
                   << std::setfill( '0' ) << std::hex << *i << std::dec
                   << std::setfill(' ') << ", " << std::setw(10) << _size << ", "
                   << std::setw(10) << _result << ", " << std::setw(10)
-                  << _compressionTime << ", " << std::setw(10)
-                  << _decompressionTime << std::endl << std::endl;
+                  << float(_size) / 1024.f / 1024.f * 1000.f / _compressionTime
+                  << ", " << std::setw(10)
+                  << float(_size) / 1024.f / 1024.f * 1000.f /_decompressionTime
+                  << std::endl;
    }
 
     delete [] data;

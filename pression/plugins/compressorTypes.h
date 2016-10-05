@@ -1,17 +1,17 @@
 
-/* Copyright (c) 2009-2010, Cedric Stalder <cedric.stalder@gmail.com> 
+/* Copyright (c) 2009-2010, Cedric Stalder <cedric.stalder@gmail.com>
  *               2009-2010, Stefan Eilemann <eile@equalizergraphics.com>
  *                    2011, Daniel Nachbaur <danielnachbaur@gmail.com>
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License version 2.1 as published
  * by the Free Software Foundation.
- *  
+ *
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
@@ -20,7 +20,7 @@
 #ifndef EQ_PLUGINS_COMPRESSOR_TYPES
 #define EQ_PLUGINS_COMPRESSOR_TYPES
 
-/** 
+/**
  * @file plugins/compressorTypes.h
  *
  * Compression plugin names.
@@ -119,6 +119,8 @@
 #define EQ_COMPRESSOR_FASTLZ_BYTE   0x31u
 /** Snappy compression of bytes. */
 #define EQ_COMPRESSOR_SNAPPY_BYTE   0x32u
+/** ZSTD compression of bytes. */
+#define EQ_COMPRESSOR_ZSTD_BYTE     0x33u
 
 // Equalizer GPU<->CPU transfer plugins
 /* Transfer data from internal RGBA to external RGBA format with a data type
