@@ -1,6 +1,6 @@
 
-/* Copyright (c) 2010, Cedric Stalder <cedric.stalder@gmail.com>
- *               2010-2014, Stefan Eilemann <eile@eyescale.ch>
+/* Copyright (c) 2010-2016, Cedric Stalder <cedric.stalder@gmail.com>
+ *                          Stefan Eilemann <eile@eyescale.ch>
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License version 2.1 as published
@@ -41,9 +41,7 @@ void _testRandom();
 void _testData( const uint32_t nameCompressor, const std::string& name,
                 const uint8_t* data, const uint64_t size );
 
-std::vector< uint32_t > getCompressorNames( const uint32_t tokenType );
-Strings getFiles( const std::string& path, Strings& files,
-                  const std::string& ext );
+Strings getFiles( Strings& files, const std::string& ext );
 
 PluginRegistry registry;
 uint64_t _result = 0;
@@ -55,6 +53,17 @@ float _baseTime = 0.f;
 int main( int, char** )
 {
     registry.addDirectory( std::string( PRESSION_BUILD_DIR ) + "/lib" );
+    registry.addDirectory( "../bin" );
+    registry.addDirectory( "../lib" );
+    registry.addDirectory( "../../install/bin" );
+    registry.addDirectory( "../../install/lib" );
+    registry.addDirectory( "images" );
+    registry.addDirectory(
+        "/nfs4/bbp.epfl.ch/visualization/resources/meshes/mediumPly/" );
+    registry.addDirectory(
+        "/nfs4/bbp.epfl.ch/visualization/circuits/KaustCircuit/meshes" );
+    registry.addDirectory(
+        "/nfs4/bbp.epfl.ch/visualization/circuits/KaustCircuit/simulations/run_1k/20.02.13/" );
     TEST( registry.addLunchboxPlugins( ));
     registry.init();
 
@@ -151,26 +160,22 @@ void _testData( const uint32_t compressorName, const std::string& name,
 
 void _testFile()
 {
-    std::vector< uint32_t >compressorNames =
+    std::vector< uint32_t > compressorNames =
         getCompressorNames( EQ_COMPRESSOR_DATATYPE_BYTE );
 
     std::vector< std::string > files;
 
-    getFiles( "", files, ".*\\.dll" );
-    getFiles( "", files, ".*\\.exe" );
-    getFiles( "", files, ".*\\.so" );
-    getFiles( "../bin", files, ".*\\.dll" );
-    getFiles( "../lib", files, ".*\\.so" );
-    getFiles( "../../install/bin", files, ".*\\.dll" );
-    getFiles( "../../install/lib", files, ".*\\.so" );
-    getFiles( "images", files, ".*\\.rgb" );
-    getFiles( "", files, ".*\\.a" );
-    getFiles( "", files, ".*\\.dylib" );
-    getFiles( "/Users/eile/Library/Models/mediumPly/", files, ".*\\.bin" );
-    getFiles( "/Users/eile/Library/Models/mediumPly/", files, ".*\\.ply" );
-    getFiles( "/home/eilemann/Software/Models/mediumPly/", files, ".*\\.bin" );
-    getFiles( "/home/eilemann/Software/Models/mediumPly/", files, ".*\\.ply" );
+    getFiles( files, ".*\\.dll" );
+    getFiles( files, ".*\\.exe" );
+    getFiles( files, ".*\\.so" );
+    getFiles( files, ".*\\.a" );
+    getFiles( files, ".*\\.dylib" );
+    getFiles( files, ".*\\.rgb" );
+    getFiles( files, ".*\\.bin" );
+    getFiles( files, ".*\\.ply" );
+    getFiles( files, ".*\\.bbp" );
 
+#if 1
     // Limit to 30 files using a pseudo-random selection for reproducability
     const size_t maxFiles = 30;
     if( files.size() > maxFiles )
@@ -179,6 +184,7 @@ void _testFile()
         for( size_t i = 0; i < cut; ++i )
             files.erase( files.begin() + (i * 997 /*prime*/) % files.size( ));
     }
+#endif
 
     std::cout.setf( std::ios::right, std::ios::adjustfield );
     std::cout.precision( 5 );
@@ -204,6 +210,9 @@ void _testFile()
             }
 
             const size_t size = file.getSize();
+            if( size > LB_1GB )
+                continue;
+
             const std::string name = lunchbox::getFilename( *j );
 
             _testData( *i, name, data, size );
@@ -265,13 +274,9 @@ void _testRandom()
     delete [] data;
 }
 
-Strings getFiles( const std::string& path, Strings& files,
-                  const std::string& ext )
+Strings getFiles( Strings& files, const std::string& ext )
 {
     Strings paths = registry.getDirectories();
-    if( !path.empty( ))
-        paths.push_back( path );
-
     for( uint64_t j = 0; j < paths.size(); ++j )
     {
         const Strings& candidates = lunchbox::searchDirectory( paths[j], ext );

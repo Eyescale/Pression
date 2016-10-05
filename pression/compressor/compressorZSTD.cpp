@@ -30,8 +30,8 @@ static void _getInfo( EqCompressorInfo* const info )
     info->version = EQ_COMPRESSOR_VERSION;
     info->capabilities = EQ_COMPRESSOR_DATA_1D | EQ_COMPRESSOR_DATA_2D;
     info->quality = 1.f;
-    info->ratio   = .37f;
-    info->speed   = .17f;
+    info->ratio   = .47f;
+    info->speed   = .25f;
     info->name = EQ_COMPRESSOR_ZSTD_BYTE;
     info->tokenType = EQ_COMPRESSOR_DATATYPE_BYTE;
 }
@@ -60,7 +60,7 @@ void CompressorZSTD::compress( const void* const inData,
     size_t size = ZSTD_compressBound( nPixels );
     _results[0]->reserve( size );
 
-    size = ZSTD_compress( _results[0]->getData(), size, inData, nPixels, 0 );
+    size = ZSTD_compress( _results[0]->getData(), size, inData, nPixels, 2 );
     assert( size != 0 );
     _results[0]->setSize( size );
 }

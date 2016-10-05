@@ -1,5 +1,5 @@
 
-/* Copyright (c) 2012-2013, Stefan Eilemann <eile@eyescale.ch>
+/* Copyright (c) 2012-2016, Stefan Eilemann <eile@eyescale.ch>
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License version 2.1 as published
@@ -31,8 +31,8 @@ static void _getInfo( EqCompressorInfo* const info )
     info->version = EQ_COMPRESSOR_VERSION;
     info->capabilities = EQ_COMPRESSOR_DATA_1D | EQ_COMPRESSOR_DATA_2D;
     info->quality = 1.f;
-    info->ratio   = .53f;
-    info->speed   = .34f;
+    info->ratio   = .60f;
+    info->speed   = .55f;
     info->name = EQ_COMPRESSOR_SNAPPY_BYTE;
     info->tokenType = EQ_COMPRESSOR_DATATYPE_BYTE;
 }
