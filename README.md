@@ -1,6 +1,6 @@
 [TOC]
 
-# Introduction {#Introduction}
+# Introduction
 
 Welcome to Pression, a C++ library for implementing and loading
 compression and CPU-GPU data transfer plugins.
@@ -22,7 +22,7 @@ available from [Eyescale](http://www.eyescale.ch). Please contact
 [info@eyescale.ch](mailto:info@eyescale.ch?subject=Pression%20support)
 for further information.
 
-# Features {#Features}
+# Features
 
 Pression provides the following major features:
 
@@ -31,7 +31,7 @@ Pression provides the following major features:
   pression::PluginRegistry, pression::Uploader
 * Detailed @ref Changelog
 
-# Building {#Building}
+# Building
 
 Pression is a cross-platform library, designed to run on any modern
 operating system, including all Unix variants and the Windows operating
