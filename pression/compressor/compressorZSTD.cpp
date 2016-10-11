@@ -61,7 +61,6 @@ void CompressorZSTD::compress( const void* const inData,
     _results[0]->reserve( size );
 
     size = ZSTD_compress( _results[0]->getData(), size, inData, nPixels, 2 );
-    assert( size != 0 );
     _results[0]->setSize( size );
 }
 

@@ -66,9 +66,7 @@ set(PRESSION_COMPRESSORS
   compressor/zstd/lib/dictBuilder/zdict.c
 )
 
-include_directories(
-  ${CMAKE_CURRENT_SOURCE_DIR}/compressor/zstd/lib
-  ${CMAKE_CURRENT_SOURCE_DIR}/compressor/zstd/lib/common)
+include_directories(compressor/zstd/lib compressor/zstd/lib/common)
 
 if(LibJpegTurbo_FOUND)
   list(APPEND PRESSION_LINK_LIBRARIES PRIVATE ${LibJpegTurbo_LIBRARIES})
