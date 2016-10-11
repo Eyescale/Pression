@@ -41,6 +41,8 @@ set(PRESSION_COMPRESSORS
   compressor/compressorRLEYUV.h
   compressor/compressorSnappy.cpp
   compressor/compressorSnappy.h
+  compressor/compressorZSTD.cpp
+  compressor/compressorZSTD.h
   compressor/fastlz/fastlz.c
   compressor/fastlz/fastlz.h
   compressor/liblzf/lzf.h
@@ -49,7 +51,22 @@ set(PRESSION_COMPRESSORS
   compressor/snappy/snappy.h
   compressor/snappy/snappy.cc
   compressor/snappy/snappy-sinksource.cc
+  compressor/zstd/lib/common/entropy_common.c
+  compressor/zstd/lib/common/fse_decompress.c
+  compressor/zstd/lib/common/xxhash.c
+  compressor/zstd/lib/common/zstd_common.c
+  compressor/zstd/lib/compress/fse_compress.c
+  compressor/zstd/lib/compress/huf_compress.c
+  compressor/zstd/lib/compress/zbuff_compress.c
+  compressor/zstd/lib/compress/zstd_compress.c
+  compressor/zstd/lib/decompress/huf_decompress.c
+  compressor/zstd/lib/decompress/zbuff_decompress.c
+  compressor/zstd/lib/decompress/zstd_decompress.c
+  compressor/zstd/lib/dictBuilder/divsufsort.c
+  compressor/zstd/lib/dictBuilder/zdict.c
 )
+
+include_directories(compressor/zstd/lib compressor/zstd/lib/common)
 
 if(LibJpegTurbo_FOUND)
   list(APPEND PRESSION_LINK_LIBRARIES PRIVATE ${LibJpegTurbo_LIBRARIES})

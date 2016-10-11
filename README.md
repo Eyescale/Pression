@@ -50,3 +50,15 @@ Building from source is as simple as:
     cd Pression/build
     cmake ..
     make
+
+# FAQ
+
+## On what basis where the compression parameters determined?
+
+They are relative numbers when compared to the RLE compressor and the
+data compressed. Since both change over time with new compilers, CPUs
+and tested data, they are a somewhat arbitrary snapshot. Typically, all
+compressor parameters are updated when a new plugin is added on a
+representative visualization cluster node at the time. They are
+determined by running the tests/compressor benchmark which calculates
+them.
