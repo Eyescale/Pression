@@ -1,5 +1,5 @@
 
-/* Copyright (c) 2013-2014, Stefan.Eilemann@epfl.ch
+/* Copyright (c) 2013-2016, Stefan.Eilemann@epfl.ch
  *
  * This file is part of Pression <https://github.com/Eyescale/Pression>
  *
@@ -44,11 +44,10 @@ public:
     /**
      * Construct a new decompressor instance.
      *
-     * @param from the plugin registry.
      * @param name the name of the decompressor.
-     * @version 1.7.1
+     * @version 2.0
      */
-    PRESSION_API Decompressor( PluginRegistry& from, const uint32_t name );
+    PRESSION_API Decompressor( const uint32_t name );
 
     /** Destruct this decompressor. @version 1.7.1 */
     PRESSION_API virtual ~Decompressor();
@@ -77,12 +76,11 @@ public:
     /**
      * Set up a new, named decompressor instance.
      *
-     * @param from the plugin registry.
      * @param name the name of the decompressor.
      * @return true on success, false otherwise.
-     * @version 1.7.1
+     * @version 2.0
      */
-    PRESSION_API bool setup( PluginRegistry& from, const uint32_t name );
+    PRESSION_API bool setup( const uint32_t name );
 
     /** Reset to EQ_COMPRESSOR_NONE. @version 1.7.1 */
     PRESSION_API void clear();

@@ -43,7 +43,7 @@ void _testData( const uint32_t nameCompressor, const std::string& name,
 
 Strings getFiles( Strings& files, const std::string& ext );
 
-PluginRegistry registry;
+PluginRegistry& registry = PluginRegistry::getInstance();
 uint64_t _result = 0;
 uint64_t _size = 0;
 float _compressionTime = 0;
@@ -52,24 +52,14 @@ float _baseTime = 0.f;
 
 int main( int, char** )
 {
-    registry.addDirectory( std::string( PRESSION_BUILD_DIR ) + "/lib" );
-    registry.addDirectory( "../bin" );
-    registry.addDirectory( "../lib" );
-    registry.addDirectory( "../../install/bin" );
-    registry.addDirectory( "../../install/lib" );
-    registry.addDirectory( "images" );
-    registry.addDirectory(
-        "/nfs4/bbp.epfl.ch/visualization/resources/meshes/mediumPly/" );
-    registry.addDirectory(
-        "/nfs4/bbp.epfl.ch/visualization/circuits/KaustCircuit/meshes" );
-    registry.addDirectory(
-        "/nfs4/bbp.epfl.ch/visualization/circuits/KaustCircuit/simulations/run_1k/20.02.13/" );
-    TEST( registry.addLunchboxPlugins( ));
-    registry.init();
+    registry.loadDirectory( std::string( PRESSION_BUILD_DIR ) + "/lib" );
+    registry.loadDirectory( "../bin" );
+    registry.loadDirectory( "../lib" );
+    registry.loadDirectory( "../../install/bin" );
+    registry.loadDirectory( "../../install/lib" );
 
     _testFile();
     _testRandom();
-    registry.exit();
 
     Compressor compressor;
     TEST( !compressor.isGood( ));
@@ -103,8 +93,8 @@ std::vector< uint32_t > getCompressorNames( const uint32_t tokenType )
 void _testData( const uint32_t compressorName, const std::string& name,
                 const uint8_t* data, const uint64_t size )
 {
-    Compressor compressor( registry, compressorName );
-    Decompressor decompressor( registry, compressorName );
+    Compressor compressor( compressorName );
+    Decompressor decompressor( compressorName );
     TEST( compressor.isGood( ));
     TEST( compressor );
     TESTINFO( decompressor.isGood(), compressorName );
@@ -276,15 +266,19 @@ void _testRandom()
 
 Strings getFiles( Strings& files, const std::string& ext )
 {
-    Strings paths = registry.getDirectories();
-    for( uint64_t j = 0; j < paths.size(); ++j )
-    {
-        const Strings& candidates = lunchbox::searchDirectory( paths[j], ext );
-        for( StringsCIter i = candidates.begin(); i != candidates.end(); ++i )
-        {
-            const std::string& filename = *i;
-            files.push_back( paths[j] + '/' + filename );
-        }
-    }
+    const Strings paths = {
+        { std::string( PRESSION_BUILD_DIR ) + "/lib" },
+        { "../bin" },
+        { "../lib" },
+        { "../../install/bin" },
+        { "../../install/lib" },
+        { "images" },
+        { "/nfs4/bbp.epfl.ch/visualization/resources/meshes/mediumPly/" },
+        { "/nfs4/bbp.epfl.ch/visualization/circuits/KaustCircuit/meshes" },
+        { "/nfs4/bbp.epfl.ch/visualization/circuits/KaustCircuit/simulations/run_1k/20.02.13/" }};
+
+    for( const auto& path : paths )
+        for( const auto& file : lunchbox::searchDirectory( path, ext ))
+            files.push_back( path + '/' + file );
     return files;
 }

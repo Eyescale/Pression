@@ -45,11 +45,10 @@ public:
     /**
      * Construct a new, named compressor instance.
      *
-     * @param from the plugin registry
      * @param name the name of the compressor
-     * @version 1.7.1
+     * @version 2.0
      */
-    PRESSION_API Compressor( PluginRegistry& from, const uint32_t name );
+    PRESSION_API Compressor( const uint32_t name );
 
     /** Destruct the compressor. @version 1.7.1 */
     PRESSION_API virtual ~Compressor();
@@ -81,37 +80,34 @@ public:
      * This convenience method searches all compressors in all plugins to
      * find the compressor which matches best the given parameters.
      *
-     * @param registry the plugin registry to choose from.
      * @param tokenType the structure of the data to compress.
      * @param minQuality minimal quality of the compressed data, with 0 = no
      *                   quality and 1 = full quality, no loss.
      * @param ignoreMSE the most-significant element of a four-element token can
      *                  be ignored, typically the alpha channel of an image.
      * @return the name of the chosen compressor.
-     * @version 1.7.1
+     * @version 2.0
      */
-    static PRESSION_API uint32_t choose( const PluginRegistry& registry,
-                                         const uint32_t tokenType,
+    static PRESSION_API uint32_t choose( const uint32_t tokenType,
                                          const float minQuality,
                                          const bool ignoreMSE );
 
     /**
      * Set up a new, named compressor instance.
      *
-     * @param from the plugin registry.
      * @param name the name of the compressor.
      * @return true on success, false otherwise.
-     * @version 1.7.1
+     * @version 2.0
      */
-    PRESSION_API bool setup( PluginRegistry& from, const uint32_t name );
+    PRESSION_API bool setup( const uint32_t name );
 
     /**
      * Set up a new, auto-selected compressor instance.
      * @sa choose() for parameters.
      * @version 1.7.1
      */
-    PRESSION_API bool setup( PluginRegistry& registry, const uint32_t tokenType,
-                             const float minQuality, const bool ignoreMSE );
+    PRESSION_API bool setup( const uint32_t tokenType, const float minQuality,
+                             const bool ignoreMSE );
 
     /** Reallocate the current instance. @version 1.7.1 */
     PRESSION_API bool realloc();

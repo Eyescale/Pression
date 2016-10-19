@@ -1,6 +1,6 @@
 
-/* Copyright (c) 2009, Cedric Stalder <cedric.stalder@gmail.com>
- *               2010-2013, Stefan Eilemann <eile@eyescale.ch>
+/* Copyright (c) 2009-2016, Cedric Stalder <cedric.stalder@gmail.com>
+ *                          Stefan Eilemann <eile@eyescale.ch>
  *
  * This file is part of Collage <https://github.com/Eyescale/Collage>
  *
@@ -43,6 +43,19 @@
 
 namespace pression
 {
+namespace
+{
+Plugin* _loadPlugin( const std::string& filename )
+{
+    Plugin* plugin = new Plugin( filename );
+    if( plugin->isGood( ))
+        return plugin;
+
+    delete plugin;
+    return nullptr;
+}
+}
+
 namespace detail
 {
 class PluginRegistry
@@ -50,33 +63,41 @@ class PluginRegistry
 public:
     PluginRegistry()
     {
-        char* env = getenv( "EQ_PLUGIN_PATH" );
-        std::string envString( env ? env : "" );
-
-        if( envString.empty( ))
-        {
-            char cwd[MAXPATHLEN];
-            directories.push_back( getcwd( cwd, MAXPATHLEN ));
-
-#ifdef _WIN32
-            if( GetModuleFileName( 0, cwd, MAXPATHLEN ) > 0 )
-                directories.push_back( lunchbox::getDirname( cwd ));
-#else
-#  ifdef Darwin
-            env = getenv( "DYLD_LIBRARY_PATH" );
+#ifdef PRESSION_DSO_NAME
+        loadFile( PRESSION_DSO_NAME );
+        loadFile( std::string( PRESSION_BUILD_DIR ) + "lib/" +
+                  PRESSION_DSO_NAME );
+#  ifdef NDEBUG
+        loadFile( std::string( PRESSION_BUILD_DIR ) + "lib/Release/" +
+                  PRESSION_DSO_NAME );
 #  else
-            env = getenv( "LD_LIBRARY_PATH" );
+        loadFile( std::string( PRESSION_BUILD_DIR ) + "lib/Debug/" +
+                  PRESSION_DSO_NAME );
 #  endif
+#endif
+
+        char cwd[MAXPATHLEN];
+        loadDirectory( getcwd( cwd, MAXPATHLEN ));
+
+        char* env = getenv( "PRESSION_PLUGIN_PATH" );
+        std::string envString;
         if( env )
             envString = env;
-#  endif
-        }
 
 #ifdef _WIN32
         const char separator = ';';
+        if( GetModuleFileName( 0, cwd, MAXPATHLEN ) > 0 )
+            loadDirectory( lunchbox::getDirname( cwd ));
 #else
         const char separator = ':';
-#endif
+#  ifdef Darwin
+        env = getenv( "DYLD_LIBRARY_PATH" );
+#  else
+        env = getenv( "LD_LIBRARY_PATH" );
+#  endif
+        if( env )
+            envString += std::string( ":" ) + env;
+#  endif
 
         while( !envString.empty( ))
         {
@@ -85,165 +106,99 @@ public:
                 nextPos = envString.size();
 
             std::string path = envString.substr( 0, nextPos );
-            if ( nextPos == envString.size( ))
+            if( nextPos == envString.size( ))
                 envString = "";
             else
                 envString = envString.substr( nextPos + 1, envString.size() );
 
             if( !path.empty( ))
-                directories.push_back( path );
+                loadDirectory( path );
         }
     }
 
     ~PluginRegistry()
     {
-        LBASSERTINFO( plugins.empty(), "Plugin registry not de-initialized" );
+        for( pression::Plugin* plugin : plugins )
+            delete plugin;
     }
 
-    Strings directories;
+    size_t loadDirectory( const std::string& dir )
+    {
+        LBLOG( LOG_PLUGIN ) << "Searching plugins in " << dir << std::endl;
+
+#ifdef _WIN32
+        const auto& files =
+            lunchbox::searchDirectory( dir, ".*Compressor.*\\.dll" );
+        const char SEP = '\\';
+#elif defined (Darwin)
+        const auto& files =
+            lunchbox::searchDirectory( dir, "lib.*Compressor.*\\.dylib" );
+        const char SEP = '/';
+#else
+        const auto& files =
+            lunchbox::searchDirectory( dir, "lib.*Compressor.*\\.so" );
+        const char SEP = '/';
+#endif
+
+        size_t loaded = 0;
+        for( const auto& file : files )
+            loaded += loadFile( dir.empty() ? file : dir + SEP + file );
+        return loaded;
+    }
+
+    bool loadFile( const std::string& filename )
+    {
+        pression::Plugin* plugin = _loadPlugin( filename );
+        if( !plugin )
+            return false;
+
+        const CompressorInfos& infos = plugin->getInfos();
+        for( pression::Plugin* plugin2 : plugins )
+        {
+            const CompressorInfos& infos2 = plugin2->getInfos();
+
+            // Simple test to avoid loading the same dll twice
+            if( infos.front().name == infos2.front().name )
+            {
+                delete plugin;
+                return false;
+            }
+        }
+
+        plugins.push_back( plugin );
+        LBLOG( LOG_PLUGIN ) << "Found " << plugin->getInfos().size()
+                            << " compression engines in " << filename
+                            << std::endl;
+        return true;
+    }
+
     Plugins plugins;
 };
 }
 
+PluginRegistry& PluginRegistry::getInstance()
+{
+    static PluginRegistry _instance;
+    return _instance;
+}
+
 PluginRegistry::PluginRegistry()
-    : impl_( new detail::PluginRegistry )
+    : _impl( new detail::PluginRegistry )
 {}
 
 PluginRegistry::~PluginRegistry()
 {
-    delete impl_;
+    delete _impl;
 }
 
-const Strings& PluginRegistry::getDirectories() const
+size_t PluginRegistry::loadDirectory( const std::string& dir )
 {
-    return impl_->directories;
+    return _impl->loadDirectory( dir );
 }
 
-void  PluginRegistry::addDirectory( const std::string& path )
+bool PluginRegistry::loadFile( const std::string& filename )
 {
-    impl_->directories.push_back( path );
-}
-
-void PluginRegistry::removeDirectory( const std::string& path )
-{
-    Strings::iterator i = lunchbox::find( impl_->directories, path );
-    if( i != impl_->directories.end( ))
-        impl_->directories.erase( i );
-}
-
-bool PluginRegistry::addLunchboxPlugins()
-{
-#ifdef PRESSION_DSO_NAME
-    return
-        addPlugin( PRESSION_DSO_NAME ) || // Found by LDD
-        // Hard-coded compile locations as backup:
-        addPlugin( std::string( PRESSION_BUILD_DIR ) + "lib/" +
-                   PRESSION_DSO_NAME ) ||
-#  ifdef NDEBUG
-        addPlugin( std::string( PRESSION_BUILD_DIR ) +
-                   "lib/Release/" + PRESSION_DSO_NAME )
-#  else
-        addPlugin( std::string( PRESSION_BUILD_DIR ) + "lib/Debug/" +
-                   PRESSION_DSO_NAME )
-#  endif
-        ;
-#endif
-    return false;
-}
-
-void PluginRegistry::init()
-{
-    // for each directory
-    for( StringsCIter i = impl_->directories.begin();
-         i != impl_->directories.end(); ++i )
-    {
-        const std::string& dir = *i;
-        LBLOG( LOG_PLUGIN ) << "Searching plugins in " << dir << std::endl;
-
-#ifdef _WIN32
-        const Strings& files =
-                lunchbox::searchDirectory( dir, ".*Compressor.*\\.dll" );
-        const char DIRSEP = '\\';
-#elif defined (Darwin)
-        const Strings& files =
-                lunchbox::searchDirectory( dir, "lib.*Compressor.*\\.dylib" );
-        const char DIRSEP = '/';
-#else
-        const Strings& files =
-                lunchbox::searchDirectory( dir, "lib.*Compressor.*\\.so" );
-        const char DIRSEP = '/';
-#endif
-        // for each file found in the directory
-        for( StringsCIter j = files.begin(); j != files.end(); ++j )
-        {
-            // build path + name of library
-            const std::string libraryName = dir.empty() ? *j : dir+DIRSEP+*j;
-            addPlugin( libraryName );
-        }
-    }
-}
-
-namespace
-{
-Plugin* _loadPlugin( const std::string& filename, const Strings& directories )
-{
-    if( filename.size() < 3 )
-        return 0;
-
-    Plugin* plugin = new Plugin( filename );
-    if( plugin->isGood( ))
-        return plugin;
-    delete plugin;
-
-    if( filename[0] == '/' || filename[1] == ':' /* Win drive letter */ )
-        return 0;
-
-    for( StringsCIter i = directories.begin(); i != directories.end(); ++i )
-    {
-        const std::string& dir = *i;
-        plugin = new Plugin( dir + "/" + filename );
-        if( plugin->isGood( ))
-            return plugin;
-        delete plugin;
-    }
-    return 0;
-}
-}
-
-bool PluginRegistry::addPlugin( const std::string& filename )
-{
-    Plugin* plugin = _loadPlugin( filename, impl_->directories );
-    if( !plugin )
-        return false;
-
-    const CompressorInfos& infos = plugin->getInfos();
-    for( PluginsCIter i = impl_->plugins.begin(); i != impl_->plugins.end(); ++i)
-    {
-        const CompressorInfos& infos2 = (*i)->getInfos();
-
-        // Simple test to avoid loading the same dll twice
-        if( infos.front().name == infos2.front().name )
-        {
-            delete plugin;
-            return true;
-        }
-    }
-
-    impl_->plugins.push_back( plugin );
-    LBLOG( LOG_PLUGIN ) << "Found " << plugin->getInfos().size()
-                        << " compression engines in " << filename << std::endl;
-    return true;
-}
-
-void PluginRegistry::exit()
-{
-    for( PluginsCIter i = impl_->plugins.begin(); i != impl_->plugins.end(); ++i)
-    {
-        Plugin* plugin = *i;
-        delete plugin;
-    }
-
-    impl_->plugins.clear();
+    return _impl->loadFile( filename );
 }
 
 namespace
@@ -284,7 +239,7 @@ const Plugin* PluginRegistry::findPlugin( const uint32_t name ) const
 VisitorResult PluginRegistry::accept( PluginVisitor& visitor )
 {
     VisitorResult result = TRAVERSE_CONTINUE;
-    for( PluginsCIter i = impl_->plugins.begin(); i != impl_->plugins.end(); ++i )
+    for( PluginsCIter i = _impl->plugins.begin(); i != _impl->plugins.end(); ++i )
         switch( (*i)->accept( visitor ))
         {
         case TRAVERSE_TERMINATE:
@@ -300,7 +255,7 @@ VisitorResult PluginRegistry::accept( PluginVisitor& visitor )
 VisitorResult PluginRegistry::accept( ConstPluginVisitor& visitor ) const
 {
     VisitorResult result = TRAVERSE_CONTINUE;
-    for( PluginsCIter i = impl_->plugins.begin(); i != impl_->plugins.end(); ++i )
+    for( PluginsCIter i = _impl->plugins.begin(); i != _impl->plugins.end(); ++i )
         switch( (*i)->accept( visitor ))
         {
         case TRAVERSE_TERMINATE:
@@ -316,7 +271,7 @@ VisitorResult PluginRegistry::accept( ConstPluginVisitor& visitor ) const
 
 const Plugins& PluginRegistry::getPlugins() const
 {
-    return impl_->plugins;
+    return _impl->plugins;
 }
 
 }

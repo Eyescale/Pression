@@ -1,5 +1,5 @@
 
-/* Copyright (c) 2013-2014, Stefan.Eilemann@epfl.ch
+/* Copyright (c) 2013-2016, Stefan.Eilemann@epfl.ch
  *
  * This file is part of Pression <https://github.com/Eyescale/Pression>
  *
@@ -38,14 +38,12 @@ public:
     /**
      * Construct a new, named downloader instance.
      *
-     * @param from the plugin registry.
      * @param name the name of the downloader.
      * @param gl the OpenGL function table to verify that the plugin is
      *           compatible with this GL implementation.
-     * @version 1.7.1
+     * @version 2.0
      */
-    PRESSION_API Downloader( PluginRegistry& from, const uint32_t name,
-                             const GLEWContext* gl = 0 );
+    PRESSION_API Downloader( const uint32_t name, const GLEWContext* gl = 0 );
 
     /** Destruct this downloader. @version 1.7.1 */
     PRESSION_API virtual ~Downloader();
@@ -73,17 +71,15 @@ public:
      * the downloader which supports the given parameters and provides the
      * highest speed.
      *
-     * @param from the plugin registry to choose from.
      * @param internalFormat the input token type to the downloader.
      * @param minQuality the minimum quality.
      * @param ignoreAlpha true if the downloader may drop the alpha channel.
      * @param capabilities the capabilities required by the downloader.
      * @param gl the OpenGL function table.
      * @return the name of the chosen downloader.
-     * @version 1.7.1
+     * @version 2.0
      */
-    static PRESSION_API uint32_t choose( const PluginRegistry& from,
-                                         const uint32_t internalFormat,
+    static PRESSION_API uint32_t choose( const uint32_t internalFormat,
                                          const float minQuality,
                                          const bool ignoreAlpha,
                                          const uint64_t capabilities,
@@ -95,22 +91,20 @@ public:
     /**
      * Set up a new, named downloader instance.
      *
-     * @param from the plugin registry.
      * @param name the name of the downloader.
      * @param gl the OpenGL function table to verify that the plugin is
      *           compatible with this GL implementation.
      * @return true on success, false otherwise.
-     * @version 1.7.1
+     * @version 2.0
      */
-    PRESSION_API bool setup( PluginRegistry& from, const uint32_t name,
-                             const GLEWContext* gl = 0 );
+    PRESSION_API bool setup( const uint32_t name, const GLEWContext* gl = 0 );
 
     /**
      * Set up a new, auto-selected downloader instance.
      * @sa choose() for parameters.
-     * @version 1.7.1
+     * @version 2.0
      */
-    PRESSION_API bool setup( PluginRegistry& from,const uint32_t internalFormat,
+    PRESSION_API bool setup( const uint32_t internalFormat,
                              const float minQuality, const bool ignoreAlpha,
                              const uint64_t capabilities,
                              const GLEWContext* gl );

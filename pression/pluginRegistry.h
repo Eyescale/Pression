@@ -1,6 +1,6 @@
 
-/* Copyright (c) 2010, Cedric Stalder <cedric.stalder@gmail.com>
- *               2010-2014, Stefan Eilemann <eile@eyescale.ch>
+/* Copyright (c) 2010-2016, Cedric Stalder <cedric.stalder@gmail.com>
+ *                          Stefan Eilemann <eile@eyescale.ch>
  *
  * This file is part of Pression <https://github.com/Eyescale/Pression>
  *
@@ -33,51 +33,22 @@ namespace detail { class PluginRegistry; }
 /**
  * A registry for loaded plugins.
  *
- * Downstream projects such as Collage and Equalizer use and initialize a global
- * plugin registry in their respective initialization calls by adding
- * directories in co::init(). This internal plugin registry can be obtained
- * using co::Global::getPluginRegistry().
+ * Downstream projects such as Collage and Equalizer use and initialize the
+ * global plugin registry in their respective initialization calls by loading
+ * directories or files.
  *
  * Example: @include tests/compressor.cpp
  */
 class PluginRegistry
 {
 public:
-    /** Construct a new plugin registry. @version 1.7.1 */
-    PRESSION_API PluginRegistry();
+    PRESSION_API static PluginRegistry& getInstance();
 
-    /** Destruct this plugin registry. @version 1.7.1 */
-    PRESSION_API ~PluginRegistry();
+    /** Add a single plugin DSO. @return true if found. */
+    PRESSION_API bool loadFile( const std::string& filename );
 
-    /**
-     * Add a new directory to search for compressor DSOs during init().
-     * @version 1.0 in Collage
-     * @version 1.7.1 in Lunchbox
-     */
-    PRESSION_API void addDirectory( const std::string& path );
-
-    /** Remove a plugin directory. @version 1.0 */
-    PRESSION_API void removeDirectory( const std::string& path );
-
-    /**
-     * @return all directories to search for compressor DSOs during init().
-     * @version 1.0 in Collage
-     * @version 1.7.1 in Lunchbox
-     */
-    PRESSION_API const Strings& getDirectories() const;
-
-    /**
-     * Add the lunchbox library plugins to this registry.
-     * @return true on success, false otherwise.
-     * @version 1.7.1
-     */
-    PRESSION_API bool addLunchboxPlugins();
-
-    /** @internal Search all plugin directories and register found DSOs */
-    PRESSION_API void init();
-
-    /** @internal Exit all DSOs and free all plugins */
-    PRESSION_API void exit();
+    /** Add all plugins in a directory. @return the number of plugins loaded */
+    PRESSION_API size_t loadDirectory( const std::string& dir );
 
     /**
      * Visit all plugins and compressors.
@@ -101,13 +72,16 @@ public:
     /** @internal @return the plugin containing the given compressor. */
     PRESSION_API const Plugin* findPlugin( const uint32_t name ) const;
 
-    /** @internal Add a single DSO before init(). @return true if found. */
-    PRESSION_API bool addPlugin( const std::string& filename );
-
 private:
-    PluginRegistry( const PluginRegistry& );
-    PluginRegistry operator=( const PluginRegistry& );
-    detail::PluginRegistry* const impl_;
+    PluginRegistry();
+    ~PluginRegistry();
+
+    PluginRegistry( const PluginRegistry& ) = delete;
+    PluginRegistry( PluginRegistry&& ) = delete;
+    PluginRegistry& operator=( const PluginRegistry& ) = delete;
+    PluginRegistry& operator=( PluginRegistry&& ) = delete;
+
+    detail::PluginRegistry* const _impl;
 };
 }
 #endif // PRESSION_PLUGINREGISTRY_H

@@ -2,8 +2,8 @@
 # Copyright (c) 2012-2016 Stefan Eilemann <eile@eyescale.ch>
 
 cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
-project(Pression VERSION 1.2.0)
-set(Pression_VERSION_ABI 2)
+project(Pression VERSION 2.0.0)
+set(Pression_VERSION_ABI 3)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake
                               ${CMAKE_SOURCE_DIR}/CMake/common)

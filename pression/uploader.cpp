@@ -1,5 +1,5 @@
 
-/* Copyright (C) 2013-2014, Stefan.Eilemann@epfl.ch
+/* Copyright (C) 2013-2016, Stefan.Eilemann@epfl.ch
  *
  * This file is part of Pression <https://github.com/Eyescale/Pression>
  *
@@ -34,9 +34,9 @@ class Uploader : public PluginInstance
 public:
     Uploader() {}
 
-    Uploader( pression::PluginRegistry& registry, const uint32_t name )
+    Uploader( const uint32_t name )
     {
-        setup( registry, name );
+        setup( name );
     }
 
     ~Uploader()
@@ -51,7 +51,7 @@ public:
         PluginInstance::clear();
     }
 
-    bool setup( pression::PluginRegistry& registry, const uint32_t name )
+    bool setup( const uint32_t name )
     {
         if( instance && name == info.name )
             return true;
@@ -61,7 +61,7 @@ public:
         if( name <= EQ_COMPRESSOR_NONE )
             return true;
 
-        plugin = registry.findPlugin( name );
+        plugin = pression::PluginRegistry::getInstance().findPlugin( name );
         LBASSERT( plugin );
         if( !plugin )
             return false;
@@ -84,8 +84,8 @@ Uploader::Uploader()
     LB_TS_THREAD( _thread );
 }
 
-Uploader::Uploader( PluginRegistry& registry, const uint32_t name )
-    : impl_( new detail::Uploader( registry, name ))
+Uploader::Uploader( const uint32_t name )
+    : impl_( new detail::Uploader( name ))
 {
     LB_TS_THREAD( _thread );
 }
@@ -159,13 +159,12 @@ private:
 };
 }
 
-uint32_t Uploader::choose( const PluginRegistry& registry,
-                           const uint32_t externalFormat,
+uint32_t Uploader::choose( const uint32_t externalFormat,
                            const uint32_t internalFormat,
                            const uint64_t capabilities, const GLEWContext* gl )
 {
     Finder finder( externalFormat, internalFormat, capabilities, gl );
-    registry.accept( finder );
+    PluginRegistry::getInstance().accept( finder );
     return finder.current.name;
 }
 
@@ -174,17 +173,17 @@ const EqCompressorInfo& Uploader::getInfo() const
     return impl_->info;
 }
 
-bool Uploader::setup( PluginRegistry& from, const uint32_t name )
+bool Uploader::setup( const uint32_t name )
 {
-    return impl_->setup( from, name );
+    return impl_->setup( name );
 }
 
-bool Uploader::setup( PluginRegistry& from, const uint32_t externalFormat,
+bool Uploader::setup( const uint32_t externalFormat,
                       const uint32_t internalFormat,
                       const uint64_t capabilities, const GLEWContext* gl )
 {
-    return impl_->setup( from, choose( from, externalFormat, internalFormat,
-                                       capabilities, gl ));
+    return impl_->setup( choose( externalFormat, internalFormat, capabilities,
+                                 gl ));
 }
 
 void Uploader::clear()
