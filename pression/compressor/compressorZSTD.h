@@ -18,30 +18,22 @@
 #ifndef PRESSION_PLUGIN_COMPRESSORZSTD
 #define PRESSION_PLUGIN_COMPRESSORZSTD
 
-#include "compressor.h"
+#include <pression/dataCompressor.h>
 
 namespace pression
 {
 namespace plugin
 {
 
-class CompressorZSTD : public Compressor
+class CompressorZSTD : public DataCompressor
 {
 public:
-    CompressorZSTD() : Compressor() {}
+    CompressorZSTD() : DataCompressor() {}
     virtual ~CompressorZSTD() {}
 
-    void compress( const void* const inData, const eq_uint64_t nPixels,
-                   const bool useAlpha ) override;
-
-    static void decompress( const void* const* inData,
-                            const eq_uint64_t* const inSizes,
-                            unsigned nInputs, void* const outData,
-                            eq_uint64_t* const outDims, eq_uint64_t flags,
-                            void* const );
-
-    static Compressor* getNewCompressor( const unsigned /*name*/ )
-        { return new CompressorZSTD; }
+    const Results& compress( const uint8_t* data, size_t size ) override;
+    void decompress( const Results& input, uint8_t* const data,
+                     size_t size ) override;
 };
 }
 }

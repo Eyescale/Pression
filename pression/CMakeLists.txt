@@ -4,6 +4,7 @@
 set(PRESSION_PUBLIC_HEADERS
   compressor.h
   compressorResult.h
+  dataCompressor.h
   decompressor.h
   downloader.h
   log.h
@@ -66,14 +67,6 @@ set(PRESSION_COMPRESSORS
   compressor/zstd/lib/dictBuilder/zdict.c
 )
 
-include_directories(compressor/zstd/lib compressor/zstd/lib/common)
-
-if(LibJpegTurbo_FOUND)
-  list(APPEND PRESSION_LINK_LIBRARIES PRIVATE ${LibJpegTurbo_LIBRARIES})
-  list(APPEND PRESSION_COMPRESSORS
-    compressor/compressorTurboJPEG.h compressor/compressorTurboJPEG.cpp)
-endif()
-
 set(PRESSION_HEADERS
   compressorInfo.h
   log.h
@@ -90,7 +83,15 @@ set(PRESSION_SOURCES
   uploader.cpp
 )
 
-list(APPEND PRESSION_LINK_LIBRARIES PUBLIC Lunchbox)
+include_directories(compressor/zstd/lib compressor/zstd/lib/common)
+set(PRESSION_LINK_LIBRARIES PUBLIC Lunchbox)
+
+if(LibJpegTurbo_FOUND)
+  list(APPEND PRESSION_LINK_LIBRARIES PRIVATE ${LibJpegTurbo_LIBRARIES})
+  list(APPEND PRESSION_COMPRESSORS
+    compressor/compressorTurboJPEG.h compressor/compressorTurboJPEG.cpp)
+endif()
+
 
 add_definitions(-DEQ_PLUGIN_BUILD -DHAVE_BYTESWAP_H)
 if(NOT WIN32 AND NOT CMAKE_COMPILER_IS_XLCXX)

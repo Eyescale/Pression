@@ -17,6 +17,8 @@
 
 #include "compressorZSTD.h"
 
+#include <pression/pluginRegistry.h>
+#include <lunchbox/buffer.h>
 #include "zstd/lib/zstd.h"
 
 namespace pression
@@ -25,58 +27,33 @@ namespace plugin
 {
 namespace
 {
-static void _getInfo( EqCompressorInfo* const info )
-{
-    info->version = EQ_COMPRESSOR_VERSION;
-    info->capabilities = EQ_COMPRESSOR_DATA_1D | EQ_COMPRESSOR_DATA_2D;
-    info->quality = 1.f;
-    info->ratio   = .47f;
-    info->speed   = .25f;
-    info->name = EQ_COMPRESSOR_ZSTD_BYTE;
-    info->tokenType = EQ_COMPRESSOR_DATATYPE_BYTE;
+const bool _initialized =
+    PluginRegistry::getInstance().registerEngine< CompressorZSTD >(
+        { "pression::CompressorZSTD", .47f, .25f });
 }
 
-static bool _register()
+const CompressorZSTD::Results&
+CompressorZSTD::compress( const uint8_t* const data, const size_t inSize )
 {
-    Compressor::registerEngine(
-        Compressor::Functions( EQ_COMPRESSOR_ZSTD_BYTE,
-                               _getInfo,
-                               CompressorZSTD::getNewCompressor,
-                               CompressorZSTD::getNewDecompressor,
-                               CompressorZSTD::decompress, 0 ));
-    return true;
+    if( !_initialized )
+        return compressed;
+
+    compressed.resize( 1 );
+    size_t size = ZSTD_compressBound( inSize );
+    compressed[0].reserve( size );
+
+    size = ZSTD_compress( compressed[0].getData(), size, data, inSize, 2 );
+    compressed[0].setSize( size );
+    return compressed;
 }
 
-static const bool LB_UNUSED _initialized = _register();
-}
-
-void CompressorZSTD::compress( const void* const inData,
-                               const eq_uint64_t nPixels,
-                               const bool /*alpha*/ )
+void CompressorZSTD::decompress( const Results& input, uint8_t* const data,
+                                 const size_t size )
 {
-    _nResults = 1;
-    if( _results.size() < _nResults )
-        _results.push_back( new pression::plugin::Compressor::Result );
-    size_t size = ZSTD_compressBound( nPixels );
-    _results[0]->reserve( size );
-
-    size = ZSTD_compress( _results[0]->getData(), size, inData, nPixels, 2 );
-    _results[0]->setSize( size );
-}
-
-void CompressorZSTD::decompress( const void* const* inData,
-                                   const eq_uint64_t* const inSizes,
-                                   const unsigned nInputs,
-                                   void* const outData,
-                                   eq_uint64_t* const outDims,
-                                   const eq_uint64_t flags, void* const )
-{
-    if( nInputs == 0 )
+    if( input.empty() || !_initialized )
         return;
 
-    const eq_uint64_t nPixels = ( flags & EQ_COMPRESSOR_DATA_1D) ?
-                                    outDims[1] : outDims[1] * outDims[3];
-    ZSTD_decompress( outData, nPixels, inData[0], inSizes[0] );
+    ZSTD_decompress( data, size, input[0].getData(), input[0].getSize( ));
 }
 
 }

@@ -22,8 +22,10 @@
 #define PRESSION_PLUGINREGISTRY_H
 
 #include <pression/api.h>
+#include <pression/dataCompressorInfo.h> // copied in lambda capture
 #include <pression/types.h>
 
+#include <boost/functional/factory.hpp> // used inline
 #include <string>
 
 namespace pression
@@ -36,6 +38,9 @@ namespace detail { class PluginRegistry; }
  * Downstream projects such as Collage and Equalizer use and initialize the
  * global plugin registry in their respective initialization calls by loading
  * directories or files.
+ *
+ * For the new C++ plugin API for data compressors, the lunchbox::PluginFactory
+ * is used. In addition to
  *
  * Example: @include tests/compressor.cpp
  */
@@ -72,6 +77,19 @@ public:
     /** @internal @return the plugin containing the given compressor. */
     PRESSION_API const Plugin* findPlugin( const uint32_t name ) const;
 
+    /** @name C++ compression 2.0 API */
+    //@{
+    template< class P > bool registerEngine( DataCompressorInfo info )
+    {
+        info.create = std::bind( boost::factory< P* >( ));
+        return _registerEngine( info );
+    }
+
+    PRESSION_API const DataCompressorInfos& getDataCompressorInfos() const;
+
+    PRESSION_API DataCompressorInfo chooseDataCompressor();
+    //@}
+
 private:
     PluginRegistry();
     ~PluginRegistry();
@@ -82,6 +100,8 @@ private:
     PluginRegistry& operator=( PluginRegistry&& ) = delete;
 
     detail::PluginRegistry* const _impl;
+
+    PRESSION_API bool _registerEngine( const DataCompressorInfo& info );
 };
 }
 #endif // PRESSION_PLUGINREGISTRY_H
