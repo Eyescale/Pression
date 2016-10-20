@@ -17,6 +17,8 @@
 
 #include "compressorSnappy.h"
 
+#include <pression/pluginRegistry.h>
+#include <lunchbox/buffer.h>
 #include "snappy/snappy.h"
 
 namespace pression
@@ -25,61 +27,33 @@ namespace plugin
 {
 namespace
 {
-#ifndef __xlC__
-static void _getInfo( EqCompressorInfo* const info )
-{
-    info->version = EQ_COMPRESSOR_VERSION;
-    info->capabilities = EQ_COMPRESSOR_DATA_1D | EQ_COMPRESSOR_DATA_2D;
-    info->quality = 1.f;
-    info->ratio   = .60f;
-    info->speed   = .55f;
-    info->name = EQ_COMPRESSOR_SNAPPY_BYTE;
-    info->tokenType = EQ_COMPRESSOR_DATATYPE_BYTE;
+const bool _initialized =
+    PluginRegistry::getInstance().registerEngine< CompressorSnappy >(
+        { "pression::CompressorSnappy", .6f, .55f });
 }
 
-static bool _register()
+size_t CompressorSnappy::getCompressBound( const size_t size ) const
 {
-    Compressor::registerEngine(
-        Compressor::Functions( EQ_COMPRESSOR_SNAPPY_BYTE,
-                               _getInfo,
-                               CompressorSnappy::getNewCompressor,
-                               CompressorSnappy::getNewDecompressor,
-                               CompressorSnappy::decompress, 0 ));
-    return true;
+    return snappy::MaxCompressedLength( size );
 }
 
-static const bool LB_UNUSED _initialized = _register();
-#endif
-}
-
-void CompressorSnappy::compress( const void* const inData,
-                                 const eq_uint64_t nPixels,
-                                 const bool /*alpha*/ )
+void CompressorSnappy::compress( const uint8_t* const data, size_t size,
+                                 Result& output )
 {
-    _nResults = 1;
-    if( _results.size() < _nResults )
-        _results.push_back( new pression::plugin::Compressor::Result );
-    size_t size = snappy::MaxCompressedLength( nPixels );
-    _results[0]->reserve( size );
-
-    snappy::RawCompress( (const char*)(inData), nPixels,
-                         (char*)( _results[0]->getData( )), &size );
-    assert( size != 0 );
-    _results[0]->setSize( size );
-}
-
-void CompressorSnappy::decompress( const void* const* inData,
-                                   const eq_uint64_t* const inSizes,
-                                   const unsigned nInputs,
-                                   void* const outData,
-                                   eq_uint64_t* const /*outDims*/,
-                                   const eq_uint64_t, void* const )
-{
-    if( nInputs == 0 )
+    if( !_initialized )
         return;
 
-    snappy::RawUncompress( (const char*)(inData[0]), inSizes[0],
-                           (char*)(outData) );
+    snappy::RawCompress( (const char*)data, size,
+                         (char*)output.getData(), &size );
+    output.setSize( size );
+}
+
+void CompressorSnappy::decompress( const Result& input, uint8_t* const data,
+                                   size_t )
+{
+    if( _initialized )
+        snappy::RawUncompress( (const char*)input.getData(),
+                               input.getSize(), (char*)data );
 }
 
 }

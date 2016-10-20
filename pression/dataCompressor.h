@@ -22,6 +22,8 @@
 
 #include <pression/api.h>
 #include <pression/types.h>
+#include <lunchbox/compiler.h> // LB_UNUSED
+#include <lunchbox/debug.h> // LBUNIMPLEMENTED
 
 namespace pression
 {
@@ -44,27 +46,61 @@ public:
     /**
      * Compress the given data and return the result.
      *
+     * This default implementation will use getCompressBound(), getChunkSize()
+     * and call the protected compress() method to parallelize the compression.
+     *
      * @param data pointer to data to compress
      * @param size number of bytes to compress
-     *
      * @return the compressed data chunk(s)
      */
-    virtual const Results& compress( const uint8_t* data, size_t size ) = 0;
+    PRESSION_API virtual const Results& compress( const uint8_t* data,
+                                                  size_t size );
     /**
      * Decompress the given data.
+     *
+     * This default implementation will decompress the given input in parallel,
+     * assuming getChunkSize() returns the same value as during the compress()
+     * operation.
      *
      * @param input compressed data chunk(s) produced by compress()
      * @param data pointer to pre-allocated memory for the decompressed data
      * @param size decompressed data size
+     * @throw std::runtime_error if chunksize does not match input
      */
-    virtual void decompress( const Results& input, uint8_t* data,
-                             size_t size ) = 0;
+    PRESSION_API virtual void decompress( const Results& input, uint8_t* data,
+                                          size_t size );
 protected:
     DataCompressor() {}
     DataCompressor( const DataCompressor& ) = delete;
     DataCompressor( DataCompressor&& ) = delete;
     DataCompressor& operator = ( const DataCompressor& ) = delete;
     DataCompressor& operator = ( DataCompressor&& ) = delete;
+
+    /** @return an upper bound of the compressed output for a given size. */
+    virtual size_t getCompressBound( const size_t size ) const = 0;
+
+    /** @return the optimal chunk size for this compressor */
+    virtual size_t getChunkSize() const { return LB_64KB; }
+
+    /**
+     * Compress the given chunk.
+     *
+     * @param data pointer to data to compress
+     * @param size number of bytes to compress
+     * @param output pre-allocated output chunk
+     */
+    virtual void compress( const uint8_t* data LB_UNUSED, size_t size LB_UNUSED,
+                           Result& output LB_UNUSED ) { LBUNIMPLEMENTED }
+    /**
+     * Decompress the given chunk.
+     *
+     * @param input compressed data chunk produced by compress()
+     * @param data pointer to pre-allocated memory for the decompressed data
+     * @param size decompressed data size
+     */
+    virtual void decompress( const Result& input LB_UNUSED,
+                             uint8_t* data LB_UNUSED,
+                             size_t size LB_UNUSED ) { LBUNIMPLEMENTED }
 
     Results compressed;
 };

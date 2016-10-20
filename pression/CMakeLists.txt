@@ -30,8 +30,6 @@ set(PRESSION_COMPRESSORS
   compressor/compressorRLE10A2.h
   compressor/compressorRLE4B.cpp
   compressor/compressorRLE4B.h
-  compressor/compressorRLE4BU.cpp
-  compressor/compressorRLE4BU.h
   compressor/compressorRLE4HF.cpp
   compressor/compressorRLE4HF.h
   compressor/compressorRLE565.cpp
@@ -76,6 +74,7 @@ set(PRESSION_HEADERS
 set(PRESSION_SOURCES
   ${PRESSION_COMPRESSORS}
   compressor.cpp
+  dataCompressor.cpp
   decompressor.cpp
   downloader.cpp
   plugin.cpp

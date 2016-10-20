@@ -1,6 +1,6 @@
 
-/* Copyright (c) 2009-2010, Cedric Stalder <cedric.stalder@gmail.com>
- *               2009-2014, Stefan Eilemann <eile@equalizergraphics.com>
+/* Copyright (c) 2009-2016, Cedric Stalder <cedric.stalder@gmail.com>
+ *                          Stefan Eilemann <eile@equalizergraphics.com>
  *
  * This file is part of Collage <https://github.com/Eyescale/Collage>
  *
@@ -117,18 +117,23 @@ Plugin::Plugin( const std::string& libraryName )
         {
             switch( info.tokenType )
             {
-              case EQ_COMPRESSOR_DATATYPE_4_BYTE:
-              case EQ_COMPRESSOR_DATATYPE_4_HALF_FLOAT:
-              case EQ_COMPRESSOR_DATATYPE_4_FLOAT:
-                  info.ratingNoAlpha /= .75f;
-                  break;
+            case EQ_COMPRESSOR_DATATYPE_RGBA:
+            case EQ_COMPRESSOR_DATATYPE_RGBA_UINT_8_8_8_8_REV:
+            case EQ_COMPRESSOR_DATATYPE_RGBA16F:
+            case EQ_COMPRESSOR_DATATYPE_RGBA32F:
+            case EQ_COMPRESSOR_DATATYPE_BGRA:
+            case EQ_COMPRESSOR_DATATYPE_BGRA_UINT_8_8_8_8_REV:
+            case EQ_COMPRESSOR_DATATYPE_BGRA16F:
+            case EQ_COMPRESSOR_DATATYPE_BGRA32F:
+                info.ratingNoAlpha /= .75f;
+                break;
 
-              case EQ_COMPRESSOR_DATATYPE_RGB10_A2:
-                  info.ratingNoAlpha /= .9375f; // 30/32
-                  break;
+            case EQ_COMPRESSOR_DATATYPE_RGB10_A2:
+                info.ratingNoAlpha /= .9375f; // 30/32
+                break;
 
-              default:
-                  break;
+            default:
+                break;
             }
         }
 

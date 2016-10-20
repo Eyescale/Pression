@@ -32,28 +32,26 @@ const bool _initialized =
         { "pression::CompressorZSTD", .47f, .25f });
 }
 
-const CompressorZSTD::Results&
-CompressorZSTD::compress( const uint8_t* const data, const size_t inSize )
+size_t CompressorZSTD::getCompressBound( const size_t size ) const
 {
-    if( !_initialized )
-        return compressed;
-
-    compressed.resize( 1 );
-    size_t size = ZSTD_compressBound( inSize );
-    compressed[0].reserve( size );
-
-    size = ZSTD_compress( compressed[0].getData(), size, data, inSize, 2 );
-    compressed[0].setSize( size );
-    return compressed;
+    return ZSTD_compressBound( size );
 }
 
-void CompressorZSTD::decompress( const Results& input, uint8_t* const data,
-                                 const size_t size )
+void CompressorZSTD::compress( const uint8_t* const data, const size_t size,
+                               Result& output )
 {
-    if( input.empty() || !_initialized )
+    if( !_initialized )
         return;
 
-    ZSTD_decompress( data, size, input[0].getData(), input[0].getSize( ));
+    output.setSize(
+        ZSTD_compress( output.getData(), output.getMaxSize(), data, size, 2 ));
+}
+
+void CompressorZSTD::decompress( const Result& input, uint8_t* const data,
+                                 const size_t size )
+{
+    if( _initialized )
+        ZSTD_decompress( data, size, input.getData(), input.getSize( ));
 }
 
 }

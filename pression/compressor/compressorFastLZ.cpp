@@ -17,6 +17,8 @@
 
 #include "compressorFastLZ.h"
 
+#include <pression/pluginRegistry.h>
+#include <lunchbox/buffer.h>
 #include "fastlz/fastlz.h"
 
 namespace pression
@@ -25,59 +27,28 @@ namespace plugin
 {
 namespace
 {
-static void _getInfo( EqCompressorInfo* const info )
-{
-    info->version = EQ_COMPRESSOR_VERSION;
-    info->capabilities = EQ_COMPRESSOR_DATA_1D | EQ_COMPRESSOR_DATA_2D;
-    info->quality = 1.f;
-    info->ratio   = .60f;
-    info->speed   = .26f;
-    info->name = EQ_COMPRESSOR_FASTLZ_BYTE;
-    info->tokenType = EQ_COMPRESSOR_DATATYPE_BYTE;
+const bool _initialized =
+    PluginRegistry::getInstance().registerEngine< CompressorFastLZ >(
+        { "pression::CompressorFastLZ", .6f, .26f });
 }
 
-static bool _register()
+void CompressorFastLZ::compress( const uint8_t* const data, const size_t size,
+                                 Result& output )
 {
-    Compressor::registerEngine(
-        Compressor::Functions( EQ_COMPRESSOR_FASTLZ_BYTE,
-                               _getInfo,
-                               CompressorFastLZ::getNewCompressor,
-                               CompressorFastLZ::getNewDecompressor,
-                               CompressorFastLZ::decompress, 0 ));
-    return true;
-}
-
-static const bool LB_UNUSED _initialized = _register();
-}
-
-void CompressorFastLZ::compress( const void* const inData,
-                                 const eq_uint64_t nPixels,
-                                 const bool /*alpha*/ )
-{
-    _nResults = 1;
-    if( _results.size() < _nResults )
-        _results.push_back( new pression::plugin::Compressor::Result );
-    const eq_uint64_t maxSize = eq_uint64_t( float( nPixels ) * 1.1f ) + 66;
-    _results[0]->reserve( maxSize );
-
-    const int size = fastlz_compress( inData, nPixels, _results[0]->getData( ));
-    _results[0]->resize( size );
-    assert( size != 0 );
-}
-
-void CompressorFastLZ::decompress( const void* const* inData,
-                                   const eq_uint64_t* const inSizes,
-                                   const unsigned nInputs,
-                                   void* const outData,
-                                   eq_uint64_t* const outDims,
-                                   const eq_uint64_t flags, void* const )
-{
-    if( nInputs == 0 )
+    if( !_initialized )
         return;
 
-    const eq_uint64_t nPixels = ( flags & EQ_COMPRESSOR_DATA_1D) ?
-                                    outDims[1] : outDims[1] * outDims[3];
-    fastlz_decompress( inData[0], inSizes[0], outData, nPixels );
+    output.setSize( fastlz_compress( data, size, output.getData( )));
+}
+
+
+void CompressorFastLZ::decompress( const Result& input, uint8_t* const data,
+                                   const size_t size )
+{
+    if( !_initialized )
+        return;
+
+    fastlz_decompress( input.getData(), input.getSize(), data, size );
 }
 
 }

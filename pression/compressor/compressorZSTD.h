@@ -31,9 +31,10 @@ public:
     CompressorZSTD() : DataCompressor() {}
     virtual ~CompressorZSTD() {}
 
-    const Results& compress( const uint8_t* data, size_t size ) override;
-    void decompress( const Results& input, uint8_t* const data,
-                     size_t size ) override;
+    size_t getCompressBound( const size_t size ) const override;
+    size_t getChunkSize() const override { return LB_128KB; }
+    void compress( const uint8_t* data, size_t size, Result& output ) override;
+    void decompress( const Result& input, uint8_t* data, size_t size ) override;
 };
 }
 }

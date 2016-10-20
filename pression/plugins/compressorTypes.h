@@ -41,30 +41,9 @@
 #define EQ_COMPRESSOR_INVALID               0x0u
 /** No Compressor */
 #define EQ_COMPRESSOR_NONE                  0x1u
-/** RLE compression of 4-byte tokens. */
-#define EQ_COMPRESSOR_RLE_UNSIGNED          0x2u
-/** RLE compression of 1-byte tokens. */
-#define EQ_COMPRESSOR_RLE_BYTE              0x3u
-/** RLE compression of three 1-byte tokens. */
-#define EQ_COMPRESSOR_RLE_3_BYTE            0x4u
-/** RLE compression of four 1-byte tokens. */
-#define EQ_COMPRESSOR_RLE_4_BYTE            0x5u
-/** RLE compression of four float32 tokens. */
-#define EQ_COMPRESSOR_RLE_4_FLOAT           0x6u
-/** RLE compression of four float16 tokens. */
-#define EQ_COMPRESSOR_RLE_4_HALF_FLOAT      0x7u
-/** Differential RLE compression of three 1-byte tokens. */
-#define EQ_COMPRESSOR_DIFF_RLE_3_BYTE       0x8u
-/** Differential RLE compression of four 1-byte tokens. */
-#define EQ_COMPRESSOR_DIFF_RLE_4_BYTE       0x9u
-/** RLE compression of one 4-byte token. */
-#define EQ_COMPRESSOR_RLE_4_BYTE_UNSIGNED   0xau
-/** Lossy Differential RLE compression. */
-#define EQ_COMPRESSOR_RLE_DIFF_565          0xbu
+
 /** RLE compression of three token of 10-bits and one toke of 2-bits */
 #define EQ_COMPRESSOR_RLE_DIFF_BGR10_A2     0xcu
-/** RLE compression of four float16 tokens. */
-#define EQ_COMPRESSOR_RLE_DIFF_4_HALF_FLOAT 0xdu
 /** Differential RLE compression of YUV tokens. */
 #define EQ_COMPRESSOR_RLE_DIFF_YUVA_50P     0xeu
 /** RLE compression of YUV tokens. */
@@ -112,15 +91,6 @@
 #define EQ_COMPRESSOR_RLE_DEPTH_UNSIGNED_INT                        0x27u
 /** RLE compression of unsigned tokens. */
 #define EQ_COMPRESSOR_RLE_DIFF_UNSIGNED                             0x28u
-
-/** LZF compression of bytes. */
-#define EQ_COMPRESSOR_LZF_BYTE      0x30u
-/** LZF compression of bytes. */
-#define EQ_COMPRESSOR_FASTLZ_BYTE   0x31u
-/** Snappy compression of bytes. */
-#define EQ_COMPRESSOR_SNAPPY_BYTE   0x32u
-/** ZSTD compression of bytes. */
-#define EQ_COMPRESSOR_ZSTD_BYTE     0x33u
 
 // Equalizer GPU<->CPU transfer plugins
 /* Transfer data from internal RGBA to external RGBA format with a data type

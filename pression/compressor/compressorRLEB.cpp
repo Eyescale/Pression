@@ -17,13 +17,17 @@
  */
 
 #include "compressorRLEB.h"
+
+#include <pression/pluginRegistry.h>
+#include <lunchbox/buffer.h>
 #include <limits>
 
 namespace
 {
-static const uint8_t _rleMarker = 0x42; // just a random number
+const uint8_t _rleMarker = 0x42; // just a random number
 }
 
+#pragma clang diagnostic ignored "-Wunneeded-internal-declaration"
 #include "compressorRLE.ipp"
 
 namespace pression
@@ -32,88 +36,67 @@ namespace plugin
 {
 namespace
 {
-REGISTER_ENGINE( CompressorRLEB, BYTE, BYTE, 1., 0.97, 1., false );
+const bool _initialized =
+    PluginRegistry::getInstance().registerEngine< CompressorRLEB >(
+        { "pression::CompressorRLEB", .97f, 1.f });
 }
 
 template< typename T >
-inline void _compressChunk( const T* const in, const eq_uint64_t nPixels,
-                            Compressor::Result* result )
+inline void _compress( const T* in, const size_t size,
+                       DataCompressor::Result& result )
 {
-    if( nPixels == 0 )
+    if( size == 0 )
     {
-        result->setSize( 0 );
+        result.setSize( 0 );
         return;
     }
 
-    T* tokenOut = reinterpret_cast< T* >( result->getData( ));
+    T* tokenOut = reinterpret_cast< T* >( result.getData( ));
     T tokenLast( in[0] );
     T tokenSame( 1 );
     T token(0);
 
-    for( eq_uint64_t i = 1; i < nPixels; ++i )
+    for( size_t i = 1; i < size; ++i )
     {
         token = in[i];
         COMPRESS( token );
     }
 
     WRITE_OUTPUT( token );
-    result->setSize( (tokenOut - reinterpret_cast< T* >( result->getData( ))) *
+    result.setSize( (tokenOut - reinterpret_cast< T* >( result.getData( ))) *
                      sizeof( T ));
 #ifndef PRESSION_AGGRESSIVE_CACHING
-    result->pack();
+    result.pack();
 #endif
 }
 
-template< typename T >
-ssize_t _compress( const void* const inData, const eq_uint64_t nPixels,
-                   Compressor::ResultVector& results )
+void CompressorRLEB::compress( const uint8_t* data, size_t size,
+                               Result& output )
 {
-    const eq_uint64_t size = nPixels * sizeof( T );
-    const ssize_t nChunks = _setupResults( 1, size, results );
-    const float width = static_cast< float >( nPixels ) /
-                        static_cast< float >( nChunks );
+    if( !_initialized )
+        return;
 
-    const T* const data = reinterpret_cast< const T* >( inData );
-
-#pragma omp parallel for
-    for( ssize_t i = 0; i < static_cast< ssize_t >( nChunks ) ; ++i )
-    {
-        const eq_uint64_t startIndex = static_cast< eq_uint64_t >( i * width );
-
-        eq_uint64_t nextIndex;
-        if ( i == nChunks - 1 )
-            nextIndex = nPixels;
-        else
-            nextIndex = static_cast< eq_uint64_t >(( i + 1 ) * width );
-        const eq_uint64_t chunkSize = ( nextIndex - startIndex );
-
-        _compressChunk< T >( &data[ startIndex ], chunkSize, results[i] );
-    }
-    return nChunks;
-}
-
-
-void CompressorRLEB::compress( const void* const inData,
-                               const eq_uint64_t nPixels, const bool /*alpha*/ )
-{
-    if( (nPixels & 0x7) == 0 )
-        _nResults = _compress< eq_uint64_t >( inData, nPixels>>3, _results );
-    else if( (nPixels & 0x3) == 0 )
-        _nResults = _compress< uint32_t >( inData, nPixels>>2, _results );
-    else if( (nPixels & 0x1) == 0 )
-        _nResults = _compress< uint16_t >( inData, nPixels>>1, _results );
+    if( (size & 0x7) == 0 )
+        _compress< uint64_t >( (const uint64_t*)data, size>>3, output );
+    else if( (size & 0x3) == 0 )
+        _compress< uint32_t >( (const uint32_t*)data, size>>2, output );
+    else if( (size & 0x1) == 0 )
+        _compress< uint16_t >( (const uint16_t*)data, size>>1, output );
     else
-        _nResults = _compress< uint8_t >( inData, nPixels, _results );
+        _compress< uint8_t >( data, size, output );
 }
+
 
 //----------------------------------------------------------------------
 template< typename T >
-inline void _decompressChunk( const T* in, T* out, const eq_uint64_t nPixels )
+inline void _decompress( const DataCompressor::Result& input, T* out,
+                         const size_t nElems )
 {
     T token(0);
     T tokenLeft(0);
+    const T* in = (const T*)input.getData();
 
-    for( eq_uint64_t i = 0; i < nPixels ; ++i )
+    for( size_t i = 0; i < nElems ; ++i )
     {
         if( tokenLeft == 0 )
         {
@@ -132,50 +115,20 @@ inline void _decompressChunk( const T* in, T* out, const eq_uint64_t nPixels )
     }
 }
 
-
-template< typename T >
-void _decompress( const void* const* inData, const unsigned nInputs,
-                  void* const outData, const eq_uint64_t nPixels )
+void CompressorRLEB::decompress( const Result& input, uint8_t* const data,
+                                 size_t size )
 {
-    const float width = static_cast< float >( nPixels ) /
-                        static_cast< float >( nInputs );
+    if( !_initialized )
+        return;
 
-    const T* const* in = reinterpret_cast< const T* const* >( inData );
-
-#pragma omp parallel for
-    for( ssize_t i = 0; i < static_cast< ssize_t >( nInputs ) ; ++i )
-    {
-        const eq_uint64_t startIndex = static_cast<uint64_t>( i * width );
-
-        eq_uint64_t nextIndex;
-        if ( i == static_cast<ssize_t>( nInputs -1 ) )
-            nextIndex = nPixels;
-        else
-            nextIndex = static_cast< eq_uint64_t >(( i + 1 ) * width );
-
-        const eq_uint64_t chunkSize = ( nextIndex - startIndex );
-        T* out = reinterpret_cast< T* >( outData ) + startIndex;
-
-        _decompressChunk< T >( in[i], out, chunkSize );
-    }
-}
-
-void CompressorRLEB::decompress( const void* const* inData,
-                                 const eq_uint64_t* const /*inSizes*/,
-                                 const unsigned nInputs, void* const outData,
-                                 eq_uint64_t* const outDims,
-                                 const eq_uint64_t flags, void* const )
-{
-    const eq_uint64_t nPixels = ( flags & EQ_COMPRESSOR_DATA_1D) ?
-                                    outDims[1] : outDims[1] * outDims[3];
-    if( (nPixels & 0x7) == 0 )
-        _decompress< uint64_t >( inData, nInputs, outData, nPixels>>3 );
-    else if( (nPixels & 0x3) == 0 )
-        _decompress< uint32_t >( inData, nInputs, outData, nPixels>>2 );
-    else if( (nPixels & 0x1) == 0 )
-        _decompress< uint16_t >( inData, nInputs, outData, nPixels>>1 );
+    if( (size & 0x7) == 0 )
+        _decompress< uint64_t >( input, (uint64_t*)data, size>>3 );
+    else if( (size & 0x3) == 0 )
+        _decompress< uint32_t >( input, (uint32_t*)data, size>>2 );
+    else if( (size & 0x1) == 0 )
+        _decompress< uint16_t >( input, (uint16_t*)data, size>>1 );
     else
-        _decompress< uint8_t >( inData, nInputs, outData, nPixels );
+        _decompress< uint8_t >( input, data, size );
 }
 
 }

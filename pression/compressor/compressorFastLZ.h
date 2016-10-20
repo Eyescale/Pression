@@ -1,5 +1,5 @@
 
-/* Copyright (c) 2012-2013, Stefan Eilemann <eile@eyescale.ch>
+/* Copyright (c) 2012-2016, Stefan Eilemann <eile@eyescale.ch>
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License version 2.1 as published
@@ -18,30 +18,24 @@
 #ifndef PRESSION_PLUGIN_COMPRESSORFASTLZ
 #define PRESSION_PLUGIN_COMPRESSORFASTLZ
 
-#include "compressor.h"
+#include <pression/dataCompressor.h>
 
 namespace pression
 {
 namespace plugin
 {
 
-class CompressorFastLZ : public Compressor
+class CompressorFastLZ : public DataCompressor
 {
 public:
-    CompressorFastLZ() : Compressor() {}
+    CompressorFastLZ() : DataCompressor() {}
     virtual ~CompressorFastLZ() {}
 
-    void compress( const void* const inData, const eq_uint64_t nPixels,
-                   const bool useAlpha ) override;
-
-    static void decompress( const void* const* inData,
-                            const eq_uint64_t* const inSizes,
-                            const unsigned nInputs, void* const outData,
-                            eq_uint64_t* const outDims, const eq_uint64_t flags,
-                            void* const );
-
-    static Compressor* getNewCompressor( const unsigned /*name*/ )
-        { return new CompressorFastLZ; }
+    size_t getCompressBound( const size_t size ) const override
+        { return size_t( float( size ) * 1.1f ) + 66; }
+    void compress( const uint8_t* data, size_t size, Result& output ) override;
+    void decompress( const Result& input, uint8_t* const data,
+                     size_t size ) override;
 };
 }
 }

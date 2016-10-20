@@ -57,6 +57,20 @@ int main( int, char** )
     return EXIT_SUCCESS;
 }
 
+pression::DataCompressorInfos getCompressors()
+{
+    auto infos = registry.getDataCompressorInfos();
+    for( auto i = infos.begin(); i != infos.end(); ++i )
+        if( i->name == "pression::CompressorRLEB" ) // move RLE to front
+        {
+            std::swap( *i, *infos.begin( ));
+            return infos;
+        }
+
+    LBUNREACHABLE;
+    return infos;
+}
+
 void _testData( const pression::DataCompressorInfo& info,
                 const std::string& name,
                 const uint8_t* data, const uint64_t size )
@@ -126,7 +140,7 @@ void _testFile()
     std::cout.precision( 5 );
     std::cout << "                File, Compressor, Uncompress, "
               << "Compressed,   comp MB/s, decomp MB/s" << std::endl;
-    const auto& infos = registry.getDataCompressorInfos();
+    const auto& infos = getCompressors();
     for( const auto& info : infos )
     {
         _result = 0;
@@ -178,7 +192,7 @@ void _testRandom()
     _compressionTime = 0;
     _decompressionTime = 0;
 
-    const auto& infos = registry.getDataCompressorInfos();
+    const auto& infos = getCompressors();
     for( const auto& info : infos )
     {
         size = LB_10MB;
@@ -187,10 +201,9 @@ void _testRandom()
             _testData( info, "Random data", data, size );
             --size;
         }
-        std::cout << std::setw(24) << "Total, 0x" << std::setw(8)
-                  << std::setfill( '0' ) << info.name << std::setfill(' ')
-                  << ", " << std::setw(10) << _size << ", " << std::setw(10)
-                  << _result << ", " << std::setw(10)
+        std::cout << std::setw(22) << "Total, " << info.name
+                  << std::setfill(' ') << ", " << std::setw(10) << _size
+                  << ", " << std::setw(10) << _result << ", " << std::setw(10)
                   << float(_size) / 1024.f / 1024.f * 1000.f / _compressionTime
                   << ", " << std::setw(10)
                   << float(_size) / 1024.f / 1024.f * 1000.f /_decompressionTime

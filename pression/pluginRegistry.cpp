@@ -30,7 +30,6 @@
 #include <lunchbox/buffer.h>
 #include <lunchbox/debug.h>
 #include <lunchbox/file.h>
-#include <lunchbox/plugin.h>
 
 #ifdef _WIN32
 #  include <lunchbox/os.h> // GetModuleFileName

@@ -22,12 +22,18 @@
 
 #include <pression/api.h>
 #include <pression/types.h>
+#include <functional>
 
 namespace pression
 {
 struct DataCompressorInfo
 {
-    DataCompressorInfo() : ratio( 1.f ), speed( 1.f ) {}
+    DataCompressorInfo()
+        : ratio( 1.f )
+        , speed( 1.f )
+        , create( []{ return nullptr; })
+    {}
+
     DataCompressorInfo( const std::string& n, const float r, const float s )
         : name( n ), ratio( r ), speed( s ) {}
 
