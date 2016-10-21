@@ -15,42 +15,40 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "compressorLZF.h"
+#include "CompressorFastLZ.h"
 
-#include <pression/pluginRegistry.h>
+#include <pression/data/Registry.h>
 #include <lunchbox/buffer.h>
-
-extern "C" {
-#include "liblzf/lzf.h"
-}
+#include "fastlz/fastlz.h"
 
 namespace pression
 {
-namespace plugin
+namespace data
 {
 namespace
 {
 const bool _initialized =
-    PluginRegistry::getInstance().registerEngine< CompressorLZF >(
-        { "pression::CompressorLZF", .6f, .26f });
+    Registry::getInstance().registerEngine< CompressorFastLZ >(
+        { "pression::data::CompressorFastLZ", .6f, .26f });
 }
 
-void CompressorLZF::compress( const uint8_t* const data, const size_t size,
-                              Result& output )
-{
-    if( !_initialized )
-        return;
-    output.setSize(
-        lzf_compress( data, size, output.getData(), output.getMaxSize( )));
-}
-
-void CompressorLZF::decompress( const Result& input, uint8_t* const data,
-                                const size_t size )
+void CompressorFastLZ::compress( const uint8_t* const data, const size_t size,
+                                 Result& output )
 {
     if( !_initialized )
         return;
 
-    lzf_decompress( input.getData(), input.getSize(), data, size );
+    output.setSize( fastlz_compress( data, size, output.getData( )));
+}
+
+
+void CompressorFastLZ::decompress( const Result& input, uint8_t* const data,
+                                   const size_t size )
+{
+    if( !_initialized )
+        return;
+
+    fastlz_decompress( input.getData(), input.getSize(), data, size );
 }
 
 }

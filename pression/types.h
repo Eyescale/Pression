@@ -54,12 +54,6 @@ typedef PluginVisitorT< Plugin, EqCompressorInfo > PluginVisitor;
 typedef PluginVisitorT< const Plugin,
                         const EqCompressorInfo > ConstPluginVisitor;
 
-// 2.0 CPU compressors
-class DataCompressor;
-struct DataCompressorInfo;
-
-typedef std::vector< DataCompressorInfo > DataCompressorInfos;
-
 /** @cond IGNORE */
 struct CompressorInfo;
 typedef std::vector< CompressorInfo > CompressorInfos;

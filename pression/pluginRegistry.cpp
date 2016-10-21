@@ -21,7 +21,6 @@
 #include "pluginRegistry.h"
 
 #include "compressorInfo.h"
-#include "dataCompressor.h"
 #include "log.h"
 #include "plugin.h"
 #include "pluginVisitor.h"
@@ -176,7 +175,6 @@ public:
     }
 
     Plugins plugins;
-    DataCompressorInfos dataCompressorInfos;
 };
 }
 
@@ -277,34 +275,5 @@ const Plugins& PluginRegistry::getPlugins() const
 {
     return _impl->plugins;
 }
-
-bool PluginRegistry::_registerEngine( const DataCompressorInfo& info )
-{
-    _impl->dataCompressorInfos.push_back( info );
-    return true;
-}
-
-const DataCompressorInfos& PluginRegistry::getDataCompressorInfos() const
-{
-    return _impl->dataCompressorInfos;
-}
-
-DataCompressorInfo PluginRegistry::chooseDataCompressor()
-{
-    DataCompressorInfo candidate;
-    float rating = powf( 1.0f, .3f );
-
-    for( const DataCompressorInfo& info : _impl->dataCompressorInfos )
-    {
-        float newRating = powf( info.speed, .3f ) / info.ratio;
-        if( newRating > rating )
-        {
-            candidate = info;
-            rating = newRating;
-        }
-    }
-    return candidate;
-}
-
 
 }

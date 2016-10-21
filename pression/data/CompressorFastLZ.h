@@ -1,6 +1,5 @@
 
-/* Copyright (c) 2010-2016, Cedric Stalder <cedric.stalder@gmail.com>
- *                          Stefan Eilemann <eile@eyescale.ch>
+/* Copyright (c) 2012-2016, Stefan Eilemann <eile@eyescale.ch>
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License version 2.1 as published
@@ -16,28 +15,26 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef PRESSION_PLUGIN_COMPRESSORRLEB
-#define PRESSION_PLUGIN_COMPRESSORRLEB
+#pragma once
 
-#include <pression/dataCompressor.h>
+#include <pression/data/Compressor.h>
 
 namespace pression
 {
-namespace plugin
+namespace data
 {
 
-class CompressorRLEB : public DataCompressor
+class CompressorFastLZ : public Compressor
 {
 public:
-    CompressorRLEB() : DataCompressor() {}
-    virtual ~CompressorRLEB() {}
+    CompressorFastLZ() : Compressor() {}
+    virtual ~CompressorFastLZ() {}
 
     size_t getCompressBound( const size_t size ) const override
-        { return size << 1; }
+        { return size_t( float( size ) * 1.1f ) + 66; }
     void compress( const uint8_t* data, size_t size, Result& output ) override;
     void decompress( const Result& input, uint8_t* const data,
                      size_t size ) override;
 };
 }
 }
-#endif

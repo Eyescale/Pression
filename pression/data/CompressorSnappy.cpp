@@ -17,19 +17,19 @@
 
 #include "compressorSnappy.h"
 
-#include <pression/pluginRegistry.h>
+#include <pression/data/Registry.h>
 #include <lunchbox/buffer.h>
 #include "snappy/snappy.h"
 
 namespace pression
 {
-namespace plugin
+namespace data
 {
 namespace
 {
 const bool _initialized =
-    PluginRegistry::getInstance().registerEngine< CompressorSnappy >(
-        { "pression::CompressorSnappy", .6f, .55f });
+    Registry::getInstance().registerEngine< CompressorSnappy >(
+        { "pression::data::CompressorSnappy", .6f, .55f });
 }
 
 size_t CompressorSnappy::getCompressBound( const size_t size ) const

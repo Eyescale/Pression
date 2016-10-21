@@ -15,20 +15,19 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef PRESSION_PLUGIN_COMPRESSORSNAPPY
-#define PRESSION_PLUGIN_COMPRESSORSNAPPY
+#pragma once
 
-#include <pression/dataCompressor.h>
+#include <pression/data/Compressor.h>
 
 namespace pression
 {
-namespace plugin
+namespace data
 {
 
-class CompressorSnappy : public DataCompressor
+class CompressorSnappy : public Compressor
 {
 public:
-    CompressorSnappy() : DataCompressor() {}
+    CompressorSnappy() : Compressor() {}
     virtual ~CompressorSnappy() {}
 
     size_t getCompressBound( const size_t size ) const override;
@@ -38,4 +37,3 @@ public:
 };
 }
 }
-#endif

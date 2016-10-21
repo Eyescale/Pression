@@ -17,33 +17,33 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef PRESSION_DATACOMPRESSORINFO_H
-#define PRESSION_DATACOMPRESSORINFO_H
+#pragma once
 
-#include <pression/api.h>
-#include <pression/types.h>
+#include <pression/data/api.h>
+#include <pression/data/types.h>
 #include <functional>
 
 namespace pression
 {
-struct DataCompressorInfo
+namespace data
 {
-    DataCompressorInfo()
+struct CompressorInfo
+{
+    CompressorInfo()
         : ratio( 1.f )
         , speed( 1.f )
         , create( []{ return nullptr; })
     {}
 
-    DataCompressorInfo( const std::string& n, const float r, const float s )
-        : name( n ), ratio( r ), speed( s ) {}
+    CompressorInfo( const std::string& n, const float r, const float s )
+        : name( n ), ratio( r ), speed( s ), create( []{ return nullptr; }) {}
 
     std::string name;
     float ratio; //!< Normalized 0..1 size after compression
     float speed; //!< Relative speed compared to RLE compressor
 
-    typedef std::function< DataCompressor* ()> Constructor;
+    typedef std::function< Compressor* ()> Constructor;
     Constructor create;
 };
 }
-
-#endif
+}

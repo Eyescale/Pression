@@ -1,5 +1,5 @@
 
-/* Copyright (c) 2016, Stefan Eilemann <eile@eyescale.ch>
+/* Copyright (c) 2012-2016, Stefan Eilemann <eile@eyescale.ch>
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License version 2.1 as published
@@ -15,43 +15,42 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "compressorZSTD.h"
+#include "CompressorLZF.h"
 
-#include <pression/pluginRegistry.h>
+#include <pression/data/Registry.h>
 #include <lunchbox/buffer.h>
-#include "zstd/lib/zstd.h"
+
+extern "C" {
+#include "liblzf/lzf.h"
+}
 
 namespace pression
 {
-namespace plugin
+namespace data
 {
 namespace
 {
 const bool _initialized =
-    PluginRegistry::getInstance().registerEngine< CompressorZSTD >(
-        { "pression::CompressorZSTD", .47f, .25f });
+    Registry::getInstance().registerEngine< CompressorLZF >(
+        { "pression::data::CompressorLZF", .6f, .26f });
 }
 
-size_t CompressorZSTD::getCompressBound( const size_t size ) const
+void CompressorLZF::compress( const uint8_t* const data, const size_t size,
+                              Result& output )
 {
-    return ZSTD_compressBound( size );
+    if( !_initialized )
+        return;
+    output.setSize(
+        lzf_compress( data, size, output.getData(), output.getMaxSize( )));
 }
 
-void CompressorZSTD::compress( const uint8_t* const data, const size_t size,
-                               Result& output )
+void CompressorLZF::decompress( const Result& input, uint8_t* const data,
+                                const size_t size )
 {
     if( !_initialized )
         return;
 
-    output.setSize(
-        ZSTD_compress( output.getData(), output.getMaxSize(), data, size, 2 ));
-}
-
-void CompressorZSTD::decompress( const Result& input, uint8_t* const data,
-                                 const size_t size )
-{
-    if( _initialized )
-        ZSTD_decompress( data, size, input.getData(), input.getSize( ));
+    lzf_decompress( input.getData(), input.getSize(), data, size );
 }
 
 }

@@ -19,8 +19,8 @@
 #define TEST_RUNTIME 600 // seconds
 #include <lunchbox/test.h>
 
-#include <pression/dataCompressor.h>
-#include <pression/pluginRegistry.h>
+#include <pression/data/Compressor.h>
+#include <pression/data/Registry.h>
 
 #include <lunchbox/buffer.h>
 #include <lunchbox/clock.h>
@@ -37,7 +37,7 @@ void _testRandom();
 void _testData( const std::string& name, uint8_t* data, uint64_t size );
 Strings getFiles( Strings& files, const std::string& ext );
 
-pression::PluginRegistry& registry = pression::PluginRegistry::getInstance();
+pression::data::Registry& registry = pression::data::Registry::getInstance();
 uint64_t _result = 0;
 uint64_t _size = 0;
 float _compressionTime = 0;
@@ -46,36 +46,29 @@ float _baseTime = 0.f;
 
 int main( int, char** )
 {
-    registry.loadDirectory( std::string( PRESSION_BUILD_DIR ) + "/lib" );
-    registry.loadDirectory( "../bin" );
-    registry.loadDirectory( "../lib" );
-    registry.loadDirectory( "../../install/bin" );
-    registry.loadDirectory( "../../install/lib" );
-
     _testFile();
     _testRandom();
     return EXIT_SUCCESS;
 }
 
-pression::DataCompressorInfos getCompressors()
+pression::data::CompressorInfos getCompressors()
 {
-    auto infos = registry.getDataCompressorInfos();
+    auto infos = registry.getCompressorInfos();
     for( auto i = infos.begin(); i != infos.end(); ++i )
-        if( i->name == "pression::CompressorRLEB" ) // move RLE to front
+        if( i->name == "pression::data::CompressorRLE" ) // move RLE to front
         {
             std::swap( *i, *infos.begin( ));
             return infos;
         }
 
-    LBUNREACHABLE;
     return infos;
 }
 
-void _testData( const pression::DataCompressorInfo& info,
+void _testData( const pression::data::CompressorInfo& info,
                 const std::string& name,
                 const uint8_t* data, const uint64_t size )
 {
-    std::unique_ptr< pression::DataCompressor > compressor( info.create( ));
+    std::unique_ptr< pression::data::Compressor > compressor( info.create( ));
 
     compressor->compress( data, size );
     lunchbox::Clock clock;
@@ -93,7 +86,7 @@ void _testData( const pression::DataCompressorInfo& info,
         compressedSize += compressed[i].getSize();
     }
 
-    pression::DataCompressor::Result result( size );
+    pression::data::Compressor::Result result( size );
     compressor->decompress( compressed, result.getData(), size );
 
     clock.reset();

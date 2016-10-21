@@ -22,7 +22,6 @@
 #define PRESSION_PLUGINREGISTRY_H
 
 #include <pression/api.h>
-#include <pression/dataCompressorInfo.h> // used inline
 #include <pression/types.h>
 
 #include <boost/functional/factory.hpp> // used inline
@@ -74,19 +73,6 @@ public:
     /** @internal @return the plugin containing the given compressor. */
     PRESSION_API const Plugin* findPlugin( const uint32_t name ) const;
 
-    /** @name C++ compression 2.0 API */
-    //@{
-    template< class P > bool registerEngine( DataCompressorInfo info )
-    {
-        info.create = std::bind( boost::factory< P* >( ));
-        return _registerEngine( info );
-    }
-
-    PRESSION_API const DataCompressorInfos& getDataCompressorInfos() const;
-
-    PRESSION_API DataCompressorInfo chooseDataCompressor();
-    //@}
-
 private:
     PluginRegistry();
     ~PluginRegistry();
@@ -97,8 +83,6 @@ private:
     PluginRegistry& operator=( PluginRegistry&& ) = delete;
 
     detail::PluginRegistry* const _impl;
-
-    PRESSION_API bool _registerEngine( const DataCompressorInfo& info );
 };
 }
 #endif // PRESSION_PLUGINREGISTRY_H

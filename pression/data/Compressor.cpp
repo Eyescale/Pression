@@ -17,16 +17,16 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "dataCompressor.h"
+#include "Compressor.h"
 
-#include <lunchbox/buffer.h>
 #include <stdexcept>
 
 namespace pression
 {
-
-const DataCompressor::Results&
-DataCompressor::compress( const uint8_t* data, size_t size )
+namespace data
+{
+const Compressor::Results& Compressor::compress( const uint8_t* data,
+                                                 size_t size )
 {
 #ifdef PRESSION_USE_OPENMP
     const size_t chunkSize = getChunkSize();
@@ -54,7 +54,7 @@ DataCompressor::compress( const uint8_t* data, size_t size )
     return compressed;
 }
 
-void DataCompressor::decompress( const Results& input, uint8_t* data,
+void Compressor::decompress( const Results& input, uint8_t* data,
                                  size_t size )
 {
     if( input.empty( ))
@@ -85,5 +85,6 @@ void DataCompressor::decompress( const Results& input, uint8_t* data,
 
         decompress( input[i], data + start, nBytes );
     }
+}
 }
 }

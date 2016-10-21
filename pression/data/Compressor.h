@@ -17,28 +17,23 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef PRESSION_DATACOMPRESSOR_H
-#define PRESSION_DATACOMPRESSOR_H
+#pragma once
 
-#include <pression/api.h>
-#include <pression/types.h>
+#include <pression/data/api.h>
+#include <pression/data/types.h>
+#include <lunchbox/buffer.h> // used inline
 #include <lunchbox/compiler.h> // LB_UNUSED
 #include <lunchbox/debug.h> // LBUNIMPLEMENTED
 
 namespace pression
 {
-
+namespace data
+{
 /** Base interface for lossless CPU compressors of binary data. */
-class DataCompressor
+class Compressor
 {
 public:
-    /** @internal Needed by the lunchbox plugin classes. */
-    typedef DataCompressor InterfaceT;
-
-    /** @internal Needed by the lunchbox plugin classes. */
-    typedef std::string InitDataT;
-
-    virtual ~DataCompressor() {} //!< @internal
+    virtual ~Compressor() {} //!< @internal
 
     typedef lunchbox::Bufferb Result; //!< Single result data buffer
     typedef std::vector< Result > Results; //!< Set of result chunks
@@ -53,8 +48,8 @@ public:
      * @param size number of bytes to compress
      * @return the compressed data chunk(s)
      */
-    PRESSION_API virtual const Results& compress( const uint8_t* data,
-                                                  size_t size );
+    PRESSIONDATA_API virtual const Results& compress( const uint8_t* data,
+                                                      size_t size );
     /**
      * Decompress the given data.
      *
@@ -67,14 +62,18 @@ public:
      * @param size decompressed data size
      * @throw std::runtime_error if chunksize does not match input
      */
-    PRESSION_API virtual void decompress( const Results& input, uint8_t* data,
-                                          size_t size );
+    PRESSIONDATA_API virtual void decompress( const Results& input,
+                                              uint8_t* data, size_t size );
+
+    /** @return the result of the last compress() operation. */
+    const Results& getCompressedData() const { return compressed; }
+
 protected:
-    DataCompressor() {}
-    DataCompressor( const DataCompressor& ) = delete;
-    DataCompressor( DataCompressor&& ) = delete;
-    DataCompressor& operator = ( const DataCompressor& ) = delete;
-    DataCompressor& operator = ( DataCompressor&& ) = delete;
+    Compressor() {}
+    Compressor( const Compressor& ) = delete;
+    Compressor( Compressor&& ) = delete;
+    Compressor& operator = ( const Compressor& ) = delete;
+    Compressor& operator = ( Compressor&& ) = delete;
 
     /** @return an upper bound of the compressed output for a given size. */
     virtual size_t getCompressBound( const size_t size ) const = 0;
@@ -104,6 +103,13 @@ protected:
 
     Results compressed;
 };
-}
 
-#endif
+inline size_t getDataSize( const Compressor::Results& results )
+{
+    size_t size = 0;
+    for( const auto& result : results )
+        size += result.getSize();
+    return size;
+}
+}
+}

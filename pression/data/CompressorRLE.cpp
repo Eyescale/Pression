@@ -16,9 +16,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "compressorRLEB.h"
+#include "CompressorRLE.h"
 
-#include <pression/pluginRegistry.h>
+#include <pression/data/Registry.h>
 #include <lunchbox/buffer.h>
 #include <limits>
 
@@ -26,24 +26,22 @@ namespace
 {
 const uint8_t _rleMarker = 0x42; // just a random number
 }
-
 #pragma clang diagnostic ignored "-Wunneeded-internal-declaration"
-#include "compressorRLE.ipp"
+#include "../compressor/compressorRLE.ipp"
 
 namespace pression
 {
-namespace plugin
+namespace data
 {
 namespace
 {
 const bool _initialized =
-    PluginRegistry::getInstance().registerEngine< CompressorRLEB >(
-        { "pression::CompressorRLEB", .97f, 1.f });
-}
+    Registry::getInstance().registerEngine< CompressorRLE >(
+        { "pression::data::CompressorRLE", .97f, 1.f });
 
 template< typename T >
 inline void _compress( const T* in, const size_t size,
-                       DataCompressor::Result& result )
+                       Compressor::Result& result )
 {
     if( size == 0 )
     {
@@ -70,26 +68,8 @@ inline void _compress( const T* in, const size_t size,
 #endif
 }
 
-void CompressorRLEB::compress( const uint8_t* data, size_t size,
-                               Result& output )
-{
-    if( !_initialized )
-        return;
-
-    if( (size & 0x7) == 0 )
-        _compress< uint64_t >( (const uint64_t*)data, size>>3, output );
-    else if( (size & 0x3) == 0 )
-        _compress< uint32_t >( (const uint32_t*)data, size>>2, output );
-    else if( (size & 0x1) == 0 )
-        _compress< uint16_t >( (const uint16_t*)data, size>>1, output );
-    else
-        _compress< uint8_t >( data, size, output );
-}
-
-
-//----------------------------------------------------------------------
 template< typename T >
-inline void _decompress( const DataCompressor::Result& input, T* out,
+inline void _decompress( const Compressor::Result& input, T* out,
                          const size_t nElems )
 {
     T token(0);
@@ -115,7 +95,25 @@ inline void _decompress( const DataCompressor::Result& input, T* out,
     }
 }
 
-void CompressorRLEB::decompress( const Result& input, uint8_t* const data,
+}
+
+void CompressorRLE::compress( const uint8_t* data, size_t size,
+                               Result& output )
+{
+    if( !_initialized )
+        return;
+
+    if( (size & 0x7) == 0 )
+        _compress< uint64_t >( (const uint64_t*)data, size>>3, output );
+    else if( (size & 0x3) == 0 )
+        _compress< uint32_t >( (const uint32_t*)data, size>>2, output );
+    else if( (size & 0x1) == 0 )
+        _compress< uint16_t >( (const uint16_t*)data, size>>1, output );
+    else
+        _compress< uint8_t >( data, size, output );
+}
+
+void CompressorRLE::decompress( const Result& input, uint8_t* const data,
                                  size_t size )
 {
     if( !_initialized )
