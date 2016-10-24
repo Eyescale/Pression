@@ -76,5 +76,13 @@ CompressorInfo Registry::chooseCompressor()
     return candidate;
 }
 
+CompressorInfo Registry::findCompressor( const std::string& name )
+{
+    for( const CompressorInfo& info : _impl->compressorInfos )
+        if( info.name == name )
+            return info;
+    return CompressorInfo();
+}
+
 }
 }

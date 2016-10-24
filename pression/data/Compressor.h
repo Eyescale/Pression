@@ -58,12 +58,19 @@ public:
      * operation.
      *
      * @param input compressed data chunk(s) produced by compress()
+     * @param sizes compressed data chunk size(s) produced by compress()
      * @param data pointer to pre-allocated memory for the decompressed data
      * @param size decompressed data size
      * @throw std::runtime_error if chunksize does not match input
      */
-    PRESSIONDATA_API virtual void decompress( const Results& input,
-                                              uint8_t* data, size_t size );
+    PRESSIONDATA_API virtual
+    void decompress( const std::vector< const uint8_t* >& input,
+                     const std::vector< size_t >& sizes,
+                     uint8_t* data, size_t size );
+
+    /** @overload convenience wrapper */
+    PRESSIONDATA_API void decompress( const Results& input, uint8_t* data,
+                                      size_t size );
 
     /** @return the result of the last compress() operation. */
     const Results& getCompressedData() const { return compressed; }
@@ -94,10 +101,12 @@ protected:
      * Decompress the given chunk.
      *
      * @param input compressed data chunk produced by compress()
+     * @param inputSize compressed data chunk size produced by compress()
      * @param data pointer to pre-allocated memory for the decompressed data
      * @param size decompressed data size
      */
-    virtual void decompress( const Result& input LB_UNUSED,
+    virtual void decompress( const uint8_t* input LB_UNUSED,
+                             size_t inputSize LB_UNUSED,
                              uint8_t* data LB_UNUSED,
                              size_t size LB_UNUSED ) { LBUNIMPLEMENTED }
 

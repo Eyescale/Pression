@@ -15,7 +15,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "compressorSnappy.h"
+#include "CompressorSnappy.h"
 
 #include <pression/data/Registry.h>
 #include <lunchbox/buffer.h>
@@ -48,12 +48,12 @@ void CompressorSnappy::compress( const uint8_t* const data, size_t size,
     output.setSize( size );
 }
 
-void CompressorSnappy::decompress( const Result& input, uint8_t* const data,
+void CompressorSnappy::decompress( const uint8_t* const input,
+                                   const size_t inputSize, uint8_t* const data,
                                    size_t )
 {
     if( _initialized )
-        snappy::RawUncompress( (const char*)input.getData(),
-                               input.getSize(), (char*)data );
+        snappy::RawUncompress( (const char*)input, inputSize, (char*)data );
 }
 
 }

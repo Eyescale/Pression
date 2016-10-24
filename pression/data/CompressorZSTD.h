@@ -24,7 +24,7 @@ namespace pression
 namespace data
 {
 
-class CompressorZSTD : public Compressor
+template< int level > class CompressorZSTD : public Compressor
 {
 public:
     CompressorZSTD() : Compressor() {}
@@ -33,7 +33,8 @@ public:
     size_t getCompressBound( const size_t size ) const override;
     size_t getChunkSize() const override { return LB_128KB; }
     void compress( const uint8_t* data, size_t size, Result& output ) override;
-    void decompress( const Result& input, uint8_t* data, size_t size ) override;
+    void decompress( const uint8_t* input, size_t inputSize,
+                     uint8_t* data, size_t size ) override;
 };
 }
 }

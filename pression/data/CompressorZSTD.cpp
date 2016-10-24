@@ -15,7 +15,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "compressorZSTD.h"
+#include "CompressorZSTD.h"
 
 #include <pression/data/Registry.h>
 #include <lunchbox/buffer.h>
@@ -28,31 +28,56 @@ namespace data
 namespace
 {
 const bool _initialized =
-    Registry::getInstance().registerEngine< CompressorZSTD >(
-        { "pression::data::CompressorZSTD", .47f, .25f });
+    Registry::getInstance().registerEngine< CompressorZSTD< 1 >>(
+        { "pression::data::CompressorZSTD1", .47f, .25f }) &&
+    Registry::getInstance().registerEngine< CompressorZSTD< 2 >>(
+        { "pression::data::CompressorZSTD2", .47f, .25f }) &&
+    Registry::getInstance().registerEngine< CompressorZSTD< 3 >>(
+        { "pression::data::CompressorZSTD3", .47f, .25f }) &&
+    Registry::getInstance().registerEngine< CompressorZSTD< 4 >>(
+        { "pression::data::CompressorZSTD4", .47f, .25f }) &&
+    Registry::getInstance().registerEngine< CompressorZSTD< 5 >>(
+        { "pression::data::CompressorZSTD5", .47f, .25f }) &&
+    Registry::getInstance().registerEngine< CompressorZSTD< 10 >>(
+        { "pression::data::CompressorZSTD10", .47f, .25f }) &&
+    Registry::getInstance().registerEngine< CompressorZSTD< 19 >>(
+        { "pression::data::CompressorZSTD19", .47f, .25f });
 }
 
-size_t CompressorZSTD::getCompressBound( const size_t size ) const
+template< int level >
+size_t CompressorZSTD< level >::getCompressBound( const size_t size ) const
 {
     return ZSTD_compressBound( size );
 }
 
-void CompressorZSTD::compress( const uint8_t* const data, const size_t size,
-                               Result& output )
+template< int level >
+void CompressorZSTD< level >::compress( const uint8_t* const data,
+                                        const size_t size, Result& output )
 {
     if( !_initialized )
         return;
 
     output.setSize(
-        ZSTD_compress( output.getData(), output.getMaxSize(), data, size, 2 ));
+        ZSTD_compress( output.getData(), output.getMaxSize(), data, size,
+                       level ));
 }
 
-void CompressorZSTD::decompress( const Result& input, uint8_t* const data,
-                                 const size_t size )
+template< int level > void
+CompressorZSTD< level >::decompress( const uint8_t* const input,
+                                     const size_t inputSize,
+                                     uint8_t* const data, const size_t size )
 {
     if( _initialized )
-        ZSTD_decompress( data, size, input.getData(), input.getSize( ));
+        ZSTD_decompress( data, size, input, inputSize );
 }
 
 }
 }
+
+template class pression::data::CompressorZSTD< 1 >;
+template class pression::data::CompressorZSTD< 2 >;
+template class pression::data::CompressorZSTD< 3 >;
+template class pression::data::CompressorZSTD< 4 >;
+template class pression::data::CompressorZSTD< 5 >;
+template class pression::data::CompressorZSTD< 10 >;
+template class pression::data::CompressorZSTD< 19 >;

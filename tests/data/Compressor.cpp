@@ -180,14 +180,14 @@ void _testRandom()
     for( ssize_t i = 0; i < size; ++i )
         data[i] = rng.get< uint8_t >();
 
-    _result = 0;
-    _size = 0;
-    _compressionTime = 0;
-    _decompressionTime = 0;
-
     const auto& infos = getCompressors();
     for( const auto& info : infos )
     {
+        _result = 0;
+        _size = 0;
+        _compressionTime = 0;
+        _decompressionTime = 0;
+
         size = LB_10MB;
         for( size_t j = 0; j<8; ++j ) // test all granularities between mod 8..1
         {

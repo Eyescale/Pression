@@ -42,13 +42,13 @@ void CompressorFastLZ::compress( const uint8_t* const data, const size_t size,
 }
 
 
-void CompressorFastLZ::decompress( const Result& input, uint8_t* const data,
-                                   const size_t size )
+void CompressorFastLZ::decompress( const uint8_t* input, const size_t inputSize,
+                                   uint8_t* const data, const size_t size )
 {
     if( !_initialized )
         return;
 
-    fastlz_decompress( input.getData(), input.getSize(), data, size );
+    fastlz_decompress( input, inputSize, data, size );
 }
 
 }

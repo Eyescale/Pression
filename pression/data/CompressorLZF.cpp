@@ -44,13 +44,13 @@ void CompressorLZF::compress( const uint8_t* const data, const size_t size,
         lzf_compress( data, size, output.getData(), output.getMaxSize( )));
 }
 
-void CompressorLZF::decompress( const Result& input, uint8_t* const data,
-                                const size_t size )
+void CompressorLZF::decompress( const uint8_t* input, const size_t inputSize,
+                                uint8_t* const data, const size_t size )
 {
     if( !_initialized )
         return;
 
-    lzf_decompress( input.getData(), input.getSize(), data, size );
+    lzf_decompress( input, inputSize, data, size );
 }
 
 }

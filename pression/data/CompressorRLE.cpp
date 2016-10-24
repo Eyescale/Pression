@@ -40,7 +40,7 @@ const bool _initialized =
         { "pression::data::CompressorRLE", .97f, 1.f });
 
 template< typename T >
-inline void _compress( const T* in, const size_t size,
+inline void _compress( const uint8_t* input, const size_t size,
                        Compressor::Result& result )
 {
     if( size == 0 )
@@ -49,6 +49,7 @@ inline void _compress( const T* in, const size_t size,
         return;
     }
 
+    const T* in = reinterpret_cast< const T* >( input );
     T* tokenOut = reinterpret_cast< T* >( result.getData( ));
     T tokenLast( in[0] );
     T tokenSame( 1 );
@@ -69,12 +70,13 @@ inline void _compress( const T* in, const size_t size,
 }
 
 template< typename T >
-inline void _decompress( const Compressor::Result& input, T* out,
+inline void _decompress( const uint8_t* const input, uint8_t* const output,
                          const size_t nElems )
 {
     T token(0);
     T tokenLeft(0);
-    const T* in = (const T*)input.getData();
+    const T* in = reinterpret_cast< const T*>( input );
+    T* out = reinterpret_cast< T* >( output );
 
     for( size_t i = 0; i < nElems ; ++i )
     {
@@ -104,27 +106,27 @@ void CompressorRLE::compress( const uint8_t* data, size_t size,
         return;
 
     if( (size & 0x7) == 0 )
-        _compress< uint64_t >( (const uint64_t*)data, size>>3, output );
+        _compress< uint64_t >( data, size>>3, output );
     else if( (size & 0x3) == 0 )
-        _compress< uint32_t >( (const uint32_t*)data, size>>2, output );
+        _compress< uint32_t >( data, size>>2, output );
     else if( (size & 0x1) == 0 )
-        _compress< uint16_t >( (const uint16_t*)data, size>>1, output );
+        _compress< uint16_t >( data, size>>1, output );
     else
         _compress< uint8_t >( data, size, output );
 }
 
-void CompressorRLE::decompress( const Result& input, uint8_t* const data,
-                                 size_t size )
+void CompressorRLE::decompress( const uint8_t* const input, const size_t,
+                                uint8_t* const data, const size_t size )
 {
     if( !_initialized )
         return;
 
     if( (size & 0x7) == 0 )
-        _decompress< uint64_t >( input, (uint64_t*)data, size>>3 );
+        _decompress< uint64_t >( input, data, size>>3 );
     else if( (size & 0x3) == 0 )
-        _decompress< uint32_t >( input, (uint32_t*)data, size>>2 );
+        _decompress< uint32_t >( input, data, size>>2 );
     else if( (size & 0x1) == 0 )
-        _decompress< uint16_t >( input, (uint16_t*)data, size>>1 );
+        _decompress< uint16_t >( input, data, size>>1 );
     else
         _decompress< uint8_t >( input, data, size );
 }

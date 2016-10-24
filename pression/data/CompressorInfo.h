@@ -38,6 +38,9 @@ struct CompressorInfo
     CompressorInfo( const std::string& n, const float r, const float s )
         : name( n ), ratio( r ), speed( s ), create( []{ return nullptr; }) {}
 
+    bool operator == ( const CompressorInfo& rhs ) const
+        { return name == rhs.name; }
+
     std::string name;
     float ratio; //!< Normalized 0..1 size after compression
     float speed; //!< Relative speed compared to RLE compressor

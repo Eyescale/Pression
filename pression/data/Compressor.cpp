@@ -54,14 +54,31 @@ const Compressor::Results& Compressor::compress( const uint8_t* data,
     return compressed;
 }
 
-void Compressor::decompress( const Results& input, uint8_t* data,
-                                 size_t size )
+void Compressor::decompress( const Results& result, uint8_t* data, size_t size )
 {
-    if( input.empty( ))
+    if( result.empty( ))
         return;
+
+    std::vector< const uint8_t* > input( result.size( ));
+    std::vector< size_t > sizes( result.size( ));
+    for( size_t i = 0; i < result.size(); ++i )
+    {
+        input[i] = result[i].getData();
+        sizes[i] = result[i].getSize();
+    }
+    decompress( input, sizes, data, size );
+}
+
+void Compressor::decompress( const std::vector< const uint8_t* >& input,
+                             const std::vector< size_t >& sizes,
+                             uint8_t* data, size_t size )
+{
+    if( input.empty() || input.size() != sizes.size( ))
+        return;
+
     if( input.size() == 1 ) // compressor did not have OpenMP
     {
-        decompress( input[0], data, size );
+        decompress( input[0], sizes[0], data, size );
         return;
     }
 
@@ -83,7 +100,7 @@ void Compressor::decompress( const Results& input, uint8_t* data,
         const size_t end = std::min( (i+1) * chunkSize, size );
         const size_t nBytes = end - start;
 
-        decompress( input[i], data + start, nBytes );
+        decompress( input[i], sizes[i], data + start, nBytes );
     }
 }
 }

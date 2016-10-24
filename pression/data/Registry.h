@@ -46,6 +46,7 @@ public:
     PRESSIONDATA_API const CompressorInfos& getCompressorInfos() const;
 
     PRESSIONDATA_API CompressorInfo chooseCompressor();
+    PRESSIONDATA_API CompressorInfo findCompressor( const std::string& name );
     //@}
 
 private:
