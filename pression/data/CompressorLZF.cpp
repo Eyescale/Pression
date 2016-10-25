@@ -32,7 +32,7 @@ namespace
 {
 const bool _initialized =
     Registry::getInstance().registerEngine< CompressorLZF >(
-        { "pression::data::CompressorLZF", .6f, .26f });
+        { "pression::data::CompressorLZF", .69f, .43f });
 }
 
 void CompressorLZF::compress( const uint8_t* const data, const size_t size,
