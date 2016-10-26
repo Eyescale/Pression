@@ -8,6 +8,14 @@ set(PRESSIONDATA_PUBLIC_HEADERS
   types.h
 )
 
+set(SNAPPY_SOURCES
+  snappy/snappy.h
+  snappy/snappy.cc
+  snappy/snappy-sinksource.cc
+)
+set_source_files_properties(${SNAPPY_SOURCES} PROPERTIES COMPILE_FLAGS
+  "-Wno-unused-parameter -Wno-header-hygiene -Wno-sign-compare")
+
 set(PRESSIONDATA_COMPRESSORS
   CompressorFastLZ.cpp
   CompressorFastLZ.h
@@ -24,9 +32,7 @@ set(PRESSIONDATA_COMPRESSORS
   liblzf/lzf.h
   liblzf/lzf_c.c
   liblzf/lzf_d.c
-  snappy/snappy.h
-  snappy/snappy.cc
-  snappy/snappy-sinksource.cc
+  ${SNAPPY_SOURCES}
   zstd/lib/common/entropy_common.c
   zstd/lib/common/fse_decompress.c
   zstd/lib/common/xxhash.c
