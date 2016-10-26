@@ -1,4 +1,4 @@
-[submodule "pression/compressor/zstd"]
+[submodule "pression/data/zstd"]
 	path = pression/data/zstd
 	url = https://github.com/facebook/zstd.git
 [submodule "pression/data/snappy"]

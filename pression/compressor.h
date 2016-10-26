@@ -48,7 +48,7 @@ public:
      * @param name the name of the compressor
      * @version 2.0
      */
-    PRESSION_API Compressor( const uint32_t name );
+    PRESSION_API Compressor( uint32_t name );
 
     /** Destruct the compressor. @version 1.7.1 */
     PRESSION_API virtual ~Compressor();
@@ -69,7 +69,7 @@ public:
      * @return true if the instance is usable for the given name.
      * @version 1.7.1
      */
-    PRESSION_API bool uses( const uint32_t name ) const;
+    PRESSION_API bool uses( uint32_t name ) const;
 
     /** @return the information about the allocated instance. @version 1.7.1 */
     PRESSION_API const EqCompressorInfo& getInfo() const;
@@ -88,9 +88,8 @@ public:
      * @return the name of the chosen compressor.
      * @version 2.0
      */
-    static PRESSION_API uint32_t choose( const uint32_t tokenType,
-                                         const float minQuality,
-                                         const bool ignoreMSE );
+    static PRESSION_API uint32_t choose( uint32_t tokenType, float minQuality,
+                                         bool ignoreMSE );
 
     /**
      * Set up a new, named compressor instance.
@@ -99,15 +98,15 @@ public:
      * @return true on success, false otherwise.
      * @version 2.0
      */
-    PRESSION_API bool setup( const uint32_t name );
+    PRESSION_API bool setup( uint32_t name );
 
     /**
      * Set up a new, auto-selected compressor instance.
      * @sa choose() for parameters.
      * @version 1.7.1
      */
-    PRESSION_API bool setup( const uint32_t tokenType, const float minQuality,
-                             const bool ignoreMSE );
+    PRESSION_API bool setup( uint32_t tokenType, float minQuality,
+                             bool ignoreMSE );
 
     /** Reallocate the current instance. @version 1.7.1 */
     PRESSION_API bool realloc();
@@ -133,7 +132,7 @@ public:
      * @version 1.7.1
      */
     PRESSION_API void compress( void* const in, const uint64_t pvp[4],
-                                const uint64_t flags );
+                                uint64_t flags );
 
     /** @deprecated use new getResult()
      * @return the number of compressed chunks of the last compression.
@@ -148,7 +147,7 @@ public:
     PRESSION_API CompressorResult getResult() const;
 
     /** @deprecated use new getResult() */
-    PRESSION_API void getResult( const unsigned i, void** const out,
+    PRESSION_API void getResult( unsigned i, void** const out,
                                  uint64_t* const outSize ) const LB_DEPRECATED;
 
 private:
