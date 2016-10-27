@@ -28,14 +28,16 @@
 #include <lunchbox/memoryMap.h>
 #include <lunchbox/rng.h>
 
+#include <boost/program_options.hpp>
 #include <algorithm>
 
 using lunchbox::Strings;
+namespace po = boost::program_options;
 
-void _testFile();
+void _testFile( int argc, char** argv );
 void _testRandom();
 void _testData( const std::string& name, uint8_t* data, uint64_t size );
-Strings getFiles( Strings& files, const std::string& ext );
+void getFiles( Strings& files, const std::string& ext );
 
 pression::data::Registry& registry = pression::data::Registry::getInstance();
 uint64_t _result = 0;
@@ -44,9 +46,9 @@ float _compressionTime = 0;
 float _decompressionTime = 0;
 float _baseTime = 0.f;
 
-int main( int, char** )
+int main( const int argc, char** argv )
 {
-    _testFile();
+    _testFile( argc, argv );
     _testRandom();
     return EXIT_SUCCESS;
 }
@@ -107,26 +109,60 @@ void _testData( const pression::data::CompressorInfo& info,
     _decompressionTime += decompressTime;
 }
 
-void _testFile()
+void _testFile( const int argc, char** argv )
 {
-    std::vector< std::string > files;
-    getFiles( files, ".*\\.dll" );
-    getFiles( files, ".*\\.exe" );
-    getFiles( files, ".*\\.so" );
-    getFiles( files, ".*\\.a" );
-    getFiles( files, ".*\\.dylib" );
-    getFiles( files, ".*\\.rgb" );
-    getFiles( files, ".*\\.bin" );
-    getFiles( files, ".*\\.ply" );
-    getFiles( files, ".*\\.bbp" );
+    po::options_description options( "Data compressor benchmark tool" );
+    options.add_options()
+        ( "help,h", "Display usage information and exit" )
+        ( "data,d", po::value< Strings >()->multitoken(),
+          "Files to test" );
 
-    // Limit to 30 files using a pseudo-random selection for reproducability
-    const size_t maxFiles = 30;
-    if( files.size() > maxFiles )
+    // parse program options
+    po::variables_map vm;
+    try
     {
-        const size_t cut = files.size() - maxFiles;
-        for( size_t i = 0; i < cut; ++i )
-            files.erase( files.begin() + (i * 997 /*prime*/) % files.size( ));
+        po::store( po::command_line_parser( argc, argv ).options(
+                       options ).allow_unregistered().run(), vm );
+        po::notify( vm );
+    }
+    catch( std::exception& exception )
+    {
+        std::cerr << "Command line parse error: " << exception.what()
+                  << std::endl;
+        ::exit( EXIT_FAILURE );
+    }
+
+    // evaluate parsed arguments
+    if( vm.count( "help" ))
+    {
+        std::cout << options << std::endl;
+        ::exit( EXIT_SUCCESS );
+    }
+
+    Strings files;
+    if( vm.count( "data" ))
+        files = vm["data"].as< Strings >();
+    else
+    {
+        getFiles( files, ".*\\.dll" );
+        getFiles( files, ".*\\.exe" );
+        getFiles( files, ".*\\.so" );
+        getFiles( files, ".*\\.a" );
+        getFiles( files, ".*\\.dylib" );
+        getFiles( files, ".*\\.rgb" );
+        getFiles( files, ".*\\.bin" );
+        getFiles( files, ".*\\.ply" );
+        getFiles( files, ".*\\.bbp" );
+
+        // Limit to 30 files using a pseudo-random selection for reproducability
+        const size_t maxFiles = 30;
+        if( files.size() > maxFiles )
+        {
+            const size_t cut = files.size() - maxFiles;
+            for( size_t i = 0; i < cut; ++i )
+                files.erase( files.begin() +
+                             (i * 997 /*prime*/) % files.size( ));
+        }
     }
 
     std::cout.setf( std::ios::right, std::ios::adjustfield );
@@ -206,7 +242,7 @@ void _testRandom()
     delete [] data;
 }
 
-Strings getFiles( Strings& files, const std::string& ext )
+void getFiles( Strings& files, const std::string& ext )
 {
     const Strings paths = {
         { std::string( PRESSION_BUILD_DIR ) + "/lib" },
@@ -222,5 +258,4 @@ Strings getFiles( Strings& files, const std::string& ext )
     for( const auto& path : paths )
         for( const auto& file : lunchbox::searchDirectory( path, ext ))
             files.push_back( path + '/' + file );
-    return files;
 }

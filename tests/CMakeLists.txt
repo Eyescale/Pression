@@ -4,7 +4,7 @@
 
 include(InstallFiles)
 
-set(TEST_LIBRARIES PressionData)
+set(TEST_LIBRARIES PressionData ${Boost_PROGRAM_OPTIONS_LIBRARY})
 
 include(CommonCTest)
 install_files(share/Pression/tests FILES ${TEST_FILES} COMPONENT examples)

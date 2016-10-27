@@ -16,11 +16,14 @@ set(PRESSION_DESCRIPTION "Compressor, decompressor, uploader and downloader plug
 set(PRESSION_MAINTAINER "Stefan Eilemann <eile@eyescale.ch>")
 set(PRESSION_LICENSE LGPL)
 set(COMMON_PROJECT_DOMAIN ch.eyescale)
+set(PRESSION_DEB_DEPENDS libboost-program-options-dev)
+set(PRESSION_PORT_DEPENDS boost)
 
 include(Common)
 
 set(PRESSION_INCLUDE_NAME pression)
 
+common_find_package(Boost REQUIRED COMPONENTS program_options)
 common_find_package(Lunchbox REQUIRED)
 common_find_package(OpenMP)
 common_find_package_post()

@@ -19,6 +19,7 @@
 #define PRESSION_TYPES_H
 
 #include <pression/defines.h>
+#include <pression/plugins/compressor.h>
 #include <lunchbox/visitorResult.h> // enum
 #include <lunchbox/types.h>
 

@@ -13,8 +13,20 @@ set(SNAPPY_SOURCES
   snappy/snappy.cc
   snappy/snappy-sinksource.cc
 )
-set_source_files_properties(${SNAPPY_SOURCES} PROPERTIES COMPILE_FLAGS
-  "-Wno-unused-parameter -Wno-header-hygiene -Wno-sign-compare")
+
+set(ac_cv_have_stdint_h 1)
+set(ac_cv_have_stddef_h 1)
+set(ac_cv_have_sys_uio_h 0)
+set(SNAPPY_MAJOR 1)
+set(SNAPPY_MINOR 1)
+set(SNAPPY_PATCHLEVEL 3)
+configure_file(snappy/snappy-stubs-public.h.in
+  ${PROJECT_BINARY_DIR}/include/snappy-stubs-public.h @ONLY)
+
+if(CMAKE_COMPILER_IS_GCC OR CMAKE_COMPILER_IS_CLANG)
+  set_source_files_properties(${SNAPPY_SOURCES} PROPERTIES COMPILE_FLAGS
+    "-Wno-unused-parameter -Wno-header-hygiene -Wno-sign-compare")
+endif()
 
 set(PRESSIONDATA_COMPRESSORS
   CompressorFastLZ.cpp
