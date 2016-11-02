@@ -1,4 +1,4 @@
-C++ Plugin API for CPU compressors
+C++ Plugin API for CPU compressors  {#data}
 ============
 
 This document specifies a modern API for the in-memory C plugin API for
