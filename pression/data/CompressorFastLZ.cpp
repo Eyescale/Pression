@@ -29,7 +29,7 @@ namespace
 {
 const bool _initialized =
     Registry::getInstance().registerEngine< CompressorFastLZ >(
-        { "pression::data::CompressorFastLZ", .69f, .46f });
+        { "pression::data::CompressorFastLZ", .70f, .25f });
 }
 
 void CompressorFastLZ::compress( const uint8_t* const data, const size_t size,

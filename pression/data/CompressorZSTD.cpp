@@ -29,19 +29,19 @@ namespace
 {
 const bool _initialized =
     Registry::getInstance().registerEngine< CompressorZSTD< 1 >>(
-        { "pression::data::CompressorZSTD1", .55f, .43f }) &&
+        { "pression::data::CompressorZSTD1", .552f, .180f }) &&
     Registry::getInstance().registerEngine< CompressorZSTD< 2 >>(
-        { "pression::data::CompressorZSTD2", .54f, .37f }) &&
+        { "pression::data::CompressorZSTD2", .550f, .145f }) &&
     Registry::getInstance().registerEngine< CompressorZSTD< 3 >>(
-        { "pression::data::CompressorZSTD3", .54f, .30f }) &&
+        { "pression::data::CompressorZSTD3", .548f, .105f }) &&
     Registry::getInstance().registerEngine< CompressorZSTD< 4 >>(
-        { "pression::data::CompressorZSTD4", .52f, .27f }) &&
+        { "pression::data::CompressorZSTD4", .521f, .091f }) &&
     Registry::getInstance().registerEngine< CompressorZSTD< 5 >>(
-        { "pression::data::CompressorZSTD5", .51f, .23f }) &&
+        { "pression::data::CompressorZSTD5", .520f, .084f }) &&
     Registry::getInstance().registerEngine< CompressorZSTD< 10 >>(
-        { "pression::data::CompressorZSTD10", .50f, .10f }) &&
+        { "pression::data::CompressorZSTD10", .516f, .045f }) &&
     Registry::getInstance().registerEngine< CompressorZSTD< 19 >>(
-        { "pression::data::CompressorZSTD19", .47f, .03f });
+        { "pression::data::CompressorZSTD19", .469f, .013f });
 }
 
 template< int level >
