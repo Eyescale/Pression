@@ -7,9 +7,10 @@ compressors and CPU-GPU transfer plugins.
 
 ## Requirements
 
-* Support all features used by current lossless byte compressors
+* Support all features used by current lossless byte compressors:
     * Lossless compression of binary blobs
-    * Multiple compressors per plugin DSO
+    * Unified API for all compression engines
+    * Other components can add compression engines
 * Information provided for each compressor:
     * Compression speed (relative to RLE compressor)
     * Compression ratio (relative to uncompressed data)
@@ -24,23 +25,27 @@ compressors and CPU-GPU transfer plugins.
 
 ## API
 
-    const Plugins& Lunchbox::PluginFactory<..>::getPlugins();
-
-    class PluginInfo
+    class CompressorInfo
     {
     public:
         std::string name;
         float ratio; //!< Normalized 0..1 size after compression
         float speed; //!< Relative speed compared to RLE compressor
-    };
-    typedef std::vector< PluginInfo > PluginInfos;
 
-    class PluginRegistry
+        typedef std::function< Compressor* ()> Constructor;
+        Constructor create;
+    };
+    typedef std::vector< CompressorInfo > CompressorInfos;
+
+    class Registry
     {
     public:
-        typedef std::unique_ptr< Compressor > CompressorPtr;
-        CompressorPtr choose();
-        CompressorPtr create( const std::string& name );
+        static Registry& getInstance();
+        template< class P > bool registerEngine( CompressorInfo info )
+
+        const CompressorInfos& getInfos() const;
+        CompressorInfo choose();
+        CompressorInfo find( const std::string& name );
     };
 
     class Compressor
@@ -49,40 +54,35 @@ compressors and CPU-GPU transfer plugins.
         typedef lunchbox::Bufferb Result;
         typedef std::vector< Result > Results;
 
-        virtual const Results& compress( const void* const data,
-                                         const size_t size ) = 0;
-        virtual const Result& decompress( const Results& input,
-                                          const size_t size ) = 0;
+        virtual const Results& compress( const uint8_t* data, size_t size ) = 0;
+
+        // data points to pre-allocated memory of size decompressed result
+        virtual void decompress( const Results& input, uint8_t* data,
+                                 size_t size ) = 0;
     protected:
         Results compressed;
-        Result uncompressed;
     };
 
 
 ## Examples
 
-    CompressorPtr PluginRegistry::choose()
+    CompressorInfo Registry::choose()
     {
+        CompressorInfo candidate;
         float rating = powf( 1.0f, .3f );
-        Plugin* candidate = nullptr;
 
-        const Plugins& plugins = PluginFactory::getInstance().getPlugins();
-        for( const Plugin* plugin : plugins )
+        for( const CompressorInfo& info : _impl->compressorInfos )
         {
-            for( const PluginInfo& info : plugin->getInfo( ))
-            {
-                float newRating = powf( info.speed, .3f ) / info.ratio;
-                if( newRating > rating )
-                {
-                    candidate = plugin;
-                    rating = newRating;
-                }
-            }
+            float newRating = powf( info.speed, .3f ) / info.ratio;
+            if( newRating > rating )
+    	{
+                candidate = info;
+                rating = newRating;
+         	}
         }
-        if( candidate )
-            return candidate.construct()
-        return nullptr;
+        return candidate;
     }
+
 
 Compressor implementation:
 
@@ -90,13 +90,13 @@ Compressor implementation:
 
     namespace pression
     {
-    namespace plugin
+    namespace data
     {
     namespace
     {
     static const bool LB_UNUSED _initialized = []()
     {
-        PluginRegistry::registerEngine( { "pression::CompressorZSTD",
+        Registry::registerEngine( { "pression::CompressorZSTD",
                                          .47f, .25f },
                                         CompressorZSTD::newInstance );
         return true;
@@ -114,46 +114,19 @@ Compressor implementation:
                                            _results[0]->getSize(), inData,
                                             inSize, 2 /* level */ );
         _results[0]->setSize( size );
-        return results;
+        return _results;
     }
 
-    const Result& CompressorZSTD::decompress( const Results& input,
-                                              const size_t size );
+    void CompressorZSTD::decompress( const Results& input, uint8_t* data,
+                                     size_t size );
     {
         if( input.empty( ))
             return;
 
-        _result.resize( size );
-        ZSTD_decompress( _result.getData(), _result.getSize(),
+        ZSTD_decompress( data, size,
                          input[0].getData(), input[0].getSize( ));
     }
     }
     }
 
 ## Issues
-
-### Issue 1: How do we select compression engines?
-
-_Resolution: Make InitDataT& parameter given to handles() mutable_
-
-In the current Lunchbox plugin API, the plugin decides if it can handle
-a given request. Based on the return value of handles(), the first
-plugin available is typically instantiated. This self-decision process
-is not applicable to this spec, since the decision can only be made by
-an outside entity. We do have the following options to acquire the
-necessary information:
-
-* Extend handles() with additional, mutable Information parameter
-* Make current InitDataT parameter mutable
-* Introduce new getInformation() function
-* Provide information at plugin registration time
-
-Making the templated InitDataT& given to the static handles() function
-mutable will allow our implementation to both return true/false if the
-plugin is compatible, and to fill in the plugin information into the
-given init data. Based on this information, Pression can select all
-plugins for a given request, and then select the best of the compatible
-ones. The lunchbox::PluginFactory needs to be introspectable.
-
-A given plugin DSO needs to fill in one information structure for each
-contained engine.
