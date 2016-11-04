@@ -77,23 +77,13 @@ void _testData( const pression::data::CompressorInfo& info,
     const auto& compressed = compressor->compress( data, size );
     const float compressTime = clock.getTimef();
 
-    uint64_t compressedSize = 0;
-    std::vector< const void * > chunks( compressed.size( ));
-    std::vector< uint64_t > chunkSizes( compressed.size( ));
-
-    for( unsigned i = 0; i < chunks.size(); ++i )
-    {
-        chunks[ i ] = compressed[i].getData();
-        chunkSizes[ i ] = compressed[i].getSize();
-        compressedSize += compressed[i].getSize();
-    }
-
     pression::data::Compressor::Result result( size );
     compressor->decompress( compressed, result.getData(), size );
 
     clock.reset();
     compressor->decompress( compressed, result.getData(), size );
     const float decompressTime = clock.getTimef();
+    const size_t compressedSize = pression::data::getDataSize( compressed );
 
     TEST( ::memcmp( result.getData(), data, size ) == 0 );
     std::cout  << std::setw(20) << name << ", " << info.name
