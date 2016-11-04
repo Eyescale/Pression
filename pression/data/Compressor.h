@@ -42,7 +42,9 @@ public:
      * Compress the given data and return the result.
      *
      * This default implementation will use getCompressBound(), getChunkSize()
-     * and call the protected compress() method to parallelize the compression.
+     * and call the protected compress() method to parallelize the
+     * compression. The result is valid until the next call to compress or
+     * destruction of this instance.
      *
      * @param data pointer to data to compress
      * @param size number of bytes to compress

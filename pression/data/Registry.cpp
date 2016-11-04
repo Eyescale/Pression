@@ -54,12 +54,12 @@ bool Registry::_registerEngine( const CompressorInfo& info )
     return true;
 }
 
-const CompressorInfos& Registry::getCompressorInfos() const
+const CompressorInfos& Registry::getInfos() const
 {
     return _impl->compressorInfos;
 }
 
-CompressorInfo Registry::chooseCompressor()
+CompressorInfo Registry::choose()
 {
     CompressorInfo candidate;
     float rating = powf( 1.0f, .3f );
@@ -76,7 +76,7 @@ CompressorInfo Registry::chooseCompressor()
     return candidate;
 }
 
-CompressorInfo Registry::findCompressor( const std::string& name )
+CompressorInfo Registry::find( const std::string& name )
 {
     for( const CompressorInfo& info : _impl->compressorInfos )
         if( info.name == name )

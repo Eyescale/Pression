@@ -35,18 +35,29 @@ namespace data
 class Registry
 {
 public:
+    /** @return the global instance for accessing compression engines. */
     PRESSIONDATA_API static Registry& getInstance();
 
+    /**
+     * Register a new compression engine.
+     *
+     * The create method in the given CompressorInfo will be set tu the class
+     * default ctor.
+     */
     template< class P > bool registerEngine( CompressorInfo info )
     {
         info.create = std::bind( boost::factory< P* >( ));
         return _registerEngine( info );
     }
 
-    PRESSIONDATA_API const CompressorInfos& getCompressorInfos() const;
+    /** @return the information for all registered compression engines. */
+    PRESSIONDATA_API const CompressorInfos& getInfos() const;
 
-    PRESSIONDATA_API CompressorInfo chooseCompressor();
-    PRESSIONDATA_API CompressorInfo findCompressor( const std::string& name );
+    /** @return the recommended compression engine for network transmission */
+    PRESSIONDATA_API CompressorInfo choose();
+
+    /** @return the information on the named compression engine */
+    PRESSIONDATA_API CompressorInfo find( const std::string& name );
     //@}
 
 private:

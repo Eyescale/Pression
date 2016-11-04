@@ -55,7 +55,7 @@ int main( const int argc, char** argv )
 
 pression::data::CompressorInfos getCompressors()
 {
-    auto infos = registry.getCompressorInfos();
+    auto infos = registry.getInfos();
     for( auto i = infos.begin(); i != infos.end(); ++i )
         if( i->name == "pression::data::CompressorRLE" ) // move RLE to front
         {
