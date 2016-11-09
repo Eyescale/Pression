@@ -31,8 +31,8 @@ public:
     CompressorZSTD() : Compressor() {}
     virtual ~CompressorZSTD() {}
 
-    void compress( const void* const inData, eq_uint64_t nPixels,
-                   bool useAlpha ) override;
+    void compress( const void* const inData, const eq_uint64_t nPixels,
+                   const bool useAlpha ) override;
 
     static void decompress( const void* const* inData,
                             const eq_uint64_t* const inSizes,
