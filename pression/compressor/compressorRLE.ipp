@@ -287,7 +287,7 @@ static inline void _decompress( const void* const* inData,
 
 static unsigned _setupResults( const unsigned nChannels,
                                const eq_uint64_t inSize,
-                               pression::plugin::Compressor::ResultVector& results )
+                           pression::plugin::Compressor::ResultVector& results )
 {
     // determine number of chunks and set up output data structure
 #ifdef PRESSION_USE_OPENMP
