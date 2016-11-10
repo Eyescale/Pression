@@ -29,6 +29,7 @@ typedef std::vector< EqCompressorInfo > EqCompressorInfos;
 typedef EqCompressorInfos::const_iterator EqCompressorInfosCIter;
 /** @endcond */
 
+/** Image compression and CPU-GPU transfer plugin API */
 namespace pression
 {
 

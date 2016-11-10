@@ -55,9 +55,9 @@ public:
     /**
      * Decompress the given data.
      *
-     * This default implementation will decompress the given input in parallel,
-     * assuming getChunkSize() returns the same value as during the compress()
-     * operation.
+     * This default implementation will decompress the given input in parallel
+     * using the protected decompress() method, assuming getChunkSize() returns
+     * the same value as during the compress() operation.
      *
      * @param input compressed data chunk(s) produced by compress()
      * @param sizes compressed data chunk size(s) produced by compress()
@@ -95,7 +95,7 @@ protected:
      *
      * @param data pointer to data to compress
      * @param size number of bytes to compress
-     * @param output pre-allocated output chunk
+     * @param output pre-allocated output chunk of getCompressBound( chunkSize )
      */
     virtual void compress( const uint8_t* data LB_UNUSED, size_t size LB_UNUSED,
                            Result& output LB_UNUSED ) { LBUNIMPLEMENTED }

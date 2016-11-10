@@ -30,10 +30,8 @@ const Compressor::Results& Compressor::compress( const uint8_t* data,
 {
 #ifdef PRESSION_USE_OPENMP
     const size_t chunkSize = getChunkSize();
-    size_t nChunks = size / chunkSize;
+    const size_t nChunks = (size + chunkSize - 1) / chunkSize;
 
-    if( nChunks * chunkSize < size )
-        ++nChunks;
     compressed.resize( nChunks );
 
 #pragma omp parallel for

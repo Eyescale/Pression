@@ -22,6 +22,19 @@
 
 namespace pression
 {
+/**
+ * Lossless byte compression plugin API.
+ *
+ * Custom compressors inherit the Compressor API, either overriding the public
+ * compress and decompress methods (if the used algorithm is parallel), or the
+ * protected ones if the algorithm is serial. They use the static initialization
+ * Registry::registerEngine() to register themselves. The CompressorInfo
+ * describes the characteristics of the plugin. See CompressorSnappy for
+ * an example implementation.
+ *
+ * Provided with pression are a very low overhead RLE compressor, two LZ
+ * variants, Snappy and ZStandard compression plugins.
+ */
 namespace data
 {
 class Compressor;
