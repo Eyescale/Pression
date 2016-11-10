@@ -103,7 +103,7 @@ public:
     /**
      * Set up a new, auto-selected compressor instance.
      * @sa choose() for parameters.
-     * @version 1.7.1
+     * @version 2.0
      */
     PRESSION_API bool setup( uint32_t tokenType, float minQuality,
                              bool ignoreMSE );

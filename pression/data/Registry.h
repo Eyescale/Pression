@@ -41,7 +41,7 @@ public:
     /**
      * Register a new compression engine.
      *
-     * The create method in the given CompressorInfo will be set tu the class
+     * The create method in the given CompressorInfo will be set to the class
      * default ctor.
      */
     template< class P > bool registerEngine( CompressorInfo info )
