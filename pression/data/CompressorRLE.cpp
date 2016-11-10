@@ -99,8 +99,8 @@ inline void _decompress( const uint8_t* const input, uint8_t* const output,
 
 }
 
-void CompressorRLE::compress( const uint8_t* data, size_t size,
-                               Result& output )
+void CompressorRLE::compressChunk( const uint8_t* data, size_t size,
+                                   Result& output )
 {
     if( !_initialized )
         return;
@@ -115,8 +115,8 @@ void CompressorRLE::compress( const uint8_t* data, size_t size,
         _compress< uint8_t >( data, size, output );
 }
 
-void CompressorRLE::decompress( const uint8_t* const input, const size_t,
-                                uint8_t* const data, const size_t size )
+void CompressorRLE::decompressChunk( const uint8_t* const input, const size_t,
+                                     uint8_t* const data, const size_t size )
 {
     if( !_initialized )
         return;

@@ -42,12 +42,12 @@ const Compressor::Results& Compressor::compress( const uint8_t* data,
         const size_t nBytes = end - start;
 
         compressed[i].reserve( getCompressBound( nBytes ));
-        compress( data + start, nBytes, compressed[i] );
+        compressChunk( data + start, nBytes, compressed[i] );
     }
 #else
     compressed.resize( 1 );
     compressed[0].reserve( getCompressBound( size ));
-    compress( data, size, compressed[0] );
+    compressChunk( data, size, compressed[0] );
 #endif
     return compressed;
 }
@@ -57,48 +57,46 @@ void Compressor::decompress( const Results& result, uint8_t* data, size_t size )
     if( result.empty( ))
         return;
 
-    std::vector< const uint8_t* > input( result.size( ));
-    std::vector< size_t > sizes( result.size( ));
+    std::vector< std::pair< const uint8_t*, size_t >> inputs( result.size( ));
     for( size_t i = 0; i < result.size(); ++i )
-    {
-        input[i] = result[i].getData();
-        sizes[i] = result[i].getSize();
-    }
-    decompress( input, sizes, data, size );
+        inputs[i] = { result[i].getData(), result[i].getSize() };
+    decompress( inputs, data, size );
 }
 
-void Compressor::decompress( const std::vector< const uint8_t* >& input,
-                             const std::vector< size_t >& sizes,
-                             uint8_t* data, size_t size )
+
+void Compressor::decompress(
+    const std::vector< std::pair< const uint8_t*, size_t >>& inputs,
+    uint8_t* data, size_t size )
 {
-    if( input.empty() || input.size() != sizes.size( ))
+    if( inputs.empty( ))
         return;
 
-    if( input.size() == 1 ) // compressor did not have OpenMP
+    if( inputs.size() == 1 ) // compressor did not have OpenMP
     {
-        decompress( input[0], sizes[0], data, size );
+        decompressChunk( inputs[0].first, inputs[0].second, data, size );
         return;
     }
 
     const size_t chunkSize = getChunkSize();
-    if( size/chunkSize != input.size() && size/chunkSize + 1 != input.size() )
+    if( size/chunkSize != inputs.size() && size/chunkSize + 1 != inputs.size( ))
     {
         LBTHROW(
             std::runtime_error( "Chunk size of " + std::to_string( chunkSize ) +
                                 " not consistent with " +
-                                std::to_string( input.size( )) +
+                                std::to_string( inputs.size( )) +
                                 " input chunks for " + std::to_string( size ) +
                                 " bytes" ));
     }
 
 #pragma omp parallel for
-    for( size_t i = 0; i < input.size(); ++i )
+    for( size_t i = 0; i < inputs.size(); ++i )
     {
         const size_t start = i * chunkSize;
         const size_t end = std::min( (i+1) * chunkSize, size );
         const size_t nBytes = end - start;
 
-        decompress( input[i], sizes[i], data + start, nBytes );
+        decompressChunk( inputs[i].first, inputs[i].second,
+                         data + start, nBytes );
     }
 }
 }

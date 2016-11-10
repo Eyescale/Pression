@@ -29,7 +29,17 @@ namespace pression
 {
 namespace data
 {
-/** Base interface for lossless CPU compressors of binary data. */
+/**
+ * Interface for lossless CPU compressors of binary data.
+ *
+ * Implementers can choose to override compress() and decompress() for parallel
+ * algorithms or compressChunk() and decompressChunk() for serial algorithms.
+ * The default compress() implementation will use getCompressBound(),
+ * getChunkSize() and call compressChunk() to parallelize the compression. The
+ * default decompress() implementation will decompress the given input in
+ * parallel using decompressChunk(), assuming getChunkSize() returns the same
+ * value as during the compress() operation.
+ */
 class Compressor
 {
 public:
@@ -41,10 +51,11 @@ public:
     /**
      * Compress the given data and return the result.
      *
+     * The result is valid until the next call to compress or destruction of
+     * this instance.
+     *
      * This default implementation will use getCompressBound(), getChunkSize()
-     * and call the protected compress() method to parallelize the
-     * compression. The result is valid until the next call to compress or
-     * destruction of this instance.
+     * and call the protected compress() method to parallelize the compression.
      *
      * @param data pointer to data to compress
      * @param size number of bytes to compress
@@ -59,16 +70,15 @@ public:
      * using the protected decompress() method, assuming getChunkSize() returns
      * the same value as during the compress() operation.
      *
-     * @param input compressed data chunk(s) produced by compress()
-     * @param sizes compressed data chunk size(s) produced by compress()
+     * @param inputs compressed data chunk(s) produced by compress()
      * @param data pointer to pre-allocated memory for the decompressed data
      * @param size decompressed data size
      * @throw std::runtime_error if chunksize does not match input
      */
-    PRESSIONDATA_API virtual
-    void decompress( const std::vector< const uint8_t* >& input,
-                     const std::vector< size_t >& sizes,
-                     uint8_t* data, size_t size );
+    PRESSIONDATA_API
+    virtual void decompress(
+        const std::vector< std::pair< const uint8_t*, size_t >>& inputs,
+        uint8_t* data, size_t size );
 
     /** @overload convenience wrapper */
     PRESSIONDATA_API void decompress( const Results& input, uint8_t* data,
@@ -85,7 +95,8 @@ protected:
     Compressor& operator = ( Compressor&& ) = delete;
 
     /** @return an upper bound of the compressed output for a given size. */
-    virtual size_t getCompressBound( const size_t size ) const = 0;
+    virtual size_t getCompressBound( const size_t size ) const
+        { LBUNIMPLEMENTED; return size; }
 
     /** @return the optimal chunk size for this compressor */
     virtual size_t getChunkSize() const { return LB_64KB; }
@@ -95,10 +106,11 @@ protected:
      *
      * @param data pointer to data to compress
      * @param size number of bytes to compress
-     * @param output pre-allocated output chunk of getCompressBound( chunkSize )
+     * @param output pre-allocated output chunk of size getCompressBound( size )
      */
-    virtual void compress( const uint8_t* data LB_UNUSED, size_t size LB_UNUSED,
-                           Result& output LB_UNUSED ) { LBUNIMPLEMENTED }
+    virtual void compressChunk( const uint8_t* data LB_UNUSED,
+                                size_t size LB_UNUSED,
+                                Result& output LB_UNUSED ) { LBUNIMPLEMENTED }
     /**
      * Decompress the given chunk.
      *
@@ -107,10 +119,10 @@ protected:
      * @param data pointer to pre-allocated memory for the decompressed data
      * @param size decompressed data size
      */
-    virtual void decompress( const uint8_t* input LB_UNUSED,
-                             size_t inputSize LB_UNUSED,
-                             uint8_t* data LB_UNUSED,
-                             size_t size LB_UNUSED ) { LBUNIMPLEMENTED }
+    virtual void decompressChunk( const uint8_t* input LB_UNUSED,
+                                  size_t inputSize LB_UNUSED,
+                                  uint8_t* data LB_UNUSED,
+                                  size_t size LB_UNUSED ) { LBUNIMPLEMENTED }
 
     Results compressed;
 };

@@ -51,8 +51,8 @@ size_t CompressorZSTD< level >::getCompressBound( const size_t size ) const
 }
 
 template< int level >
-void CompressorZSTD< level >::compress( const uint8_t* const data,
-                                        const size_t size, Result& output )
+void CompressorZSTD< level >::compressChunk( const uint8_t* const data,
+                                             const size_t size, Result& output )
 {
     if( !_initialized )
         return;
@@ -63,9 +63,10 @@ void CompressorZSTD< level >::compress( const uint8_t* const data,
 }
 
 template< int level > void
-CompressorZSTD< level >::decompress( const uint8_t* const input,
-                                     const size_t inputSize,
-                                     uint8_t* const data, const size_t size )
+CompressorZSTD< level >::decompressChunk( const uint8_t* const input,
+                                          const size_t inputSize,
+                                          uint8_t* const data,
+                                          const size_t size )
 {
     if( _initialized )
         ZSTD_decompress( data, size, input, inputSize );

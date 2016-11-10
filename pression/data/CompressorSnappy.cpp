@@ -37,8 +37,8 @@ size_t CompressorSnappy::getCompressBound( const size_t size ) const
     return snappy::MaxCompressedLength( size );
 }
 
-void CompressorSnappy::compress( const uint8_t* const data, size_t size,
-                                 Result& output )
+void CompressorSnappy::compressChunk( const uint8_t* const data, size_t size,
+                                      Result& output )
 {
     if( !_initialized )
         return;
@@ -48,9 +48,9 @@ void CompressorSnappy::compress( const uint8_t* const data, size_t size,
     output.setSize( size );
 }
 
-void CompressorSnappy::decompress( const uint8_t* const input,
-                                   const size_t inputSize, uint8_t* const data,
-                                   size_t )
+void CompressorSnappy::decompressChunk( const uint8_t* const input,
+                                        const size_t inputSize,
+                                        uint8_t* const data, size_t )
 {
     if( _initialized )
         snappy::RawUncompress( (const char*)input, inputSize, (char*)data );

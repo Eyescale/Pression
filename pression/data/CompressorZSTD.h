@@ -32,9 +32,9 @@ public:
 
     size_t getCompressBound( const size_t size ) const override;
     size_t getChunkSize() const override { return LB_128KB; }
-    void compress( const uint8_t* data, size_t size, Result& output ) override;
-    void decompress( const uint8_t* input, size_t inputSize,
-                     uint8_t* data, size_t size ) override;
+    void compressChunk( const uint8_t* data, size_t size, Result& output ) final;
+    void decompressChunk( const uint8_t* input, size_t inputSize,
+                          uint8_t* data, size_t size ) final;
 };
 }
 }

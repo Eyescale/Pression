@@ -64,7 +64,7 @@ CompressorInfo Registry::choose()
     CompressorInfo candidate;
     float rating = powf( 1.0f, .3f );
 
-    for( const CompressorInfo& info : _impl->compressorInfos )
+    for( const auto& info : _impl->compressorInfos )
     {
         float newRating = powf( info.speed, .3f ) / info.ratio;
         if( newRating > rating )
@@ -78,7 +78,7 @@ CompressorInfo Registry::choose()
 
 CompressorInfo Registry::find( const std::string& name )
 {
-    for( const CompressorInfo& info : _impl->compressorInfos )
+    for( const auto& info : _impl->compressorInfos )
         if( info.name == name )
             return info;
     return CompressorInfo();

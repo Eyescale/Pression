@@ -35,8 +35,8 @@ const bool _initialized =
         { "pression::data::CompressorLZF", .69f, .25f });
 }
 
-void CompressorLZF::compress( const uint8_t* const data, const size_t size,
-                              Result& output )
+void CompressorLZF::compressChunk( const uint8_t* const data, const size_t size,
+                                   Result& output )
 {
     if( !_initialized )
         return;
@@ -44,8 +44,9 @@ void CompressorLZF::compress( const uint8_t* const data, const size_t size,
         lzf_compress( data, size, output.getData(), output.getMaxSize( )));
 }
 
-void CompressorLZF::decompress( const uint8_t* input, const size_t inputSize,
-                                uint8_t* const data, const size_t size )
+void CompressorLZF::decompressChunk( const uint8_t* input,
+                                     const size_t inputSize,
+                                     uint8_t* const data, const size_t size )
 {
     if( !_initialized )
         return;

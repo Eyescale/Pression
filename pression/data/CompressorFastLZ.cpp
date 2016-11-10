@@ -32,8 +32,8 @@ const bool _initialized =
         { "pression::data::CompressorFastLZ", .70f, .25f });
 }
 
-void CompressorFastLZ::compress( const uint8_t* const data, const size_t size,
-                                 Result& output )
+void CompressorFastLZ::compressChunk( const uint8_t* const data,
+                                      const size_t size, Result& output )
 {
     if( !_initialized )
         return;
@@ -42,8 +42,9 @@ void CompressorFastLZ::compress( const uint8_t* const data, const size_t size,
 }
 
 
-void CompressorFastLZ::decompress( const uint8_t* input, const size_t inputSize,
-                                   uint8_t* const data, const size_t size )
+void CompressorFastLZ::decompressChunk(
+    const uint8_t* input, const size_t inputSize,
+    uint8_t* const data, const size_t size )
 {
     if( !_initialized )
         return;
