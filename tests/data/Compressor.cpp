@@ -84,14 +84,18 @@ void _testData( const pression::data::CompressorInfo& info,
     compressor->decompress( compressed, result.getData(), size );
     const float decompressTime = clock.getTimef();
     const size_t compressedSize = pression::data::getDataSize( compressed );
+    if( compressTime == 0.f || decompressTime == 0.f ) // data too small, ignore
+        return;
 
     TEST( ::memcmp( result.getData(), data, size ) == 0 );
     std::cout  << std::setw(20) << name << ", " << info.name
                << std::setfill(' ') << ", " << std::setw(10) << size << ", "
                << std::setw(10) << compressedSize << ", " << std::setw(10)
-               << float(size) / 1024.f / 1024.f * 1000.f / compressTime
+               << float(size) / 1024.f / 1024.f * 1000.f /  1024.f /
+                  compressTime
                << ", " << std::setw(10)
-               << float(size) / 1024.f / 1024.f * 1000.f / decompressTime
+               << float(size) / 1024.f / 1024.f * 1000.f /  1024.f /
+                  decompressTime
                << std::endl;
     _size += size;
     _result += compressedSize;
@@ -158,7 +162,7 @@ void _testFile( const int argc, char** argv )
     std::cout.setf( std::ios::right, std::ios::adjustfield );
     std::cout.precision( 5 );
     std::cout << "                File, Compressor, Uncompress, "
-              << "Compressed,   comp MB/s, decomp MB/s" << std::endl;
+              << "Compressed,   comp GB/s, decomp GB/s" << std::endl;
     const auto& infos = getCompressors();
     for( const auto& info : infos )
     {
@@ -171,9 +175,9 @@ void _testFile( const int argc, char** argv )
         {
             lunchbox::MemoryMap map( file );
             const uint8_t* data = map.getAddress< const uint8_t >();
-            const size_t size = map.getSize();
+            const size_t size = std::min( size_t( LB_4GB ), map.getSize( ));
 
-            if( !data || size > LB_1GB )
+            if( !data )
                 continue;
 
             const std::string name = lunchbox::getFilename( file );
@@ -185,9 +189,11 @@ void _testFile( const int argc, char** argv )
         std::cout << std::setw(24) << "Total, " << info.name
                   << std::setfill(' ') << ", " << std::setw(10) << _size << ", "
                   << std::setw(10) << _result << ", " << std::setw(10)
-                  << float(_size) / 1024.f / 1024.f * 1000.f / _compressionTime
+                  << float(_size) / 1024.f / 1024.f * 1000.f / 1024.f /
+                     _compressionTime
                   << ", " << std::setw(10)
-                  << float(_size) / 1024.f / 1024.f * 1000.f /_decompressionTime
+                  << float(_size) / 1024.f / 1024.f * 1000.f / 1024.f /
+                     _decompressionTime
                   << std::endl
                   << "    info->ratio = " << float(_result) / float(_size)
                   << "f;" << std::endl
@@ -223,9 +229,11 @@ void _testRandom()
         std::cout << std::setw(22) << "Total, " << info.name
                   << std::setfill(' ') << ", " << std::setw(10) << _size
                   << ", " << std::setw(10) << _result << ", " << std::setw(10)
-                  << float(_size) / 1024.f / 1024.f * 1000.f / _compressionTime
+                  << float(_size) / 1024.f / 1024.f * 1000.f /  1024.f /
+                     _compressionTime
                   << ", " << std::setw(10)
-                  << float(_size) / 1024.f / 1024.f * 1000.f /_decompressionTime
+                  << float(_size) / 1024.f / 1024.f * 1000.f / 1024.f /
+                     _decompressionTime
                   << std::endl;
    }
 

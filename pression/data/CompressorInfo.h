@@ -40,13 +40,14 @@ struct CompressorInfo
 
     bool operator == ( const CompressorInfo& rhs ) const
         { return name == rhs.name; }
+    bool operator != ( const CompressorInfo& rhs ) const
+        { return name != rhs.name; }
 
-    std::string name;
+    std::string name; //!< Fully qualified C++ class name
     float ratio; //!< Normalized 0..1 size after compression
     float speed; //!< Relative speed compared to RLE compressor
 
-    typedef std::function< Compressor* ()> Constructor;
-    Constructor create;
+    std::function< Compressor* ()> create; //!< Constructor of compressor
 };
 }
 }
