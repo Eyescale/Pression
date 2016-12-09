@@ -28,8 +28,7 @@ namespace data
 namespace
 {
 const bool _initialized =
-    Registry::getInstance().registerEngine< CompressorSnappy >(
-        { "pression::data::CompressorSnappy", .70f, .47f });
+    Registry::getInstance().registerEngine< CompressorSnappy >({ .70f, .47f });
 }
 
 size_t CompressorSnappy::getCompressBound( const size_t size ) const

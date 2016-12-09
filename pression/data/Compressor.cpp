@@ -25,6 +25,14 @@ namespace pression
 {
 namespace data
 {
+
+Compressor::~Compressor()
+{
+    if( _in > 0 )
+        LBDEBUG << _in << " -> " << _out << " ("
+                << int( float(_out) / float(_in) * 100.f ) << "%) " <<std::endl;
+}
+
 const Compressor::Results& Compressor::compress( const uint8_t* data,
                                                  size_t size )
 {
@@ -49,6 +57,8 @@ const Compressor::Results& Compressor::compress( const uint8_t* data,
     compressed[0].reserve( getCompressBound( size ));
     compressChunk( data, size, compressed[0] );
 #endif
+    _in += size;
+    _out += getDataSize( compressed );
     return compressed;
 }
 

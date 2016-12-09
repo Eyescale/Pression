@@ -30,9 +30,10 @@ public:
     CompressorLZF() : Compressor() {}
     virtual ~CompressorLZF() {}
 
+    static std::string getName() { return "pression::data::CompressorLZF"; }
     size_t getCompressBound( const size_t size ) const override
         { return size_t( float( size ) * 1.1f ) + 8; }
-    void compressChunk( const uint8_t* data, size_t size, Result& result ) final;
+    void compressChunk( const uint8_t* data, size_t size, Result& result )final;
     void decompressChunk( const uint8_t* input, size_t inputSize,
                      uint8_t* data, size_t size ) final;
 };

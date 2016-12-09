@@ -31,8 +31,7 @@ namespace data
 namespace
 {
 const bool _initialized =
-    Registry::getInstance().registerEngine< CompressorLZF >(
-        { "pression::data::CompressorLZF", .69f, .25f });
+    Registry::getInstance().registerEngine< CompressorLZF >({ .69f, .25f });
 }
 
 void CompressorLZF::compressChunk( const uint8_t* const data, const size_t size,

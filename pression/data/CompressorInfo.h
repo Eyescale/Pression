@@ -35,8 +35,8 @@ struct CompressorInfo
         , create( []{ return nullptr; })
     {}
 
-    CompressorInfo( const std::string& n, const float r, const float s )
-        : name( n ), ratio( r ), speed( s ), create( []{ return nullptr; }) {}
+    CompressorInfo( const float r, const float s )
+        : ratio( r ), speed( s ), create( []{ return nullptr; }) {}
 
     bool operator == ( const CompressorInfo& rhs ) const
         { return name == rhs.name; }

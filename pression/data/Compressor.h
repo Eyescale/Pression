@@ -43,7 +43,7 @@ namespace data
 class Compressor
 {
 public:
-    virtual ~Compressor() {} //!< @internal
+    virtual PRESSIONDATA_API ~Compressor(); //!< @internal
 
     typedef lunchbox::Bufferb Result; //!< Single result data buffer
     typedef std::vector< Result > Results; //!< Set of result chunks
@@ -88,7 +88,7 @@ public:
     const Results& getCompressedData() const { return compressed; }
 
 protected:
-    Compressor() {}
+    Compressor() : _in( 0 ), _out( 0 ) {}
     Compressor( const Compressor& ) = delete;
     Compressor( Compressor&& ) = delete;
     Compressor& operator = ( const Compressor& ) = delete;
@@ -125,6 +125,10 @@ protected:
                                   size_t size LB_UNUSED ) { LBUNIMPLEMENTED }
 
     Results compressed;
+
+private:
+    size_t _in;
+    size_t _out;
 };
 
 inline size_t getDataSize( const Compressor::Results& results )

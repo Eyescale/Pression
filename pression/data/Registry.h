@@ -46,6 +46,7 @@ public:
      */
     template< class P > bool registerEngine( CompressorInfo info )
     {
+        info.name = P::getName();
         info.create = std::bind( boost::factory< P* >( ));
         return _registerEngine( info );
     }

@@ -36,8 +36,7 @@ namespace data
 namespace
 {
 const bool _initialized =
-    Registry::getInstance().registerEngine< CompressorRLE >(
-        { "pression::data::CompressorRLE", .98f, 1.f });
+    Registry::getInstance().registerEngine< CompressorRLE >({ .98f, 1.f });
 
 template< typename T >
 inline void _compress( const uint8_t* input, const size_t size,

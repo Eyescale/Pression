@@ -28,8 +28,7 @@ namespace data
 namespace
 {
 const bool _initialized =
-    Registry::getInstance().registerEngine< CompressorFastLZ >(
-        { "pression::data::CompressorFastLZ", .70f, .25f });
+    Registry::getInstance().registerEngine< CompressorFastLZ >({ .70f, .25f });
 }
 
 void CompressorFastLZ::compressChunk( const uint8_t* const data,

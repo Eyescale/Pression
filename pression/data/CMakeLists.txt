@@ -3,7 +3,12 @@
 
 set(PRESSIONDATA_PUBLIC_HEADERS
   Compressor.h
+  CompressorFastLZ.h
   CompressorInfo.h
+  CompressorLZF.h
+  CompressorRLE.h
+  CompressorSnappy.h
+  CompressorZSTD.h
   Registry.h
   types.h
 )
@@ -30,15 +35,10 @@ endif()
 
 set(PRESSIONDATA_COMPRESSORS
   CompressorFastLZ.cpp
-  CompressorFastLZ.h
   CompressorLZF.cpp
-  CompressorLZF.h
   CompressorRLE.cpp
-  CompressorRLE.h
   CompressorSnappy.cpp
-  CompressorSnappy.h
   CompressorZSTD.cpp
-  CompressorZSTD.h
   fastlz/fastlz.c
   fastlz/fastlz.h
   liblzf/lzf.h
