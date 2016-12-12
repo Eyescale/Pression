@@ -44,24 +44,23 @@ Compressor::Compressor()
 
 Compressor::~Compressor()
 {
-    for ( size_t i = 0; i < _results.size(); i++ )
-        delete ( _results[i] );
+    for( auto result : _results )
+        delete result;
 
     _results.clear();
 }
 
-Compressor::Functions::Functions( const unsigned name_,
-                                  GetInfo_t getInfo_,
+Compressor::Functions::Functions( const unsigned name_, GetInfo_t getInfo_,
                                   NewCompressor_t newCompressor_,
                                   NewCompressor_t newDecompressor_,
                                   Decompress_t decompress_,
                                   IsCompatible_t isCompatible_ )
-        : name( name_ )
-        , getInfo( getInfo_ )
-        , newCompressor( newCompressor_ )
-        , newDecompressor( newDecompressor_ )
-        , decompress( decompress_ )
-        , isCompatible( isCompatible_ )
+    : name( name_ )
+    , getInfo( getInfo_ )
+    , newCompressor( newCompressor_ )
+    , newDecompressor( newDecompressor_ )
+    , decompress( decompress_ )
+    , isCompatible( isCompatible_ )
 {}
 
 void Compressor::registerEngine( const Compressor::Functions& functions )

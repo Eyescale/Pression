@@ -2,8 +2,8 @@
 
 # git master
 
-# Release 1.2 (09-12-2016)
-
+* [23](https://github.com/Eyescale/Pression/pull/23):
+  Introduce new lossless data compression API.
 * [20](https://github.com/Eyescale/Pression/pull/20):
   Add ZStandard byte compressor
 

@@ -2,8 +2,8 @@
 # Copyright (c) 2012-2016 Stefan Eilemann <eile@eyescale.ch>
 
 cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
-project(Pression VERSION 1.2.0)
-set(Pression_VERSION_ABI 2)
+project(Pression VERSION 2.0.0)
+set(Pression_VERSION_ABI 3)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake
                               ${CMAKE_SOURCE_DIR}/CMake/common)
@@ -16,12 +16,14 @@ set(PRESSION_DESCRIPTION "Compressor, decompressor, uploader and downloader plug
 set(PRESSION_MAINTAINER "Stefan Eilemann <eile@eyescale.ch>")
 set(PRESSION_LICENSE LGPL)
 set(COMMON_PROJECT_DOMAIN ch.eyescale)
+set(PRESSION_DEB_DEPENDS libboost-program-options-dev)
+set(PRESSION_PORT_DEPENDS boost)
 
 include(Common)
 
 set(PRESSION_INCLUDE_NAME pression)
 
-common_find_package(LibJpegTurbo)
+common_find_package(Boost REQUIRED COMPONENTS program_options)
 common_find_package(Lunchbox REQUIRED)
 common_find_package(OpenMP)
 common_find_package_post()

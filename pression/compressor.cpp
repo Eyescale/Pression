@@ -38,9 +38,9 @@ class Compressor : public PluginInstance
 public:
     Compressor() {}
 
-    Compressor( pression::PluginRegistry& registry, const uint32_t name )
+    Compressor( const uint32_t name )
     {
-        setup( registry, name );
+        setup( name );
     }
 
     ~Compressor() { clear(); }
@@ -52,7 +52,7 @@ public:
         PluginInstance::clear();
     }
 
-    bool setup( pression::PluginRegistry& registry, const uint32_t name )
+    bool setup( const uint32_t name )
     {
         if( instance && info.name == name )
             return true;
@@ -62,7 +62,7 @@ public:
         if( name <= EQ_COMPRESSOR_NONE )
             return true;
 
-        plugin = registry.findPlugin( name );
+        plugin = pression::PluginRegistry::getInstance().findPlugin( name );
         LBASSERT( plugin );
         if( !plugin )
             return false;
@@ -84,8 +84,8 @@ Compressor::Compressor()
     LB_TS_THREAD( _thread );
 }
 
-Compressor::Compressor( PluginRegistry& registry, const uint32_t name )
-    : impl_( new detail::Compressor( registry, name ))
+Compressor::Compressor( const uint32_t name )
+    : impl_( new detail::Compressor( name ))
 {
     LB_TS_THREAD( _thread );
 }
@@ -111,8 +111,7 @@ const EqCompressorInfo& Compressor::getInfo() const
     return impl_->info;
 }
 
-uint32_t Compressor::choose( const PluginRegistry& registry,
-                             const uint32_t tokenType, const float minQuality,
+uint32_t Compressor::choose( const uint32_t tokenType, const float minQuality,
                              const bool ignoreAlpha )
 {
     LBASSERT( tokenType != EQ_COMPRESSOR_DATATYPE_NONE );
@@ -122,7 +121,7 @@ uint32_t Compressor::choose( const PluginRegistry& registry,
     candidate.quality = 1.0f;
     candidate.speed = 1.0f;
 
-    const Plugins& plugins = registry.getPlugins();
+    const Plugins& plugins = PluginRegistry::getInstance().getPlugins();
     for( const Plugin* plugin : plugins )
     {
         const CompressorInfos& infos = plugin->getInfos();
@@ -146,16 +145,15 @@ uint32_t Compressor::choose( const PluginRegistry& registry,
     return candidate.name;
 }
 
-bool Compressor::setup( PluginRegistry& registry, const uint32_t name )
+bool Compressor::setup( const uint32_t name )
 {
-    return impl_->setup( registry, name );
+    return impl_->setup( name );
 }
 
-bool Compressor::setup( PluginRegistry& registry, const uint32_t tokenType,
-                        const float minQuality, const bool ignoreMSE )
+bool Compressor::setup( const uint32_t tokenType, const float minQuality,
+                        const bool ignoreMSE )
 {
-    return impl_->setup( registry,
-                         choose( registry, tokenType, minQuality, ignoreMSE ));
+    return impl_->setup( choose( tokenType, minQuality, ignoreMSE ));
 }
 
 bool Compressor::realloc()

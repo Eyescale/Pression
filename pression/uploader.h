@@ -1,5 +1,5 @@
 
-/* Copyright (c) 2013-2014, Stefan.Eilemann@epfl.ch
+/* Copyright (c) 2013-2016, Stefan.Eilemann@epfl.ch
  *
  * This file is part of Pression <https://github.com/Eyescale/Pression>
  *
@@ -38,11 +38,10 @@ public:
     /**
      * Construct a new, named uploader instance.
      *
-     * @param from the plugin registry.
      * @param name the name of the uploader.
-     * @version 1.7.1
+     * @version 2.0
      */
-    PRESSION_API Uploader( PluginRegistry& from, const uint32_t name );
+    PRESSION_API Uploader( const uint32_t name );
 
     /** Destruct this uploader. @version 1.7.1 */
     PRESSION_API virtual ~Uploader();
@@ -71,10 +70,9 @@ public:
      * This convenience method searches all compressors in all plugins to find
      * the uploader which supports the given parameters and provides the highest
      * speed.
-     * @version 1.7.1
+     * @version 2.0
      */
-    static PRESSION_API uint32_t choose( const PluginRegistry& from,
-                                         const uint32_t externalFormat,
+    static PRESSION_API uint32_t choose( const uint32_t externalFormat,
                                          const uint32_t internalFormat,
                                          const uint64_t capabilities,
                                          const GLEWContext* gl );
@@ -85,20 +83,18 @@ public:
     /**
      * Set up a new, named uploader instance.
      *
-     * @param from the plugin registry
      * @param name the name of the uploader
      * @return true on success, false otherwise.
-     * @version 1.7.1
+     * @version 2.0
      */
-    PRESSION_API bool setup( PluginRegistry& from, const uint32_t name );
+    PRESSION_API bool setup( const uint32_t name );
 
     /**
      * Set up a new, auto-selected uploader instance.
      * @sa choose() for parameters.
-     * @version 1.7.1
+     * @version 2.0
      */
-    PRESSION_API bool setup( PluginRegistry& from,
-                             const uint32_t externalFormat,
+    PRESSION_API bool setup( const uint32_t externalFormat,
                              const uint32_t internalFormat,
                              const uint64_t capabilities,
                              const GLEWContext* gl );

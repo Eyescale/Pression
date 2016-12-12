@@ -1,5 +1,5 @@
 
-/* Copyright (c) 2013-2015, Stefan.Eilemann@epfl.ch
+/* Copyright (c) 2013-2016, Stefan.Eilemann@epfl.ch
  *
  * This file is part of Pression <https://github.com/Eyescale/Pression>
  *
@@ -20,6 +20,7 @@
 #ifndef PRESSION_COMPRESSORRESULT_H
 #define PRESSION_COMPRESSORRESULT_H
 
+#include <pression/types.h>
 #include <pression/plugins/compressorTypes.h> // EQ_COMPRESSOR_INVALID
 #include <lunchbox/array.h> // used inline as CompressorChunk
 

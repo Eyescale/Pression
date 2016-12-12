@@ -15,34 +15,27 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef PRESSION_PLUGIN_COMPRESSORZSTD
-#define PRESSION_PLUGIN_COMPRESSORZSTD
+#pragma once
 
-#include "compressor.h"
+#include <pression/data/Compressor.h>
 
 namespace pression
 {
-namespace plugin
+namespace data
 {
 
-class CompressorZSTD : public Compressor
+template< int level > class CompressorZSTD : public Compressor
 {
 public:
     CompressorZSTD() : Compressor() {}
     virtual ~CompressorZSTD() {}
 
-    void compress( const void* const inData, const eq_uint64_t nPixels,
-                   const bool useAlpha ) override;
-
-    static void decompress( const void* const* inData,
-                            const eq_uint64_t* const inSizes,
-                            unsigned nInputs, void* const outData,
-                            eq_uint64_t* const outDims, eq_uint64_t flags,
-                            void* const );
-
-    static Compressor* getNewCompressor( const unsigned /*name*/ )
-        { return new CompressorZSTD; }
+    static std::string getName();
+    size_t getCompressBound( const size_t size ) const override;
+    size_t getChunkSize() const override { return LB_128KB; }
+    void compressChunk( const uint8_t* data, size_t size, Result& output )final;
+    void decompressChunk( const uint8_t* input, size_t inputSize,
+                          uint8_t* data, size_t size ) final;
 };
 }
 }
-#endif

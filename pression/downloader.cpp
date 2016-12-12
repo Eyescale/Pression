@@ -1,5 +1,5 @@
 
-/* Copyright (C) 2013-2014, Stefan.Eilemann@epfl.ch
+/* Copyright (C) 2013-2016, Stefan.Eilemann@epfl.ch
  *
  * This file is part of Pression <https://github.com/Eyescale/Pression>
  *
@@ -36,10 +36,9 @@ class Downloader : public PluginInstance
 public:
     Downloader() {}
 
-    Downloader( pression::PluginRegistry& from, const uint32_t name,
-                const GLEWContext* gl )
+    Downloader( const uint32_t name, const GLEWContext* gl )
     {
-        LBCHECK( setup( from, name, gl ));
+        LBCHECK( setup( name, gl ));
     }
 
     ~Downloader()
@@ -54,8 +53,7 @@ public:
         PluginInstance::clear();
     }
 
-    bool setup( pression::PluginRegistry& from, const uint32_t name,
-                const GLEWContext* gl )
+    bool setup( const uint32_t name, const GLEWContext* gl )
     {
         if( name == info.name )
         {
@@ -71,7 +69,7 @@ public:
             return true;
         }
 
-        plugin = from.findPlugin( name );
+        plugin = pression::PluginRegistry::getInstance().findPlugin( name );
         LBASSERT( plugin );
         if( !plugin )
         {
@@ -108,9 +106,8 @@ Downloader::Downloader()
     LB_TS_THREAD( _thread );
 }
 
-Downloader::Downloader( PluginRegistry& from, const uint32_t name,
-                        const GLEWContext* gl )
-    : impl_( new detail::Downloader( from, name, gl ))
+Downloader::Downloader( const uint32_t name, const GLEWContext* gl )
+    : impl_( new detail::Downloader( name, gl ))
 {
     LB_TS_THREAD( _thread );
 }
@@ -190,14 +187,13 @@ private:
 };
 }
 
-uint32_t Downloader::choose( const PluginRegistry& from,
-                             const uint32_t internalFormat,
+uint32_t Downloader::choose( const uint32_t internalFormat,
                              const float minQuality, const bool ignoreAlpha,
                              const uint64_t capabilities,
                              const GLEWContext* gl )
 {
     Finder finder( internalFormat, minQuality, ignoreAlpha, capabilities, gl );
-    from.accept( finder );
+    PluginRegistry::getInstance().accept( finder );
     return finder.current.name;
 }
 
@@ -206,18 +202,17 @@ const EqCompressorInfo& Downloader::getInfo() const
     return impl_->info;
 }
 
-bool Downloader::setup( PluginRegistry& from, const uint32_t name,
-                        const GLEWContext* gl )
+bool Downloader::setup( const uint32_t name, const GLEWContext* gl )
 {
-    return impl_->setup( from, name, gl );
+    return impl_->setup( name, gl );
 }
 
-bool Downloader::setup( PluginRegistry& from,const uint32_t internalFormat,
+bool Downloader::setup( const uint32_t internalFormat,
                         const float minQuality, const bool ignoreAlpha,
                         const uint64_t capabilities,const GLEWContext* gl)
 {
-    return impl_->setup( from, choose( from, internalFormat, minQuality,
-                                       ignoreAlpha, capabilities, gl ), gl );
+    return impl_->setup( choose( internalFormat, minQuality, ignoreAlpha,
+                                 capabilities, gl ), gl );
 }
 
 void Downloader::clear()

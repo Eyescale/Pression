@@ -34,9 +34,9 @@ class Decompressor : public PluginInstance
 public:
     Decompressor() {}
 
-    Decompressor( pression::PluginRegistry& registry, const uint32_t name )
+    Decompressor( const uint32_t name )
     {
-        setup( registry, name );
+        setup( name );
     }
 
     ~Decompressor()
@@ -51,7 +51,7 @@ public:
         PluginInstance::clear();
     }
 
-    bool setup( pression::PluginRegistry& registry, const uint32_t name )
+    bool setup( const uint32_t name )
     {
         if( plugin && info.name == name )
             return true;
@@ -61,7 +61,7 @@ public:
         if( name <= EQ_COMPRESSOR_NONE )
             return true;
 
-        plugin = registry.findPlugin( name );
+        plugin = pression::PluginRegistry::getInstance().findPlugin( name );
         LBASSERTINFO( plugin,
                       "Can't find plugin for decompressor " << name );
         if( !plugin )
@@ -85,8 +85,8 @@ Decompressor::Decompressor()
     LB_TS_THREAD( _thread );
 }
 
-Decompressor::Decompressor( PluginRegistry& registry, const uint32_t name )
-    : impl_( new detail::Decompressor( registry, name ))
+Decompressor::Decompressor( const uint32_t name )
+    : impl_( new detail::Decompressor( name ))
 {
     LB_TS_THREAD( _thread );
 }
@@ -107,9 +107,9 @@ bool Decompressor::uses( const uint32_t name ) const
     return isGood() && impl_->info.name == name;
 }
 
-bool Decompressor::setup( PluginRegistry& from, const uint32_t name )
+bool Decompressor::setup( const uint32_t name )
 {
-    return impl_->setup( from, name );
+    return impl_->setup( name );
 }
 
 void Decompressor::clear()

@@ -19,6 +19,7 @@
 #define PRESSION_TYPES_H
 
 #include <pression/defines.h>
+#include <pression/plugins/compressor.h>
 #include <lunchbox/visitorResult.h> // enum
 #include <lunchbox/types.h>
 
@@ -28,6 +29,7 @@ typedef std::vector< EqCompressorInfo > EqCompressorInfos;
 typedef EqCompressorInfos::const_iterator EqCompressorInfosCIter;
 /** @endcond */
 
+/** Image compression and CPU-GPU transfer plugin API */
 namespace pression
 {
 

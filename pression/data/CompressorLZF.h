@@ -1,5 +1,5 @@
 
-/* Copyright (c) 2012-2013, Stefan Eilemann <eile@eyescale.ch>
+/* Copyright (c) 2012-2016, Stefan Eilemann <eile@eyescale.ch>
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License version 2.1 as published
@@ -15,14 +15,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef PRESSION_PLUGIN_COMPRESSORLZF
-#define PRESSION_PLUGIN_COMPRESSORLZF
+#pragma once
 
-#include "compressor.h"
+#include <pression/data/Compressor.h>
 
 namespace pression
 {
-namespace plugin
+namespace data
 {
 
 class CompressorLZF : public Compressor
@@ -31,18 +30,12 @@ public:
     CompressorLZF() : Compressor() {}
     virtual ~CompressorLZF() {}
 
-    void compress( const void* const inData, const eq_uint64_t nPixels,
-                   const bool useAlpha ) override;
-
-    static void decompress( const void* const* inData,
-                            const eq_uint64_t* const inSizes,
-                            const unsigned nInputs, void* const outData,
-                            eq_uint64_t* const outDims, const eq_uint64_t flags,
-                            void* const );
-
-    static Compressor* getNewCompressor( const unsigned /*name*/ )
-        { return new CompressorLZF; }
+    static std::string getName() { return "pression::data::CompressorLZF"; }
+    size_t getCompressBound( const size_t size ) const override
+        { return size_t( float( size ) * 1.1f ) + 8; }
+    void compressChunk( const uint8_t* data, size_t size, Result& result )final;
+    void decompressChunk( const uint8_t* input, size_t inputSize,
+                     uint8_t* data, size_t size ) final;
 };
 }
 }
-#endif
