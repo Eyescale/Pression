@@ -5,3 +5,4 @@ CMakeLists.txt.user
 Makefile
 ___*
 build/
+pression/compressor/zstd/

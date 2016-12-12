@@ -27,10 +27,19 @@ set(SNAPPY_MINOR 1)
 set(SNAPPY_PATCHLEVEL 3)
 configure_file(snappy/snappy-stubs-public.h.in
   ${PROJECT_BINARY_DIR}/include/snappy-stubs-public.h @ONLY)
+if(MSVC)
+  file(WRITE ${PROJECT_BINARY_DIR}/include/config.h
+    "#pragma once\n\n"
+    "#include <BaseTsd.h>\n"
+    "typedef SSIZE_T ssize_t;\n\n")
+endif()
 
 if(CMAKE_COMPILER_IS_GCC OR CMAKE_COMPILER_IS_CLANG)
   set_source_files_properties(${SNAPPY_SOURCES} PROPERTIES COMPILE_FLAGS
     "-Wno-unused-parameter -Wno-header-hygiene -Wno-sign-compare")
+elseif(MSVC)
+  set_source_files_properties(${SNAPPY_SOURCES} PROPERTIES COMPILE_FLAGS
+    "/w")
 endif()
 
 set(PRESSIONDATA_COMPRESSORS
@@ -77,3 +86,7 @@ endif()
 set(PRESSIONDATA_INCLUDE_NAME pression/data)
 set(PRESSIONDATA_NAMESPACE pressiondata)
 common_library(PressionData)
+
+if(MSVC)
+  target_compile_definitions(PressionData PRIVATE HAVE_CONFIG_H) # for snappy
+endif()

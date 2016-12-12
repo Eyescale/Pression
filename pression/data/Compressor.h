@@ -121,7 +121,7 @@ protected:
      */
     virtual void decompressChunk( const uint8_t* input LB_UNUSED,
                                   size_t inputSize LB_UNUSED,
-                                  uint8_t* data LB_UNUSED,
+                                  uint8_t* const data LB_UNUSED,
                                   size_t size LB_UNUSED ) { LBUNIMPLEMENTED }
 
     Results compressed;
