@@ -19,6 +19,7 @@
 
 #include "Compressor.h"
 
+#include <algorithm>
 #include <stdexcept>
 
 namespace pression
@@ -43,7 +44,7 @@ const Compressor::Results& Compressor::compress( const uint8_t* data,
     compressed.resize( nChunks );
 
 #pragma omp parallel for
-    for( size_t i = 0; i < nChunks; ++i )
+    for( int i = 0; i < int(nChunks); ++i )
     {
         const size_t start = i * chunkSize;
         const size_t end = std::min( (i+1) * chunkSize, size );
@@ -99,7 +100,7 @@ void Compressor::decompress(
     }
 
 #pragma omp parallel for
-    for( size_t i = 0; i < inputs.size(); ++i )
+    for( int i = 0; i < int(inputs.size( )); ++i )
     {
         const size_t start = i * chunkSize;
         const size_t end = std::min( (i+1) * chunkSize, size );

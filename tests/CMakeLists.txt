@@ -5,6 +5,7 @@
 include(InstallFiles)
 
 set(TEST_LIBRARIES PressionData ${Boost_PROGRAM_OPTIONS_LIBRARY})
+add_definitions(-DBOOST_PROGRAM_OPTIONS_DYN_LINK) # Fix for windows and shared boost.
 
 include(CommonCTest)
 install_files(share/Pression/tests FILES ${TEST_FILES} COMPONENT examples)

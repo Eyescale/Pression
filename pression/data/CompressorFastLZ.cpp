@@ -37,7 +37,7 @@ void CompressorFastLZ::compressChunk( const uint8_t* const data,
     if( !_initialized )
         return;
 
-    output.setSize( fastlz_compress( data, size, output.getData( )));
+    output.setSize( fastlz_compress( data, int(size), output.getData( )));
 }
 
 
@@ -48,7 +48,7 @@ void CompressorFastLZ::decompressChunk(
     if( !_initialized )
         return;
 
-    fastlz_decompress( input, inputSize, data, size );
+    fastlz_decompress( input, int(inputSize), data, int(size) );
 }
 
 }

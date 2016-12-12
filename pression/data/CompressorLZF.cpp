@@ -40,7 +40,8 @@ void CompressorLZF::compressChunk( const uint8_t* const data, const size_t size,
     if( !_initialized )
         return;
     output.setSize(
-        lzf_compress( data, size, output.getData(), output.getMaxSize( )));
+        lzf_compress( data, uint32_t(size), output.getData(),
+                      output.getMaxSize( )));
 }
 
 void CompressorLZF::decompressChunk( const uint8_t* input,
@@ -50,7 +51,7 @@ void CompressorLZF::decompressChunk( const uint8_t* input,
     if( !_initialized )
         return;
 
-    lzf_decompress( input, inputSize, data, size );
+    lzf_decompress( input, uint32_t(inputSize), data, uint32_t(size) );
 }
 
 }
