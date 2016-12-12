@@ -91,12 +91,9 @@ void _testData( const pression::data::CompressorInfo& info,
     std::cout  << std::setw(20) << name << ", " << info.name
                << std::setfill(' ') << ", " << std::setw(10) << size << ", "
                << std::setw(10) << compressedSize << ", " << std::setw(10)
-               << float(size) / 1024.f / 1024.f * 1000.f /  1024.f /
-                  compressTime
-               << ", " << std::setw(10)
-               << float(size) / 1024.f / 1024.f * 1000.f /  1024.f /
-                  decompressTime
-               << std::endl;
+               << float(size) * 1000.f / LB_1GB / compressTime << ", "
+               << std::setw(10)
+               << float(size) * 1000.f / LB_1GB / decompressTime << std::endl;
     _size += size;
     _result += compressedSize;
     _compressionTime += compressTime;
@@ -189,11 +186,9 @@ void _testFile( const int argc, char** argv )
         std::cout << std::setw(24) << "Total, " << info.name
                   << std::setfill(' ') << ", " << std::setw(10) << _size << ", "
                   << std::setw(10) << _result << ", " << std::setw(10)
-                  << float(_size) / 1024.f / 1024.f * 1000.f / 1024.f /
-                     _compressionTime
-                  << ", " << std::setw(10)
-                  << float(_size) / 1024.f / 1024.f * 1000.f / 1024.f /
-                     _decompressionTime
+                  << float(_size) * 1000.f / LB_1GB / _compressionTime << ", "
+                  << std::setw(10)
+                  << float(_size) * 1000.f / LB_1GB / _decompressionTime
                   << std::endl
                   << "    info->ratio = " << float(_result) / float(_size)
                   << "f;" << std::endl
@@ -229,11 +224,9 @@ void _testRandom()
         std::cout << std::setw(22) << "Total, " << info.name
                   << std::setfill(' ') << ", " << std::setw(10) << _size
                   << ", " << std::setw(10) << _result << ", " << std::setw(10)
-                  << float(_size) / 1024.f / 1024.f * 1000.f /  1024.f /
-                     _compressionTime
-                  << ", " << std::setw(10)
-                  << float(_size) / 1024.f / 1024.f * 1000.f / 1024.f /
-                     _decompressionTime
+                  << float(_size) * 1000.f / LB_1GB / _compressionTime << ", "
+                  << std::setw(10)
+                  << float(_size) * 1000.f / LB_1GB / _decompressionTime
                   << std::endl;
    }
 
