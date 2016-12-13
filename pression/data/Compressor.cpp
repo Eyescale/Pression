@@ -81,6 +81,9 @@ void Compressor::decompress(
 {
     if( inputs.empty( ))
         return;
+    _in += size;
+    for( const auto& input : inputs )
+        _out += input.second;
 
     if( inputs.size() == 1 ) // compressor did not have OpenMP
     {
