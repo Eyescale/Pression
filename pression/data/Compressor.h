@@ -99,7 +99,7 @@ protected:
         { LBUNIMPLEMENTED; return size; }
 
     /** @return the optimal chunk size for this compressor */
-    virtual size_t getChunkSize() const { return LB_64KB; }
+    virtual size_t getChunkSize() const { return LB_8KB; }
 
     /**
      * Compress the given chunk.
