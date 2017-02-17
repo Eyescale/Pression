@@ -25,51 +25,54 @@ namespace pression
 {
 namespace plugin
 {
-
 class CompressorRLE4B : public Compressor
 {
 public:
-    CompressorRLE4B() : Compressor() {}
+    CompressorRLE4B()
+        : Compressor()
+    {
+    }
     virtual ~CompressorRLE4B() {}
+    void compress(const void* const inData, const eq_uint64_t nPixels,
+                  const bool useAlpha) override;
 
-    void compress( const void* const inData, const eq_uint64_t nPixels,
-                   const bool useAlpha ) override;
+    static void decompress(const void* const* inData,
+                           const eq_uint64_t* const inSizes,
+                           const unsigned nInputs, void* const outData,
+                           eq_uint64_t* const outDims, const eq_uint64_t flags,
+                           void* const);
 
-    static void decompress( const void* const* inData,
-                            const eq_uint64_t* const inSizes,
-                            const unsigned nInputs, void* const outData,
-                            eq_uint64_t* const outDims, const eq_uint64_t flags,
-                            void* const );
-
-
-    static Compressor* getNewCompressor( const unsigned /*name*/ )
-        { return new CompressorRLE4B; }
+    static Compressor* getNewCompressor(const unsigned /*name*/)
+    {
+        return new CompressorRLE4B;
+    }
 
 protected:
 };
 
-
-
 class CompressorDiffRLE4B : public CompressorRLE4B
 {
 public:
-    CompressorDiffRLE4B() : CompressorRLE4B() {}
+    CompressorDiffRLE4B()
+        : CompressorRLE4B()
+    {
+    }
     virtual ~CompressorDiffRLE4B() {}
-
     /** get a new instance of compressor RLE 4 bytes and swizzle data. */
-    static Compressor* getNewCompressor( const unsigned /*name*/ )
-        { return new CompressorDiffRLE4B; }
+    static Compressor* getNewCompressor(const unsigned /*name*/)
+    {
+        return new CompressorDiffRLE4B;
+    }
 
-    void compress( const void* const inData, const eq_uint64_t nPixels,
-                   const bool useAlpha ) override;
+    void compress(const void* const inData, const eq_uint64_t nPixels,
+                  const bool useAlpha) override;
 
-    static void decompress( const void* const* inData,
-                            const eq_uint64_t* const inSizes,
-                            const unsigned nInputs, void* const outData,
-                            eq_uint64_t* const outDims, const eq_uint64_t flags,
-                            void* const );
+    static void decompress(const void* const* inData,
+                           const eq_uint64_t* const inSizes,
+                           const unsigned nInputs, void* const outData,
+                           eq_uint64_t* const outDims, const eq_uint64_t flags,
+                           void* const);
 };
-
 }
 }
 #endif // PRESSION_PLUGIN_COMPRESSORRLE4B

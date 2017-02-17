@@ -21,13 +21,16 @@
 #ifndef PRESSION_COMPRESSOR_H
 #define PRESSION_COMPRESSOR_H
 
+#include <lunchbox/thread.h> // thread-safety macros
 #include <pression/api.h>
 #include <pression/types.h>
-#include <lunchbox/thread.h>         // thread-safety macros
 
 namespace pression
 {
-namespace detail { class Compressor; }
+namespace detail
+{
+class Compressor;
+}
 
 /**
  * A C++ class to handle one compressor plugin instance.
@@ -48,7 +51,7 @@ public:
      * @param name the name of the compressor
      * @version 2.0
      */
-    PRESSION_API Compressor( uint32_t name );
+    PRESSION_API Compressor(uint32_t name);
 
     /** Destruct the compressor. @version 1.7.1 */
     PRESSION_API virtual ~Compressor();
@@ -61,15 +64,13 @@ public:
      * @version 1.9.1
      */
     operator bool_t() const { return isGood() ? &Compressor::impl_ : 0; }
-
     /** @return true if the instance is not usable. @version 1.9.1 */
-    bool operator ! () const { return !isGood(); }
-
+    bool operator!() const { return !isGood(); }
     /**
      * @return true if the instance is usable for the given name.
      * @version 1.7.1
      */
-    PRESSION_API bool uses( uint32_t name ) const;
+    PRESSION_API bool uses(uint32_t name) const;
 
     /** @return the information about the allocated instance. @version 1.7.1 */
     PRESSION_API const EqCompressorInfo& getInfo() const;
@@ -88,8 +89,8 @@ public:
      * @return the name of the chosen compressor.
      * @version 2.0
      */
-    static PRESSION_API uint32_t choose( uint32_t tokenType, float minQuality,
-                                         bool ignoreMSE );
+    static PRESSION_API uint32_t choose(uint32_t tokenType, float minQuality,
+                                        bool ignoreMSE);
 
     /**
      * Set up a new, named compressor instance.
@@ -98,15 +99,15 @@ public:
      * @return true on success, false otherwise.
      * @version 2.0
      */
-    PRESSION_API bool setup( uint32_t name );
+    PRESSION_API bool setup(uint32_t name);
 
     /**
      * Set up a new, auto-selected compressor instance.
      * @sa choose() for parameters.
      * @version 2.0
      */
-    PRESSION_API bool setup( uint32_t tokenType, float minQuality,
-                             bool ignoreMSE );
+    PRESSION_API bool setup(uint32_t tokenType, float minQuality,
+                            bool ignoreMSE);
 
     /** Reallocate the current instance. @version 1.7.1 */
     PRESSION_API bool realloc();
@@ -121,7 +122,7 @@ public:
      * @param inDims the dimensions of the input data
      * @version 1.7.1
      */
-    PRESSION_API void compress( void* const in, const uint64_t inDims[2] );
+    PRESSION_API void compress(void* const in, const uint64_t inDims[2]);
 
     /**
      * Compress two-dimensional data.
@@ -131,8 +132,8 @@ public:
      * @param flags capability flags for the compression
      * @version 1.7.1
      */
-    PRESSION_API void compress( void* const in, const uint64_t pvp[4],
-                                uint64_t flags );
+    PRESSION_API void compress(void* const in, const uint64_t pvp[4],
+                               uint64_t flags);
 
     /** @deprecated use new getResult()
      * @return the number of compressed chunks of the last compression.
@@ -147,14 +148,14 @@ public:
     PRESSION_API CompressorResult getResult() const;
 
     /** @deprecated use new getResult() */
-    PRESSION_API void getResult( unsigned i, void** const out,
-                                 uint64_t* const outSize ) const LB_DEPRECATED;
+    PRESSION_API void getResult(unsigned i, void** const out,
+                                uint64_t* const outSize) const LB_DEPRECATED;
 
 private:
-    Compressor( const Compressor& );
-    Compressor operator=( const Compressor& );
+    Compressor(const Compressor&);
+    Compressor operator=(const Compressor&);
     detail::Compressor* const impl_;
-    LB_TS_VAR( _thread );
+    LB_TS_VAR(_thread);
 };
 }
-#endif  // PRESSION_COMPRESSOR_H
+#endif // PRESSION_COMPRESSOR_H

@@ -25,27 +25,29 @@ namespace pression
 {
 namespace plugin
 {
-
 class CompressorRLE565 : public Compressor
 {
 public:
-    CompressorRLE565(): Compressor() {}
+    CompressorRLE565()
+        : Compressor()
+    {
+    }
     virtual ~CompressorRLE565() {}
-
     /** Get a new instance of this compressor */
-    static Compressor* getNewCompressor( const unsigned /*name*/ )
-        { return new CompressorRLE565; }
+    static Compressor* getNewCompressor(const unsigned /*name*/)
+    {
+        return new CompressorRLE565;
+    }
 
-    void compress( const void* const inData, const eq_uint64_t nPixels,
-                   const bool useAlpha ) override;
+    void compress(const void* const inData, const eq_uint64_t nPixels,
+                  const bool useAlpha) override;
 
-    static void decompress( const void* const* inData,
-                            const eq_uint64_t* const inSizes,
-                            const unsigned nInputs, void* const outData,
-                            eq_uint64_t* const outDims, const eq_uint64_t flags,
-                            void* const );
+    static void decompress(const void* const* inData,
+                           const eq_uint64_t* const inSizes,
+                           const unsigned nInputs, void* const outData,
+                           eq_uint64_t* const outDims, const eq_uint64_t flags,
+                           void* const);
 };
-
 }
 }
 #endif // PRESSION_PLUGIN_COMPRESSOR_DIFF_RLE_565

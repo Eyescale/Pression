@@ -17,9 +17,9 @@
 
 #include "CompressorFastLZ.h"
 
-#include <pression/data/Registry.h>
-#include <lunchbox/buffer.h>
 #include "fastlz/fastlz.h"
+#include <lunchbox/buffer.h>
+#include <pression/data/Registry.h>
 
 namespace pression
 {
@@ -28,28 +28,26 @@ namespace data
 namespace
 {
 const bool _initialized =
-    Registry::getInstance().registerEngine< CompressorFastLZ >({ .70f, .25f });
+    Registry::getInstance().registerEngine<CompressorFastLZ>({.70f, .25f});
 }
 
-void CompressorFastLZ::compressChunk( const uint8_t* const data,
-                                      const size_t size, Result& output )
+void CompressorFastLZ::compressChunk(const uint8_t* const data,
+                                     const size_t size, Result& output)
 {
-    if( !_initialized )
+    if (!_initialized)
         return;
 
-    output.setSize( fastlz_compress( data, int(size), output.getData( )));
+    output.setSize(fastlz_compress(data, int(size), output.getData()));
 }
 
-
-void CompressorFastLZ::decompressChunk(
-    const uint8_t* input, const size_t inputSize,
-    uint8_t* const data, const size_t size )
+void CompressorFastLZ::decompressChunk(const uint8_t* input,
+                                       const size_t inputSize,
+                                       uint8_t* const data, const size_t size)
 {
-    if( !_initialized )
+    if (!_initialized)
         return;
 
-    fastlz_decompress( input, int(inputSize), data, int(size) );
+    fastlz_decompress(input, int(inputSize), data, int(size));
 }
-
 }
 }

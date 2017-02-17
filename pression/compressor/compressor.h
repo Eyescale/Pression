@@ -37,20 +37,19 @@ namespace plugin
 class Compressor
 {
 public:
-    typedef void        ( *GetInfo_t )( EqCompressorInfo* const );
-    typedef Compressor* ( *NewCompressor_t )( const unsigned );
-    typedef void        ( *Decompress_t )( const void* const*,
-                                           const eq_uint64_t* const,
-                                           const unsigned, void* const,
-                                           eq_uint64_t* const,
-                                           const eq_uint64_t, void* const );
-    typedef bool        ( *IsCompatible_t )( const GLEWContext* );
+    typedef void (*GetInfo_t)(EqCompressorInfo* const);
+    typedef Compressor* (*NewCompressor_t)(const unsigned);
+    typedef void (*Decompress_t)(const void* const*, const eq_uint64_t* const,
+                                 const unsigned, void* const,
+                                 eq_uint64_t* const, const eq_uint64_t,
+                                 void* const);
+    typedef bool (*IsCompatible_t)(const GLEWContext*);
     struct Functions
     {
-        Functions( const unsigned name, GetInfo_t getInfo,
-                   NewCompressor_t newCompressor,
-                   NewCompressor_t newDecompressor,
-                   Decompress_t decompress, IsCompatible_t isCompatible );
+        Functions(const unsigned name, GetInfo_t getInfo,
+                  NewCompressor_t newCompressor,
+                  NewCompressor_t newDecompressor, Decompress_t decompress,
+                  IsCompatible_t isCompatible);
 
         unsigned name;
         GetInfo_t getInfo;
@@ -71,8 +70,8 @@ public:
      * @param inDims input dimensions.
      * @param flags compression flags.
      */
-    virtual void compress( const void* const inData, const eq_uint64_t* inDims,
-                           const eq_uint64_t flags );
+    virtual void compress(const void* const inData, const eq_uint64_t* inDims,
+                          const eq_uint64_t flags);
 
     /**
      * Compress data.
@@ -81,19 +80,20 @@ public:
      * @param nPixels number data to compress.
      * @param useAlpha use alpha channel in compression.
      */
-    virtual void compress( const void* const inData LB_UNUSED,
-                           const eq_uint64_t nPixels LB_UNUSED,
-                           const bool useAlpha LB_UNUSED ) { LBDONTCALL; };
+    virtual void compress(const void* const inData LB_UNUSED,
+                          const eq_uint64_t nPixels LB_UNUSED,
+                          const bool useAlpha LB_UNUSED)
+    {
+        LBDONTCALL;
+    };
 
     typedef lunchbox::Bufferb Result;
-    typedef std::vector< Result* > ResultVector;
+    typedef std::vector<Result*> ResultVector;
 
     /** @return the vector containing the result data. */
     const ResultVector& getResults() const { return _results; }
-
     /** @return the number of result items produced. */
     unsigned getNResults() const { return _nResults; }
-
     /**
      * Transfer frame buffer data into main memory.
      *
@@ -105,12 +105,15 @@ public:
      * @param outDims the dimensions of the output data (see description).
      * @param out the pointer to the output data.
      */
-    virtual void download( const GLEWContext* glewContext LB_UNUSED,
-                           const eq_uint64_t  inDims[4] LB_UNUSED,
-                           const unsigned     source LB_UNUSED,
-                           const eq_uint64_t  flags LB_UNUSED,
-                           eq_uint64_t        outDims[4] LB_UNUSED,
-                           void**             out LB_UNUSED ) { LBDONTCALL; }
+    virtual void download(const GLEWContext* glewContext LB_UNUSED,
+                          const eq_uint64_t inDims[4] LB_UNUSED,
+                          const unsigned source LB_UNUSED,
+                          const eq_uint64_t flags LB_UNUSED,
+                          eq_uint64_t outDims[4] LB_UNUSED,
+                          void** out LB_UNUSED)
+    {
+        LBDONTCALL;
+    }
 
     /**
      * Transfer data from main memory into GPU memory.
@@ -123,12 +126,15 @@ public:
      * @param outDims the result data size
      * @param destination the destination texture name.
      */
-    virtual void upload( const GLEWContext* glewContext LB_UNUSED,
-                         const void*        buffer LB_UNUSED,
-                         const eq_uint64_t  inDims[4] LB_UNUSED,
-                         const eq_uint64_t  flags LB_UNUSED,
-                         const eq_uint64_t  outDims[4] LB_UNUSED,
-                         const unsigned destination LB_UNUSED ) { LBDONTCALL; }
+    virtual void upload(const GLEWContext* glewContext LB_UNUSED,
+                        const void* buffer LB_UNUSED,
+                        const eq_uint64_t inDims[4] LB_UNUSED,
+                        const eq_uint64_t flags LB_UNUSED,
+                        const eq_uint64_t outDims[4] LB_UNUSED,
+                        const unsigned destination LB_UNUSED)
+    {
+        LBDONTCALL;
+    }
 
     /**
      * Start transferring frame buffer data into main memory.
@@ -141,11 +147,13 @@ public:
      * @param flags capability flags for the compression (see description).
      * @version 4
      */
-    virtual void startDownload( const GLEWContext* glewContext LB_UNUSED,
-                                const eq_uint64_t  inDims[4] LB_UNUSED,
-                                const unsigned     source LB_UNUSED,
-                                const eq_uint64_t flags LB_UNUSED ) {LBDONTCALL}
-
+    virtual void startDownload(const GLEWContext* glewContext LB_UNUSED,
+                               const eq_uint64_t inDims[4] LB_UNUSED,
+                               const unsigned source LB_UNUSED,
+                               const eq_uint64_t flags LB_UNUSED)
+    {
+        LBDONTCALL
+    }
 
     /**
      * Finish transferring frame buffer data into main memory.
@@ -160,23 +168,24 @@ public:
      * @param out the pointer to the output data.
      * @version 4
      */
-    virtual void finishDownload( const GLEWContext* glewContext LB_UNUSED,
-                                 const eq_uint64_t  inDims[4] LB_UNUSED,
-                                 const unsigned     source LB_UNUSED,
-                                 const eq_uint64_t  flags LB_UNUSED,
-                                 eq_uint64_t        outDims[4] LB_UNUSED,
-                                 void** out LB_UNUSED ) { LBDONTCALL; }
+    virtual void finishDownload(const GLEWContext* glewContext LB_UNUSED,
+                                const eq_uint64_t inDims[4] LB_UNUSED,
+                                const unsigned source LB_UNUSED,
+                                const eq_uint64_t flags LB_UNUSED,
+                                eq_uint64_t outDims[4] LB_UNUSED,
+                                void** out LB_UNUSED)
+    {
+        LBDONTCALL;
+    }
 
     /** @internal Register a new plugin engine. */
-    static void registerEngine( const Functions& functions );
+    static void registerEngine(const Functions& functions);
 
     /** Convenience function for instance-less decompressor allocation. */
-    static Compressor* getNewDecompressor( const unsigned /*name*/ ){ return 0;}
-
+    static Compressor* getNewDecompressor(const unsigned /*name*/) { return 0; }
 protected:
-    ResultVector _results;  //!< The compressed data
-    unsigned _nResults;     //!< Number of elements used in _results
-
+    ResultVector _results; //!< The compressed data
+    unsigned _nResults;    //!< Number of elements used in _results
 };
 }
 }

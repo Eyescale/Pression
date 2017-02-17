@@ -25,13 +25,11 @@ namespace pression
 {
 namespace data
 {
-
 class Registry::Impl
 {
 public:
     Impl() {}
-    ~Impl(){}
-
+    ~Impl() {}
     CompressorInfos compressorInfos;
 };
 
@@ -42,15 +40,17 @@ Registry& Registry::getInstance()
 }
 
 Registry::Registry()
-    : _impl( new Registry::Impl )
-{}
+    : _impl(new Registry::Impl)
+{
+}
 
 Registry::~Registry()
-{}
-
-bool Registry::_registerEngine( const CompressorInfo& info )
 {
-    _impl->compressorInfos.push_back( info );
+}
+
+bool Registry::_registerEngine(const CompressorInfo& info)
+{
+    _impl->compressorInfos.push_back(info);
     return true;
 }
 
@@ -62,12 +62,12 @@ const CompressorInfos& Registry::getInfos() const
 CompressorInfo Registry::choose()
 {
     CompressorInfo candidate;
-    float rating = powf( 1.0f, .3f );
+    float rating = powf(1.0f, .3f);
 
-    for( const auto& info : _impl->compressorInfos )
+    for (const auto& info : _impl->compressorInfos)
     {
-        float newRating = powf( info.speed, .3f ) / info.ratio;
-        if( newRating > rating )
+        float newRating = powf(info.speed, .3f) / info.ratio;
+        if (newRating > rating)
         {
             candidate = info;
             rating = newRating;
@@ -76,13 +76,12 @@ CompressorInfo Registry::choose()
     return candidate;
 }
 
-CompressorInfo Registry::find( const std::string& name )
+CompressorInfo Registry::find(const std::string& name)
 {
-    for( const auto& info : _impl->compressorInfos )
-        if( info.name == name )
+    for (const auto& info : _impl->compressorInfos)
+        if (info.name == name)
             return info;
     return CompressorInfo();
 }
-
 }
 }

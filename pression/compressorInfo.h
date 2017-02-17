@@ -20,8 +20,8 @@
 #ifndef PRESSION_COMPRESSORINFO_H
 #define PRESSION_COMPRESSORINFO_H
 
-#include <pression/types.h>
 #include <pression/plugins/compressor.h> // base struct
+#include <pression/types.h>
 
 #include <iostream>
 
@@ -30,18 +30,21 @@ namespace pression
 /** @internal Augment the plugin information with additional data. */
 struct CompressorInfo : public EqCompressorInfo
 {
-    CompressorInfo() : ratingAlpha( 0.f ), ratingNoAlpha( 0.f ) {}
+    CompressorInfo()
+        : ratingAlpha(0.f)
+        , ratingNoAlpha(0.f)
+    {
+    }
 
-    float ratingAlpha; //!< f( speed, ratio ) heuristic, bigger is better
+    float ratingAlpha;   //!< f( speed, ratio ) heuristic, bigger is better
     float ratingNoAlpha; //!< f( speed, ratio ) heuristic
 };
 
-inline std::ostream& operator << ( std::ostream& os, const CompressorInfo& info)
+inline std::ostream& operator<<(std::ostream& os, const CompressorInfo& info)
 {
-    return os << static_cast< const EqCompressorInfo& >( info ) << " rating "
+    return os << static_cast<const EqCompressorInfo&>(info) << " rating "
               << info.ratingAlpha;
 }
-
 }
 
-#endif //PRESSION_COMPRESSORINFO_H
+#endif // PRESSION_COMPRESSORINFO_H

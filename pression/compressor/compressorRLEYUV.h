@@ -25,43 +25,50 @@ namespace pression
 {
 namespace plugin
 {
-
 class CompressorRLEYUV : public Compressor
 {
 public:
-    CompressorRLEYUV(): Compressor() {}
+    CompressorRLEYUV()
+        : Compressor()
+    {
+    }
     virtual ~CompressorRLEYUV() {}
+    void compress(const void* const inData, const eq_uint64_t nPixels,
+                  const bool useAlpha) override;
 
-    void compress( const void* const inData, const eq_uint64_t nPixels,
-                   const bool useAlpha ) override;
+    static void decompress(const void* const* inData,
+                           const eq_uint64_t* const inSizes,
+                           const unsigned nInputs, void* const outData,
+                           eq_uint64_t* const outDims, const eq_uint64_t flags,
+                           void* const);
 
-    static void decompress( const void* const* inData,
-                            const eq_uint64_t* const inSizes,
-                            const unsigned nInputs, void* const outData,
-                            eq_uint64_t* const outDims, const eq_uint64_t flags,
-                            void* const );
-
-    static Compressor* getNewCompressor( const unsigned /*name*/ )
-        { return new CompressorRLEYUV; }
+    static Compressor* getNewCompressor(const unsigned /*name*/)
+    {
+        return new CompressorRLEYUV;
+    }
 };
 
 class CompressorDiffRLEYUV : public CompressorRLEYUV
 {
 public:
-    CompressorDiffRLEYUV() : CompressorRLEYUV() {}
+    CompressorDiffRLEYUV()
+        : CompressorRLEYUV()
+    {
+    }
     virtual ~CompressorDiffRLEYUV() {}
+    static Compressor* getNewCompressor(const unsigned /*name*/)
+    {
+        return new CompressorDiffRLEYUV;
+    }
 
-    static Compressor* getNewCompressor( const unsigned /*name*/ )
-        { return new CompressorDiffRLEYUV; }
+    void compress(const void* const inData, const eq_uint64_t nPixels,
+                  const bool useAlpha) override;
 
-    void compress( const void* const inData, const eq_uint64_t nPixels,
-                   const bool useAlpha ) override;
-
-    static void decompress( const void* const* inData,
-                            const eq_uint64_t* const inSizes,
-                            const unsigned nInputs, void* const outData,
-                            eq_uint64_t* const outDims, const eq_uint64_t flags,
-                            void* const );
+    static void decompress(const void* const* inData,
+                           const eq_uint64_t* const inSizes,
+                           const unsigned nInputs, void* const outData,
+                           eq_uint64_t* const outDims, const eq_uint64_t flags,
+                           void* const);
 };
 }
 }

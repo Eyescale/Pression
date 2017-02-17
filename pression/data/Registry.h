@@ -19,8 +19,8 @@
 
 #pragma once
 
-#include <pression/data/api.h>
 #include <pression/data/CompressorInfo.h> // used inline
+#include <pression/data/api.h>
 #include <pression/data/types.h>
 
 #include <boost/functional/factory.hpp> // used inline
@@ -30,7 +30,6 @@ namespace pression
 {
 namespace data
 {
-
 /** A registry for loaded plugins. */
 class Registry
 {
@@ -44,11 +43,12 @@ public:
      * The create method in the given CompressorInfo will be set to the class
      * default ctor.
      */
-    template< class P > bool registerEngine( CompressorInfo info )
+    template <class P>
+    bool registerEngine(CompressorInfo info)
     {
         info.name = P::getName();
-        info.create = std::bind( boost::factory< P* >( ));
-        return _registerEngine( info );
+        info.create = std::bind(boost::factory<P*>());
+        return _registerEngine(info);
     }
 
     /** @return the information for all registered compression engines. */
@@ -58,22 +58,22 @@ public:
     PRESSIONDATA_API CompressorInfo choose();
 
     /** @return the information on the named compression engine */
-    PRESSIONDATA_API CompressorInfo find( const std::string& name );
+    PRESSIONDATA_API CompressorInfo find(const std::string& name);
     //@}
 
 private:
     Registry();
     ~Registry();
 
-    Registry( const Registry& ) = delete;
-    Registry( Registry&& ) = delete;
-    Registry& operator=( const Registry& ) = delete;
-    Registry& operator=( Registry&& ) = delete;
+    Registry(const Registry&) = delete;
+    Registry(Registry&&) = delete;
+    Registry& operator=(const Registry&) = delete;
+    Registry& operator=(Registry&&) = delete;
 
     class Impl;
-    std::unique_ptr< Impl > _impl;
+    std::unique_ptr<Impl> _impl;
 
-    PRESSIONDATA_API bool _registerEngine( const CompressorInfo& info );
+    PRESSIONDATA_API bool _registerEngine(const CompressorInfo& info);
 };
 }
 }

@@ -26,7 +26,7 @@ namespace pression
 enum LogTopics
 {
     LOG_PLUGIN = lunchbox::LOG_CUSTOM << 0, //!< Log plugin handling (16)
-    LOG_CUSTOM = lunchbox::LOG_CUSTOM << 1 // 32
+    LOG_CUSTOM = lunchbox::LOG_CUSTOM << 1  // 32
 };
 }
 #endif // PRESSION_LOG_H

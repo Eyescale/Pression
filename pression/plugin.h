@@ -22,14 +22,17 @@
 #define PRESSION_PLUGIN_H
 
 #include <pression/api.h>
-#include <pression/types.h>
 #include <pression/plugins/compressor.h> // GLEW definition
+#include <pression/types.h>
 
-#include <lunchbox/dso.h>           // base class
+#include <lunchbox/dso.h> // base class
 
 namespace pression
 {
-namespace detail { class Plugin; }
+namespace detail
+{
+class Plugin;
+}
 
 /**
  * Holder for all functions and information of one compression plugin DSO.
@@ -40,47 +43,40 @@ class Plugin : public lunchbox::DSO
 {
 public:
     /** Construct and initialize a new plugin DSO. @version 1.7.1 */
-    PRESSION_API explicit Plugin( const std::string& libraryName );
+    PRESSION_API explicit Plugin(const std::string& libraryName);
 
     /** Destruct this plugin handle. @version 1.7.1 */
     PRESSION_API virtual ~Plugin();
 
     /** @name Plugin function prototypes. */
     //@{
-    typedef size_t ( *GetNumCompressors_t ) ();
-    typedef void*  ( *NewCompressor_t ) ( const unsigned );
-    typedef void   ( *DeleteCompressor_t ) ( void* const );
-    typedef void*  ( *NewDecompressor_t ) ( const unsigned );
-    typedef void   ( *DeleteDecompressor_t ) ( void* const );
-    typedef void   ( *Compress_t ) ( void* const, const unsigned,
-                                     void* const, const uint64_t*,
-                                     const uint64_t );
-    typedef unsigned ( *GetNumResults_t ) ( void* const, const unsigned );
-    typedef void   ( *GetResult_t ) ( void* const, const unsigned,
-                                      const unsigned, void** const,
-                                      uint64_t* const );
-    typedef void   ( *Decompress_t ) ( void* const, const unsigned,
-                                       const void* const*,
-                                       const uint64_t* const,
-                                       const unsigned, void* const,
-                                       uint64_t* const,
-                                       const uint64_t );
-    typedef bool ( *IsCompatible_t ) ( const unsigned, const GLEWContext* );
-    typedef void ( *Download_t )( void* const, const unsigned,
-                                  const GLEWContext*, const uint64_t*,
-                                  const unsigned, const uint64_t,
-                                  uint64_t*, void** );
-    typedef void ( *StartDownload_t )( void* const, const unsigned,
-                                       const GLEWContext*, const uint64_t*,
-                                       const unsigned, const uint64_t );
-    typedef void ( *FinishDownload_t )( void* const, const unsigned,
-                                        const GLEWContext*, const uint64_t*,
-                                        const uint64_t, uint64_t*, void** );
-    typedef void ( *Upload_t )( void* const, const unsigned,
-                                const GLEWContext*, const void*,
-                                const uint64_t*,
-                                const uint64_t, const uint64_t*,
-                                const unsigned  );
+    typedef size_t (*GetNumCompressors_t)();
+    typedef void* (*NewCompressor_t)(const unsigned);
+    typedef void (*DeleteCompressor_t)(void* const);
+    typedef void* (*NewDecompressor_t)(const unsigned);
+    typedef void (*DeleteDecompressor_t)(void* const);
+    typedef void (*Compress_t)(void* const, const unsigned, void* const,
+                               const uint64_t*, const uint64_t);
+    typedef unsigned (*GetNumResults_t)(void* const, const unsigned);
+    typedef void (*GetResult_t)(void* const, const unsigned, const unsigned,
+                                void** const, uint64_t* const);
+    typedef void (*Decompress_t)(void* const, const unsigned,
+                                 const void* const*, const uint64_t* const,
+                                 const unsigned, void* const, uint64_t* const,
+                                 const uint64_t);
+    typedef bool (*IsCompatible_t)(const unsigned, const GLEWContext*);
+    typedef void (*Download_t)(void* const, const unsigned, const GLEWContext*,
+                               const uint64_t*, const unsigned, const uint64_t,
+                               uint64_t*, void**);
+    typedef void (*StartDownload_t)(void* const, const unsigned,
+                                    const GLEWContext*, const uint64_t*,
+                                    const unsigned, const uint64_t);
+    typedef void (*FinishDownload_t)(void* const, const unsigned,
+                                     const GLEWContext*, const uint64_t*,
+                                     const uint64_t, uint64_t*, void**);
+    typedef void (*Upload_t)(void* const, const unsigned, const GLEWContext*,
+                             const void*, const uint64_t*, const uint64_t,
+                             const uint64_t*, const unsigned);
     //@}
 
     /** @name Data Access. */
@@ -89,16 +85,16 @@ public:
     PRESSION_API bool isGood() const;
 
     /** Visit all compressors. @version 1.7.1 */
-    PRESSION_API VisitorResult accept( PluginVisitor& visitor );
+    PRESSION_API VisitorResult accept(PluginVisitor& visitor);
 
     /** Visit all compressors. @version 1.7.1 */
-    PRESSION_API VisitorResult accept( ConstPluginVisitor& visitor ) const;
+    PRESSION_API VisitorResult accept(ConstPluginVisitor& visitor) const;
 
     /** @internal @return true if name is found in the plugin. */
-    bool implementsType( const uint32_t name ) const;
+    bool implementsType(const uint32_t name) const;
 
     /** @internal @return the information for the given compressor, or 0. */
-    PRESSION_API EqCompressorInfo findInfo( const uint32_t name ) const;
+    PRESSION_API EqCompressorInfo findInfo(const uint32_t name) const;
 
     /** @internal @return all compressor informations. */
     PRESSION_API const CompressorInfos& getInfos() const;
@@ -153,4 +149,4 @@ private:
     detail::Plugin* const impl_;
 };
 }
-#endif //PRESSION_PLUGIN_H
+#endif // PRESSION_PLUGIN_H

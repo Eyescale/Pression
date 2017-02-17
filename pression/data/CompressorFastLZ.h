@@ -23,19 +23,22 @@ namespace pression
 {
 namespace data
 {
-
 class CompressorFastLZ : public Compressor
 {
 public:
-    CompressorFastLZ() : Compressor() {}
+    CompressorFastLZ()
+        : Compressor()
+    {
+    }
     virtual ~CompressorFastLZ() {}
-
     static std::string getName() { return "pression::data::CompressorFastLZ"; }
-    size_t getCompressBound( const size_t size ) const final
-        { return size_t( float( size ) * 1.1f ) + 66; }
-    void compressChunk( const uint8_t* data, size_t size, Result& output ) final;
-    void decompressChunk( const uint8_t* input, size_t inputSize,
-                          uint8_t* const data, size_t size ) final;
+    size_t getCompressBound(const size_t size) const final
+    {
+        return size_t(float(size) * 1.1f) + 66;
+    }
+    void compressChunk(const uint8_t* data, size_t size, Result& output) final;
+    void decompressChunk(const uint8_t* input, size_t inputSize,
+                         uint8_t* const data, size_t size) final;
 };
 }
 }

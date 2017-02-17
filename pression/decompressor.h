@@ -20,13 +20,16 @@
 #ifndef PRESSION_DECOMPRESSOR_H
 #define PRESSION_DECOMPRESSOR_H
 
+#include <lunchbox/thread.h> // thread-safety macros
 #include <pression/api.h>
 #include <pression/types.h>
-#include <lunchbox/thread.h>         // thread-safety macros
 
 namespace pression
 {
-namespace detail { class Decompressor; }
+namespace detail
+{
+class Decompressor;
+}
 
 /**
  * A C++ class to handle one decompressor plugin instance.
@@ -47,12 +50,12 @@ public:
      * @param name the name of the decompressor.
      * @version 2.0
      */
-    PRESSION_API Decompressor( const uint32_t name );
+    PRESSION_API Decompressor(const uint32_t name);
 
     /** Destruct this decompressor. @version 1.7.1 */
     PRESSION_API virtual ~Decompressor();
 
-     /** @return true if the instance is usable. @version 1.7.1 */
+    /** @return true if the instance is usable. @version 1.7.1 */
     PRESSION_API bool isGood() const;
 
     /**
@@ -60,15 +63,13 @@ public:
      * @version 1.9.1
      */
     operator bool_t() const { return isGood() ? &Decompressor::impl_ : 0; }
-
     /** @return true if the instance is not usable. @version 1.9.1 */
-    bool operator ! () const { return !isGood(); }
-
+    bool operator!() const { return !isGood(); }
     /**
      * @return true if the instance is usable for the given name.
      * @version 1.7.1
      */
-    PRESSION_API bool uses( const uint32_t name ) const;
+    PRESSION_API bool uses(const uint32_t name) const;
 
     /** @return the information about the allocated instance. @version 1.7.1 */
     PRESSION_API const EqCompressorInfo& getInfo() const;
@@ -80,7 +81,7 @@ public:
      * @return true on success, false otherwise.
      * @version 2.0
      */
-    PRESSION_API bool setup( const uint32_t name );
+    PRESSION_API bool setup(const uint32_t name);
 
     /** Reset to EQ_COMPRESSOR_NONE. @version 1.7.1 */
     PRESSION_API void clear();
@@ -96,10 +97,10 @@ public:
      * @param outDim the dimensions of the output data.
      * @version 1.7.1
      */
-    PRESSION_API void decompress( const void* const* in,
-                                  const uint64_t* const inSizes,
-                                  const unsigned numInputs, void* const out,
-                                  uint64_t outDim[2] );
+    PRESSION_API void decompress(const void* const* in,
+                                 const uint64_t* const inSizes,
+                                 const unsigned numInputs, void* const out,
+                                 uint64_t outDim[2]);
     /**
      * Decompress two-dimensional data.
      *
@@ -113,20 +114,19 @@ public:
      * @return true on success, false otherwise
      * @version 1.9.1
      */
-    PRESSION_API bool decompress( const CompressorResult& input,
-                                  void* const out, uint64_t pvpOut[4],
-                                  const uint64_t flags );
-    PRESSION_API void decompress( const void* const* in,
-                                  const uint64_t* const inSizes,
-                                  const unsigned numInputs, void* const out,
-                                  uint64_t pvpOut[4], const uint64_t flags )
-        LB_DEPRECATED;
+    PRESSION_API bool decompress(const CompressorResult& input, void* const out,
+                                 uint64_t pvpOut[4], const uint64_t flags);
+    PRESSION_API void decompress(const void* const* in,
+                                 const uint64_t* const inSizes,
+                                 const unsigned numInputs, void* const out,
+                                 uint64_t pvpOut[4],
+                                 const uint64_t flags) LB_DEPRECATED;
 
 private:
-    Decompressor( const Decompressor& );
-    Decompressor operator=( const Decompressor& );
+    Decompressor(const Decompressor&);
+    Decompressor operator=(const Decompressor&);
     detail::Decompressor* const impl_;
-    LB_TS_VAR( _thread );
+    LB_TS_VAR(_thread);
 };
 }
-#endif  // PRESSION_DECOMPRESSOR_H
+#endif // PRESSION_DECOMPRESSOR_H
