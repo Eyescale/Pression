@@ -25,29 +25,29 @@ class PluginInstance
 {
 public:
     PluginInstance()
-        : plugin( 0 )
-        , instance( 0 )
+        : plugin(0)
+        , instance(0)
     {
-        lunchbox::setZero( &info, sizeof( info ));
+        lunchbox::setZero(&info, sizeof(info));
     }
 
     ~PluginInstance()
     {
-        LBASSERT( !plugin );
-        LBASSERT( !instance );
+        LBASSERT(!plugin);
+        LBASSERT(!instance);
     }
 
     bool isGood() const
     {
-        return ( plugin && info.name != EQ_COMPRESSOR_INVALID &&
-                 info.name != EQ_COMPRESSOR_NONE );
+        return (plugin && info.name != EQ_COMPRESSOR_INVALID &&
+                info.name != EQ_COMPRESSOR_NONE);
     }
 
     void clear()
     {
         instance = 0;
         plugin = 0;
-        lunchbox::setZero( &info, sizeof( info ));
+        lunchbox::setZero(&info, sizeof(info));
     }
 
     /** Plugin handling the allocation */

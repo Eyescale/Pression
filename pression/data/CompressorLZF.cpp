@@ -17,8 +17,8 @@
 
 #include "CompressorLZF.h"
 
-#include <pression/data/Registry.h>
 #include <lunchbox/buffer.h>
+#include <pression/data/Registry.h>
 
 extern "C" {
 #include "liblzf/lzf.h"
@@ -31,28 +31,26 @@ namespace data
 namespace
 {
 const bool _initialized =
-    Registry::getInstance().registerEngine< CompressorLZF >({ .69f, .25f });
+    Registry::getInstance().registerEngine<CompressorLZF>({.69f, .25f});
 }
 
-void CompressorLZF::compressChunk( const uint8_t* const data, const size_t size,
-                                   Result& output )
+void CompressorLZF::compressChunk(const uint8_t* const data, const size_t size,
+                                  Result& output)
 {
-    if( !_initialized )
+    if (!_initialized)
         return;
-    output.setSize(
-        lzf_compress( data, uint32_t(size), output.getData(),
-                      output.getMaxSize( )));
+    output.setSize(lzf_compress(data, uint32_t(size), output.getData(),
+                                output.getMaxSize()));
 }
 
-void CompressorLZF::decompressChunk( const uint8_t* input,
-                                     const size_t inputSize,
-                                     uint8_t* const data, const size_t size )
+void CompressorLZF::decompressChunk(const uint8_t* input,
+                                    const size_t inputSize, uint8_t* const data,
+                                    const size_t size)
 {
-    if( !_initialized )
+    if (!_initialized)
         return;
 
-    lzf_decompress( input, uint32_t(inputSize), data, uint32_t(size) );
+    lzf_decompress(input, uint32_t(inputSize), data, uint32_t(size));
 }
-
 }
 }

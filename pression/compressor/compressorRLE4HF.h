@@ -16,7 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
 #ifndef PRESSION_PLUGIN_COMPRESSORRLE4HF
 #define PRESSION_PLUGIN_COMPRESSORRLE4HF
 
@@ -29,41 +28,48 @@ namespace plugin
 class CompressorRLE4HF : public Compressor
 {
 public:
-    CompressorRLE4HF(): Compressor() {}
+    CompressorRLE4HF()
+        : Compressor()
+    {
+    }
     virtual ~CompressorRLE4HF() {}
+    void compress(const void* const inData, const eq_uint64_t nPixels,
+                  const bool useAlpha) override;
 
-    void compress( const void* const inData, const eq_uint64_t nPixels,
-                   const bool useAlpha ) override;
+    static void decompress(const void* const* inData,
+                           const eq_uint64_t* const inSizes,
+                           const unsigned nInputs, void* const outData,
+                           eq_uint64_t* const outDims, const eq_uint64_t flags,
+                           void* const);
 
-    static void decompress( const void* const* inData,
-                            const eq_uint64_t* const inSizes,
-                            const unsigned nInputs, void* const outData,
-                            eq_uint64_t* const outDims, const eq_uint64_t flags,
-                            void* const );
-
-    static Compressor* getNewCompressor( const unsigned /*name*/ )
-        { return new CompressorRLE4HF; }
+    static Compressor* getNewCompressor(const unsigned /*name*/)
+    {
+        return new CompressorRLE4HF;
+    }
 };
 
 class CompressorDiffRLE4HF : public CompressorRLE4HF
 {
 public:
-    CompressorDiffRLE4HF() : CompressorRLE4HF() {}
+    CompressorDiffRLE4HF()
+        : CompressorRLE4HF()
+    {
+    }
     virtual ~CompressorDiffRLE4HF() {}
+    void compress(const void* const inData, const eq_uint64_t nPixels,
+                  const bool useAlpha) override;
 
-    void compress( const void* const inData, const eq_uint64_t nPixels,
-                   const bool useAlpha ) override;
+    static void decompress(const void* const* inData,
+                           const eq_uint64_t* const inSizes,
+                           const unsigned nInputs, void* const outData,
+                           eq_uint64_t* const outDims, const eq_uint64_t flags,
+                           void* const);
 
-    static void decompress( const void* const* inData,
-                            const eq_uint64_t* const inSizes,
-                            const unsigned nInputs, void* const outData,
-                            eq_uint64_t* const outDims, const eq_uint64_t flags,
-                            void* const );
-
-    static Compressor* getNewCompressor( const unsigned /*name*/ )
-        { return new CompressorDiffRLE4HF; }
+    static Compressor* getNewCompressor(const unsigned /*name*/)
+    {
+        return new CompressorDiffRLE4HF;
+    }
 };
-
 }
 }
 #endif // PRESSION_PLUGIN_COMPRESSORRLE4HF

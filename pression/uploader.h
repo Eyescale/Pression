@@ -20,13 +20,16 @@
 #ifndef PRESSION_UPLOADER_H
 #define PRESSION_UPLOADER_H
 
+#include <lunchbox/thread.h> // thread-safety macros
 #include <pression/api.h>
 #include <pression/types.h>
-#include <lunchbox/thread.h>         // thread-safety macros
 
 namespace pression
 {
-namespace detail { class Uploader; }
+namespace detail
+{
+class Uploader;
+}
 
 /** A C++ class to handle one uploader plugin instance. */
 class Uploader
@@ -41,28 +44,28 @@ public:
      * @param name the name of the uploader.
      * @version 2.0
      */
-    PRESSION_API Uploader( const uint32_t name );
+    PRESSION_API Uploader(const uint32_t name);
 
     /** Destruct this uploader. @version 1.7.1 */
     PRESSION_API virtual ~Uploader();
 
     /** @return true if the instance is usable. @version 1.7.1 */
-    PRESSION_API bool isGood( const GLEWContext* gl ) const;
+    PRESSION_API bool isGood(const GLEWContext* gl) const;
 
     /**
      * @return true if the instance is usable for the given name.
      * @version 1.7.1
      */
-    PRESSION_API bool uses( const uint32_t name ) const;
+    PRESSION_API bool uses(const uint32_t name) const;
 
     /**
      * @return true if the uploader supports the given parameters.
      * @version 1.7.1
      */
-    PRESSION_API bool supports( const uint32_t externalFormat,
-                                const uint32_t internalFormat,
-                                const uint64_t capabilities,
-                                const GLEWContext* gl ) const;
+    PRESSION_API bool supports(const uint32_t externalFormat,
+                               const uint32_t internalFormat,
+                               const uint64_t capabilities,
+                               const GLEWContext* gl) const;
 
     /**
      * Find the best uploader in all plugins for the given parameters.
@@ -72,10 +75,10 @@ public:
      * speed.
      * @version 2.0
      */
-    static PRESSION_API uint32_t choose( const uint32_t externalFormat,
-                                         const uint32_t internalFormat,
-                                         const uint64_t capabilities,
-                                         const GLEWContext* gl );
+    static PRESSION_API uint32_t choose(const uint32_t externalFormat,
+                                        const uint32_t internalFormat,
+                                        const uint64_t capabilities,
+                                        const GLEWContext* gl);
 
     /** @return the information about the allocated uploader. @version 1.7.1 */
     PRESSION_API const EqCompressorInfo& getInfo() const;
@@ -87,17 +90,16 @@ public:
      * @return true on success, false otherwise.
      * @version 2.0
      */
-    PRESSION_API bool setup( const uint32_t name );
+    PRESSION_API bool setup(const uint32_t name);
 
     /**
      * Set up a new, auto-selected uploader instance.
      * @sa choose() for parameters.
      * @version 2.0
      */
-    PRESSION_API bool setup( const uint32_t externalFormat,
-                             const uint32_t internalFormat,
-                             const uint64_t capabilities,
-                             const GLEWContext* gl );
+    PRESSION_API bool setup(const uint32_t externalFormat,
+                            const uint32_t internalFormat,
+                            const uint64_t capabilities, const GLEWContext* gl);
 
     /** Reset to EQ_COMPRESSOR_NONE. @version 1.7.1 */
     PRESSION_API void clear();
@@ -113,15 +115,15 @@ public:
      * @param gl the OpenGL function table
      * @version 1.7.1
      */
-    PRESSION_API void upload( const void* buffer, const uint64_t inDims[4],
-                              const uint64_t flags, const uint64_t outDims[4],
-                              const unsigned destination,
-                              const GLEWContext* gl );
+    PRESSION_API void upload(const void* buffer, const uint64_t inDims[4],
+                             const uint64_t flags, const uint64_t outDims[4],
+                             const unsigned destination, const GLEWContext* gl);
+
 private:
-    Uploader( const Uploader& );
-    Uploader operator=( const Uploader& );
+    Uploader(const Uploader&);
+    Uploader operator=(const Uploader&);
     detail::Uploader* const impl_;
-    LB_TS_VAR( _thread );
+    LB_TS_VAR(_thread);
 };
 }
-#endif  // PRESSION_UPLOADER_H
+#endif // PRESSION_UPLOADER_H

@@ -18,21 +18,20 @@
 #ifndef PRESSION_TYPES_H
 #define PRESSION_TYPES_H
 
+#include <lunchbox/types.h>
+#include <lunchbox/visitorResult.h> // enum
 #include <pression/defines.h>
 #include <pression/plugins/compressor.h>
-#include <lunchbox/visitorResult.h> // enum
-#include <lunchbox/types.h>
 
 /** @cond IGNORE */
 struct EqCompressorInfo;
-typedef std::vector< EqCompressorInfo > EqCompressorInfos;
+typedef std::vector<EqCompressorInfo> EqCompressorInfos;
 typedef EqCompressorInfos::const_iterator EqCompressorInfosCIter;
 /** @endcond */
 
 /** Image compression and CPU-GPU transfer plugin API */
 namespace pression
 {
-
 using lunchbox::Strings;
 using lunchbox::StringsCIter;
 using lunchbox::VisitorResult;
@@ -46,22 +45,22 @@ class Uploader;
 
 struct CompressorResult;
 
-typedef lunchbox::Array< void > CompressorChunk;
-typedef std::vector< CompressorChunk > CompressorChunks;
-typedef std::vector< Plugin* > Plugins;
+typedef lunchbox::Array<void> CompressorChunk;
+typedef std::vector<CompressorChunk> CompressorChunks;
+typedef std::vector<Plugin*> Plugins;
 typedef Plugins::const_iterator PluginsCIter;
 
-template< class, class > class PluginVisitorT;
-typedef PluginVisitorT< Plugin, EqCompressorInfo > PluginVisitor;
-typedef PluginVisitorT< const Plugin,
-                        const EqCompressorInfo > ConstPluginVisitor;
+template <class, class>
+class PluginVisitorT;
+typedef PluginVisitorT<Plugin, EqCompressorInfo> PluginVisitor;
+typedef PluginVisitorT<const Plugin, const EqCompressorInfo> ConstPluginVisitor;
 
 /** @cond IGNORE */
 struct CompressorInfo;
-typedef std::vector< CompressorInfo > CompressorInfos;
+typedef std::vector<CompressorInfo> CompressorInfos;
 typedef CompressorInfos::const_iterator CompressorInfosCIter;
 typedef CompressorInfos::iterator CompressorInfosIter;
 /** @endcond */
 }
 
-#endif //PRESSION_TYPES_H
+#endif // PRESSION_TYPES_H

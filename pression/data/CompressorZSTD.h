@@ -23,18 +23,20 @@ namespace pression
 {
 namespace data
 {
-
-template< int level > class CompressorZSTD : public Compressor
+template <int level>
+class CompressorZSTD : public Compressor
 {
 public:
-    CompressorZSTD() : Compressor() {}
+    CompressorZSTD()
+        : Compressor()
+    {
+    }
     virtual ~CompressorZSTD() {}
-
     static std::string getName();
-    size_t getCompressBound( const size_t size ) const override;
-    void compressChunk( const uint8_t* data, size_t size, Result& output )final;
-    void decompressChunk( const uint8_t* input, size_t inputSize,
-                          uint8_t* const data, size_t size ) final;
+    size_t getCompressBound(const size_t size) const override;
+    void compressChunk(const uint8_t* data, size_t size, Result& output) final;
+    void decompressChunk(const uint8_t* input, size_t inputSize,
+                         uint8_t* const data, size_t size) final;
 };
 }
 }

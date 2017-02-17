@@ -28,24 +28,25 @@ namespace pression
 {
 namespace plugin
 {
-
 class CompressorTurboJPEG : public Compressor
 {
 public:
-    explicit CompressorTurboJPEG( const unsigned name );
+    explicit CompressorTurboJPEG(const unsigned name);
     virtual ~CompressorTurboJPEG();
 
-    void compress( const void* const inData, const eq_uint64_t* inDims,
-                   const eq_uint64_t flags ) override;
+    void compress(const void* const inData, const eq_uint64_t* inDims,
+                  const eq_uint64_t flags) override;
 
-    static void decompress( const void* const* inData,
-                            const eq_uint64_t* const inSizes,
-                            const unsigned nInputs, void* const outData,
-                            eq_uint64_t* const outDims, const eq_uint64_t flags,
-                            void* const );
+    static void decompress(const void* const* inData,
+                           const eq_uint64_t* const inSizes,
+                           const unsigned nInputs, void* const outData,
+                           eq_uint64_t* const outDims, const eq_uint64_t flags,
+                           void* const);
 
-    static Compressor* getNewCompressor( const unsigned name )
-        { return new CompressorTurboJPEG( name ); }
+    static Compressor* getNewCompressor(const unsigned name)
+    {
+        return new CompressorTurboJPEG(name);
+    }
 
 private:
     eq_uint64_t _quality;
@@ -55,15 +56,13 @@ private:
     void* _encoder;
     void* _decoder;
 
-    void _decompress( const void* const* inData, const eq_uint64_t inSize,
-                      const unsigned nInputs, void* const outData,
-                      eq_uint64_t* const outDims, const bool useAlpha );
-    void _extractAlpha( const unsigned char* inData,
-                        const eq_uint64_t nPixels );
-    void _addAlpha( const void* const inAlpha, unsigned* out,
-                    const eq_uint64_t nPixels ) const;
+    void _decompress(const void* const* inData, const eq_uint64_t inSize,
+                     const unsigned nInputs, void* const outData,
+                     eq_uint64_t* const outDims, const bool useAlpha);
+    void _extractAlpha(const unsigned char* inData, const eq_uint64_t nPixels);
+    void _addAlpha(const void* const inAlpha, unsigned* out,
+                   const eq_uint64_t nPixels) const;
 };
-
 }
 }
-#endif  // PRESSION_PLUGIN_COMPRESSORTURBOJPEG
+#endif // PRESSION_PLUGIN_COMPRESSORTURBOJPEG

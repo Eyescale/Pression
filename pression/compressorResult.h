@@ -20,9 +20,9 @@
 #ifndef PRESSION_COMPRESSORRESULT_H
 #define PRESSION_COMPRESSORRESULT_H
 
-#include <pression/types.h>
+#include <lunchbox/array.h>                   // used inline as CompressorChunk
 #include <pression/plugins/compressorTypes.h> // EQ_COMPRESSOR_INVALID
-#include <lunchbox/array.h> // used inline as CompressorChunk
+#include <pression/types.h>
 
 namespace pression
 {
@@ -34,15 +34,21 @@ namespace pression
  */
 struct CompressorResult
 {
-    CompressorResult() : compressor( EQ_COMPRESSOR_INVALID ) {}
-    CompressorResult( const unsigned n, const CompressorChunks& c )
-        : compressor( n ), chunks( c ) {}
+    CompressorResult()
+        : compressor(EQ_COMPRESSOR_INVALID)
+    {
+    }
+    CompressorResult(const unsigned n, const CompressorChunks& c)
+        : compressor(n)
+        , chunks(c)
+    {
+    }
 
     /** @return the aggregate size of all chunks @version 1.9.1 */
     uint64_t getSize() const
     {
         uint64_t size = 0;
-        for( const CompressorChunk& chunk : chunks )
+        for (const CompressorChunk& chunk : chunks)
             size += chunk.getNumBytes();
         return size;
     }
@@ -59,4 +65,4 @@ struct CompressorResult
     CompressorChunks chunks;
 };
 }
-#endif  // PRESSION_COMPRESSORRESULT_H
+#endif // PRESSION_COMPRESSORRESULT_H

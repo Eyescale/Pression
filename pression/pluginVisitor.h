@@ -28,18 +28,19 @@ namespace pression
  * Visitor for all plugins and compressors of a Plugin or PluginRegistry.
  * @version 1.7.1
  */
-template< class P, class I > class PluginVisitorT
+template <class P, class I>
+class PluginVisitorT
 {
 public:
-    PluginVisitorT() {} //!< Construct a new visitor @version 1.7.1
-    virtual ~PluginVisitorT(){} //!< Desctruct this visitor @version 1.7.1
-
+    PluginVisitorT() {}          //!< Construct a new visitor @version 1.7.1
+    virtual ~PluginVisitorT() {} //!< Desctruct this visitor @version 1.7.1
     /** Visit a plugin. @version 1.7.1 */
-    virtual VisitorResult visit( P& /*plugin*/ ) { return TRAVERSE_CONTINUE; }
-
+    virtual VisitorResult visit(P& /*plugin*/) { return TRAVERSE_CONTINUE; }
     /** Visit a compressor of a plugin. @version 1.7.1 */
-    virtual VisitorResult visit( P& /*plugin*/, I& /*compressorInfo*/ )
-        { return TRAVERSE_CONTINUE; }
+    virtual VisitorResult visit(P& /*plugin*/, I& /*compressorInfo*/)
+    {
+        return TRAVERSE_CONTINUE;
+    }
 };
 }
 #endif // PRESSION_PLUGINVISITOR_H

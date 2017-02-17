@@ -19,11 +19,11 @@
 
 #pragma once
 
+#include <lunchbox/buffer.h>   // used inline
+#include <lunchbox/compiler.h> // LB_UNUSED
+#include <lunchbox/debug.h>    // LBUNIMPLEMENTED
 #include <pression/data/api.h>
 #include <pression/data/types.h>
-#include <lunchbox/buffer.h> // used inline
-#include <lunchbox/compiler.h> // LB_UNUSED
-#include <lunchbox/debug.h> // LBUNIMPLEMENTED
 
 namespace pression
 {
@@ -45,8 +45,8 @@ class Compressor
 public:
     virtual PRESSIONDATA_API ~Compressor(); //!< @internal
 
-    typedef lunchbox::Bufferb Result; //!< Single result data buffer
-    typedef std::vector< Result > Results; //!< Set of result chunks
+    typedef lunchbox::Bufferb Result;    //!< Single result data buffer
+    typedef std::vector<Result> Results; //!< Set of result chunks
 
     /**
      * Compress the given data and return the result.
@@ -61,8 +61,8 @@ public:
      * @param size number of bytes to compress
      * @return the compressed data chunk(s)
      */
-    PRESSIONDATA_API virtual const Results& compress( const uint8_t* data,
-                                                      size_t size );
+    PRESSIONDATA_API virtual const Results& compress(const uint8_t* data,
+                                                     size_t size);
     /**
      * Decompress the given data.
      *
@@ -77,30 +77,35 @@ public:
      */
     PRESSIONDATA_API
     virtual void decompress(
-        const std::vector< std::pair< const uint8_t*, size_t >>& inputs,
-        uint8_t* data, size_t size );
+        const std::vector<std::pair<const uint8_t*, size_t>>& inputs,
+        uint8_t* data, size_t size);
 
     /** @overload convenience wrapper */
-    PRESSIONDATA_API void decompress( const Results& input, uint8_t* data,
-                                      size_t size );
+    PRESSIONDATA_API void decompress(const Results& input, uint8_t* data,
+                                     size_t size);
 
     /** @return the result of the last compress() operation. */
     const Results& getCompressedData() const { return compressed; }
-
 protected:
-    Compressor() : _in( 0 ), _out( 0 ) {}
-    Compressor( const Compressor& ) = delete;
-    Compressor( Compressor&& ) = delete;
-    Compressor& operator = ( const Compressor& ) = delete;
-    Compressor& operator = ( Compressor&& ) = delete;
+    Compressor()
+        : _in(0)
+        , _out(0)
+    {
+    }
+    Compressor(const Compressor&) = delete;
+    Compressor(Compressor&&) = delete;
+    Compressor& operator=(const Compressor&) = delete;
+    Compressor& operator=(Compressor&&) = delete;
 
     /** @return an upper bound of the compressed output for a given size. */
-    virtual size_t getCompressBound( const size_t size ) const
-        { LBUNIMPLEMENTED; return size; }
+    virtual size_t getCompressBound(const size_t size) const
+    {
+        LBUNIMPLEMENTED;
+        return size;
+    }
 
     /** @return the optimal chunk size for this compressor */
     virtual size_t getChunkSize() const { return LB_8KB; }
-
     /**
      * Compress the given chunk.
      *
@@ -108,9 +113,11 @@ protected:
      * @param size number of bytes to compress
      * @param output pre-allocated output chunk of size getCompressBound( size )
      */
-    virtual void compressChunk( const uint8_t* data LB_UNUSED,
-                                size_t size LB_UNUSED,
-                                Result& output LB_UNUSED ) { LBUNIMPLEMENTED }
+    virtual void compressChunk(const uint8_t* data LB_UNUSED,
+                               size_t size LB_UNUSED, Result& output LB_UNUSED)
+    {
+        LBUNIMPLEMENTED
+    }
     /**
      * Decompress the given chunk.
      *
@@ -119,10 +126,13 @@ protected:
      * @param data pointer to pre-allocated memory for the decompressed data
      * @param size decompressed data size
      */
-    virtual void decompressChunk( const uint8_t* input LB_UNUSED,
-                                  size_t inputSize LB_UNUSED,
-                                  uint8_t* const data LB_UNUSED,
-                                  size_t size LB_UNUSED ) { LBUNIMPLEMENTED }
+    virtual void decompressChunk(const uint8_t* input LB_UNUSED,
+                                 size_t inputSize LB_UNUSED,
+                                 uint8_t* const data LB_UNUSED,
+                                 size_t size LB_UNUSED)
+    {
+        LBUNIMPLEMENTED
+    }
 
     Results compressed;
 
@@ -131,10 +141,10 @@ private:
     size_t _out;
 };
 
-inline size_t getDataSize( const Compressor::Results& results )
+inline size_t getDataSize(const Compressor::Results& results)
 {
     size_t size = 0;
-    for( const auto& result : results )
+    for (const auto& result : results)
         size += result.getSize();
     return size;
 }

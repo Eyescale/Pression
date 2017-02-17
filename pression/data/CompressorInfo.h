@@ -19,9 +19,9 @@
 
 #pragma once
 
+#include <functional>
 #include <pression/data/api.h>
 #include <pression/data/types.h>
-#include <functional>
 
 namespace pression
 {
@@ -30,24 +30,33 @@ namespace data
 struct CompressorInfo
 {
     CompressorInfo()
-        : ratio( 1.f )
-        , speed( 1.f )
-        , create( []{ return nullptr; })
-    {}
+        : ratio(1.f)
+        , speed(1.f)
+        , create([] { return nullptr; })
+    {
+    }
 
-    CompressorInfo( const float r, const float s )
-        : ratio( r ), speed( s ), create( []{ return nullptr; }) {}
+    CompressorInfo(const float r, const float s)
+        : ratio(r)
+        , speed(s)
+        , create([] { return nullptr; })
+    {
+    }
 
-    bool operator == ( const CompressorInfo& rhs ) const
-        { return name == rhs.name; }
-    bool operator != ( const CompressorInfo& rhs ) const
-        { return name != rhs.name; }
+    bool operator==(const CompressorInfo& rhs) const
+    {
+        return name == rhs.name;
+    }
+    bool operator!=(const CompressorInfo& rhs) const
+    {
+        return name != rhs.name;
+    }
 
     std::string name; //!< Fully qualified C++ class name
-    float ratio; //!< Normalized 0..1 size after compression
-    float speed; //!< Relative speed compared to RLE compressor
+    float ratio;      //!< Normalized 0..1 size after compression
+    float speed;      //!< Relative speed compared to RLE compressor
 
-    std::function< Compressor* ()> create; //!< Constructor of compressor
+    std::function<Compressor*()> create; //!< Constructor of compressor
 };
 }
 }

@@ -37,57 +37,51 @@ class Compressor : public PluginInstance
 {
 public:
     Compressor() {}
-
-    Compressor( const uint32_t name )
-    {
-        setup( name );
-    }
-
+    Compressor(const uint32_t name) { setup(name); }
     ~Compressor() { clear(); }
-
     void clear()
     {
-        if( instance )
-            plugin->deleteCompressor( instance );
+        if (instance)
+            plugin->deleteCompressor(instance);
         PluginInstance::clear();
     }
 
-    bool setup( const uint32_t name )
+    bool setup(const uint32_t name)
     {
-        if( instance && info.name == name )
+        if (instance && info.name == name)
             return true;
 
         clear();
 
-        if( name <= EQ_COMPRESSOR_NONE )
+        if (name <= EQ_COMPRESSOR_NONE)
             return true;
 
-        plugin = pression::PluginRegistry::getInstance().findPlugin( name );
-        LBASSERT( plugin );
-        if( !plugin )
+        plugin = pression::PluginRegistry::getInstance().findPlugin(name);
+        LBASSERT(plugin);
+        if (!plugin)
             return false;
 
-        instance = plugin->newCompressor( name );
-        info = plugin->findInfo( name );
-        LBASSERT( instance );
-        LBASSERT( info.name == name );
-        LBLOG( LOG_PLUGIN ) << "Instantiated compressor of type 0x" << std::hex
-                            << name << std::dec << std::endl;
+        instance = plugin->newCompressor(name);
+        info = plugin->findInfo(name);
+        LBASSERT(instance);
+        LBASSERT(info.name == name);
+        LBLOG(LOG_PLUGIN) << "Instantiated compressor of type 0x" << std::hex
+                          << name << std::dec << std::endl;
         return instance;
     }
 };
 }
 
 Compressor::Compressor()
-    : impl_( new detail::Compressor )
+    : impl_(new detail::Compressor)
 {
-    LB_TS_THREAD( _thread );
+    LB_TS_THREAD(_thread);
 }
 
-Compressor::Compressor( const uint32_t name )
-    : impl_( new detail::Compressor( name ))
+Compressor::Compressor(const uint32_t name)
+    : impl_(new detail::Compressor(name))
 {
-    LB_TS_THREAD( _thread );
+    LB_TS_THREAD(_thread);
 }
 
 Compressor::~Compressor()
@@ -97,11 +91,11 @@ Compressor::~Compressor()
 
 bool Compressor::isGood() const
 {
-    LB_TS_SCOPED( _thread );
+    LB_TS_SCOPED(_thread);
     return impl_->isGood() && impl_->instance;
 }
 
-bool Compressor::uses( const uint32_t name ) const
+bool Compressor::uses(const uint32_t name) const
 {
     return isGood() && impl_->info.name == name;
 }
@@ -111,10 +105,10 @@ const EqCompressorInfo& Compressor::getInfo() const
     return impl_->info;
 }
 
-uint32_t Compressor::choose( const uint32_t tokenType, const float minQuality,
-                             const bool ignoreAlpha )
+uint32_t Compressor::choose(const uint32_t tokenType, const float minQuality,
+                            const bool ignoreAlpha)
 {
-    LBASSERT( tokenType != EQ_COMPRESSOR_DATATYPE_NONE );
+    LBASSERT(tokenType != EQ_COMPRESSOR_DATATYPE_NONE);
     CompressorInfo candidate;
     candidate.name = EQ_COMPRESSOR_NONE;
     candidate.ratingAlpha = 1.0f;
@@ -122,20 +116,20 @@ uint32_t Compressor::choose( const uint32_t tokenType, const float minQuality,
     candidate.speed = 1.0f;
 
     const Plugins& plugins = PluginRegistry::getInstance().getPlugins();
-    for( const Plugin* plugin : plugins )
+    for (const Plugin* plugin : plugins)
     {
         const CompressorInfos& infos = plugin->getInfos();
-        for( const CompressorInfo& info : infos )
+        for (const CompressorInfo& info : infos)
         {
-            if( info.tokenType != tokenType || info.quality < minQuality ||
-                ( info.capabilities & EQ_COMPRESSOR_TRANSFER ))
+            if (info.tokenType != tokenType || info.quality < minQuality ||
+                (info.capabilities & EQ_COMPRESSOR_TRANSFER))
             {
                 continue;
             }
 
-            const float rating = ignoreAlpha ? info.ratingNoAlpha :
-                                               info.ratingAlpha;
-            if( rating > candidate.ratingAlpha )
+            const float rating =
+                ignoreAlpha ? info.ratingNoAlpha : info.ratingAlpha;
+            if (rating > candidate.ratingAlpha)
             {
                 candidate = info;
                 candidate.ratingAlpha = rating;
@@ -145,26 +139,26 @@ uint32_t Compressor::choose( const uint32_t tokenType, const float minQuality,
     return candidate.name;
 }
 
-bool Compressor::setup( const uint32_t name )
+bool Compressor::setup(const uint32_t name)
 {
-    return impl_->setup( name );
+    return impl_->setup(name);
 }
 
-bool Compressor::setup( const uint32_t tokenType, const float minQuality,
-                        const bool ignoreMSE )
+bool Compressor::setup(const uint32_t tokenType, const float minQuality,
+                       const bool ignoreMSE)
 {
-    return impl_->setup( choose( tokenType, minQuality, ignoreMSE ));
+    return impl_->setup(choose(tokenType, minQuality, ignoreMSE));
 }
 
 bool Compressor::realloc()
 {
-    if( !isGood( ))
+    if (!isGood())
         return false;
 
-    impl_->plugin->deleteCompressor( impl_->instance );
-    impl_->instance = impl_->plugin->newCompressor( impl_->info.name );
+    impl_->plugin->deleteCompressor(impl_->instance);
+    impl_->instance = impl_->plugin->newCompressor(impl_->info.name);
 
-    LBASSERT( impl_->instance );
+    LBASSERT(impl_->instance);
     return impl_->instance;
 }
 
@@ -173,75 +167,74 @@ void Compressor::clear()
     impl_->clear();
 }
 
-void Compressor::compress( void* const in, const uint64_t pvpIn[4],
-                           const uint64_t flags )
+void Compressor::compress(void* const in, const uint64_t pvpIn[4],
+                          const uint64_t flags)
 {
-    LBASSERT( impl_->plugin );
-    LBASSERT( impl_->instance );
-    LBASSERT( in );
-    if( !isGood( ))
+    LBASSERT(impl_->plugin);
+    LBASSERT(impl_->instance);
+    LBASSERT(in);
+    if (!isGood())
         return;
 
-    impl_->plugin->compress( impl_->instance, impl_->info.name, in, pvpIn,
-                             flags );
+    impl_->plugin->compress(impl_->instance, impl_->info.name, in, pvpIn,
+                            flags);
 }
 
-void Compressor::compress( void* const in, const uint64_t inDims[2] )
+void Compressor::compress(void* const in, const uint64_t inDims[2])
 {
-    LBASSERT( impl_->plugin );
-    LBASSERT( impl_->instance );
-    LBASSERT( in );
-    if( !isGood( ))
+    LBASSERT(impl_->plugin);
+    LBASSERT(impl_->instance);
+    LBASSERT(in);
+    if (!isGood())
         return;
 
-    impl_->plugin->compress( impl_->instance, impl_->info.name, in, inDims,
-                             EQ_COMPRESSOR_DATA_1D );
+    impl_->plugin->compress(impl_->instance, impl_->info.name, in, inDims,
+                            EQ_COMPRESSOR_DATA_1D);
 }
 
 unsigned Compressor::getNumResults() const
 {
-    LBASSERT( impl_->plugin );
-    LBASSERT( impl_->instance );
-    if( !isGood( ))
+    LBASSERT(impl_->plugin);
+    LBASSERT(impl_->instance);
+    if (!isGood())
         return 0;
 
-    return impl_->plugin->getNumResults( impl_->instance, impl_->info.name );
+    return impl_->plugin->getNumResults(impl_->instance, impl_->info.name);
 }
 
-void Compressor::getResult( const unsigned i, void** const out,
-                            uint64_t* const outSize ) const
+void Compressor::getResult(const unsigned i, void** const out,
+                           uint64_t* const outSize) const
 {
-    LBASSERT( impl_->plugin );
-    LBASSERT( impl_->instance );
-    if( !isGood( ))
+    LBASSERT(impl_->plugin);
+    LBASSERT(impl_->instance);
+    if (!isGood())
         return;
 
-    impl_->plugin->getResult( impl_->instance, impl_->info.name, i,
-                              out, outSize );
+    impl_->plugin->getResult(impl_->instance, impl_->info.name, i, out,
+                             outSize);
 }
 
 CompressorResult Compressor::getResult() const
 {
-    LBASSERT( impl_->plugin );
-    LBASSERT( impl_->instance );
-    if( !isGood( ))
+    LBASSERT(impl_->plugin);
+    LBASSERT(impl_->instance);
+    if (!isGood())
         return CompressorResult();
 
-    const unsigned num = impl_->plugin->getNumResults( impl_->instance,
-                                                       impl_->info.name );
+    const unsigned num =
+        impl_->plugin->getNumResults(impl_->instance, impl_->info.name);
     CompressorChunks chunks;
-    chunks.reserve( num );
+    chunks.reserve(num);
 
-    for( unsigned i = 0; i < num; ++i )
+    for (unsigned i = 0; i < num; ++i)
     {
         void* data;
         uint64_t size;
-        impl_->plugin->getResult( impl_->instance, impl_->info.name, i,
-                                  &data, &size );
-        chunks.push_back( CompressorChunk( data, size ));
+        impl_->plugin->getResult(impl_->instance, impl_->info.name, i, &data,
+                                 &size);
+        chunks.push_back(CompressorChunk(data, size));
     }
 
-    return CompressorResult( impl_->info.name, chunks );
+    return CompressorResult(impl_->info.name, chunks);
 }
-
 }

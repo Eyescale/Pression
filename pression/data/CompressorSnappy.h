@@ -23,18 +23,19 @@ namespace pression
 {
 namespace data
 {
-
 class CompressorSnappy : public Compressor
 {
 public:
-    CompressorSnappy() : Compressor() {}
+    CompressorSnappy()
+        : Compressor()
+    {
+    }
     virtual ~CompressorSnappy() {}
-
     static std::string getName() { return "pression::data::CompressorSnappy"; }
-    size_t getCompressBound( const size_t size ) const override;
-    void compressChunk( const uint8_t* data, size_t size, Result& output )final;
-    void decompressChunk( const uint8_t* input, size_t inputSize,
-                          uint8_t* const data, size_t size ) final;
+    size_t getCompressBound(const size_t size) const override;
+    void compressChunk(const uint8_t* data, size_t size, Result& output) final;
+    void decompressChunk(const uint8_t* input, size_t inputSize,
+                         uint8_t* const data, size_t size) final;
 };
 }
 }

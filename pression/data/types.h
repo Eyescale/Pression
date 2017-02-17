@@ -17,8 +17,8 @@
 
 #pragma once
 
-#include <pression/defines.h>
 #include <lunchbox/types.h>
+#include <pression/defines.h>
 
 namespace pression
 {
@@ -40,6 +40,6 @@ namespace data
 class Compressor;
 struct CompressorInfo;
 
-typedef std::vector< CompressorInfo > CompressorInfos;
+typedef std::vector<CompressorInfo> CompressorInfos;
 }
 }

@@ -29,7 +29,10 @@
 
 namespace pression
 {
-namespace detail { class PluginRegistry; }
+namespace detail
+{
+class PluginRegistry;
+}
 
 /**
  * A registry for loaded plugins.
@@ -46,10 +49,10 @@ public:
     PRESSION_API static PluginRegistry& getInstance();
 
     /** Add a single plugin DSO. @return true if found. */
-    PRESSION_API bool loadFile( const std::string& filename );
+    PRESSION_API bool loadFile(const std::string& filename);
 
     /** Add all plugins in a directory. @return the number of plugins loaded */
-    PRESSION_API size_t loadDirectory( const std::string& dir );
+    PRESSION_API size_t loadDirectory(const std::string& dir);
 
     /**
      * Visit all plugins and compressors.
@@ -59,28 +62,28 @@ public:
      *         prune, TRAVERSE_CONTINUE otherwise.
      * @version 1.7.1
      */
-    PRESSION_API VisitorResult accept( PluginVisitor& visitor );
+    PRESSION_API VisitorResult accept(PluginVisitor& visitor);
 
     /** Visit all plugins and compressors. @version 1.7.1 */
-    PRESSION_API VisitorResult accept( ConstPluginVisitor& visitor ) const;
+    PRESSION_API VisitorResult accept(ConstPluginVisitor& visitor) const;
 
     /** @internal @return all registered compressor plugins */
     PRESSION_API const Plugins& getPlugins() const;
 
     /** @internal @return the plugin containing the given compressor. */
-    PRESSION_API Plugin* findPlugin( const uint32_t name );
+    PRESSION_API Plugin* findPlugin(const uint32_t name);
 
     /** @internal @return the plugin containing the given compressor. */
-    PRESSION_API const Plugin* findPlugin( const uint32_t name ) const;
+    PRESSION_API const Plugin* findPlugin(const uint32_t name) const;
 
 private:
     PluginRegistry();
     ~PluginRegistry();
 
-    PluginRegistry( const PluginRegistry& ) = delete;
-    PluginRegistry( PluginRegistry&& ) = delete;
-    PluginRegistry& operator=( const PluginRegistry& ) = delete;
-    PluginRegistry& operator=( PluginRegistry&& ) = delete;
+    PluginRegistry(const PluginRegistry&) = delete;
+    PluginRegistry(PluginRegistry&&) = delete;
+    PluginRegistry& operator=(const PluginRegistry&) = delete;
+    PluginRegistry& operator=(PluginRegistry&&) = delete;
 
     detail::PluginRegistry* const _impl;
 };

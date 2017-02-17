@@ -36,96 +36,96 @@
  */
 /*@{*/
 /** Invalid data. */
-#define EQ_COMPRESSOR_DATATYPE_NONE       0x0
+#define EQ_COMPRESSOR_DATATYPE_NONE 0x0
 /** Data is processed in three 10-bit color tokens and one 2-bit alpha token. */
-#define EQ_COMPRESSOR_DATATYPE_BGR10_A2     0x801
+#define EQ_COMPRESSOR_DATATYPE_BGR10_A2 0x801
 
 /**
  * Data is processed in four interleaved streams of RGBA color of unsigned Byte
  * tokens.
  */
-#define EQ_COMPRESSOR_DATATYPE_RGBA                           0X1908
+#define EQ_COMPRESSOR_DATATYPE_RGBA 0X1908
 /**
  * Data is processed in four interleaved streams of RGBA color of unsigned byte
  * tokens.
  */
-#define EQ_COMPRESSOR_DATATYPE_RGBA_UINT_8_8_8_8_REV          0x1000
+#define EQ_COMPRESSOR_DATATYPE_RGBA_UINT_8_8_8_8_REV 0x1000
 /**
  * Data is processed in four interleaved streams of RGBA color of half float
  * tokens.
  */
-#define EQ_COMPRESSOR_DATATYPE_RGBA16F                        0x881a
+#define EQ_COMPRESSOR_DATATYPE_RGBA16F 0x881a
 /**
  * Data is processed in four interleaved streams of RGBA color of float tokens.
  */
-#define EQ_COMPRESSOR_DATATYPE_RGBA32F                        0x8814
+#define EQ_COMPRESSOR_DATATYPE_RGBA32F 0x8814
 /**
  * Data is processed in four interleaved streams of BGRA color of unsigned byte
  * tokens.
  */
-#define EQ_COMPRESSOR_DATATYPE_BGRA                            0x401
+#define EQ_COMPRESSOR_DATATYPE_BGRA 0x401
 /**
  * Data is processed in four interleaved streams of BGRA color of unsigned byte
  * tokens.
  */
-#define EQ_COMPRESSOR_DATATYPE_BGRA_UINT_8_8_8_8_REV          0x1001
+#define EQ_COMPRESSOR_DATATYPE_BGRA_UINT_8_8_8_8_REV 0x1001
 /**
  * Data is processed in four interleaved streams of BGRA color of half float
  * tokens.
  */
-#define EQ_COMPRESSOR_DATATYPE_BGRA16F                         0x3
+#define EQ_COMPRESSOR_DATATYPE_BGRA16F 0x3
 /**
  * Data is processed in four interleaved streams of BGRA color of float tokens.
  */
-#define EQ_COMPRESSOR_DATATYPE_BGRA32F                         0x405
+#define EQ_COMPRESSOR_DATATYPE_BGRA32F 0x405
 
 /** Data is a (source) depth buffer. */
-#define EQ_COMPRESSOR_DATATYPE_DEPTH                          0x1902
+#define EQ_COMPRESSOR_DATATYPE_DEPTH 0x1902
 /** Data is processed in one stream of depth of float tokens. */
-#define EQ_COMPRESSOR_DATATYPE_DEPTH_FLOAT                    0x1003
+#define EQ_COMPRESSOR_DATATYPE_DEPTH_FLOAT 0x1003
 /** Data is processed in one stream of unsigned int depth tokens. */
-#define EQ_COMPRESSOR_DATATYPE_DEPTH_UNSIGNED_INT              0x2
+#define EQ_COMPRESSOR_DATATYPE_DEPTH_UNSIGNED_INT 0x2
 
 /**
  * Data is processed in three interleaved streams of RGB unsigned byte color
  * tokens.
  */
-#define EQ_COMPRESSOR_DATATYPE_RGB                            0x1907
+#define EQ_COMPRESSOR_DATATYPE_RGB 0x1907
 /**
  * Data is processed in three interleaved streams of RGB half float color
  * tokens.
  */
-#define EQ_COMPRESSOR_DATATYPE_RGB16F                         0x881b
+#define EQ_COMPRESSOR_DATATYPE_RGB16F 0x881b
 /** Data is processed in three interleaved streams of RGB float color tokens. */
-#define EQ_COMPRESSOR_DATATYPE_RGB32F                         0x8815
+#define EQ_COMPRESSOR_DATATYPE_RGB32F 0x8815
 /**
  * Data is processed in three interleaved streams of BGR unsigned byte color
  * tokens.
  */
-#define EQ_COMPRESSOR_DATATYPE_BGR                             0x400
+#define EQ_COMPRESSOR_DATATYPE_BGR 0x400
 /**
  * Data is processed in three interleaved streams of BGR half float color
  * tokens.
  */
-#define EQ_COMPRESSOR_DATATYPE_BGR16F                          0x402
+#define EQ_COMPRESSOR_DATATYPE_BGR16F 0x402
 /** Data is processed in three interleaved streams of BGR float color tokens. */
-#define EQ_COMPRESSOR_DATATYPE_BGR32F                          0x404
+#define EQ_COMPRESSOR_DATATYPE_BGR32F 0x404
 
 /**
  * Data is processed in four interleaved streams of YUVA components.
  * Special image format reducing color sampling.
  */
-#define EQ_COMPRESSOR_DATATYPE_YUVA_50P                       0x1004
+#define EQ_COMPRESSOR_DATATYPE_YUVA_50P 0x1004
 
 /** Data is processed in three 10-bit color tokens and one 2-bit alpha token. */
-#define EQ_COMPRESSOR_DATATYPE_RGB10_A2                       0x8059
+#define EQ_COMPRESSOR_DATATYPE_RGB10_A2 0x8059
 
 /**
  * Invalid data type.
  * Used by a plugin to disable incompatible engines at runtime in
  * EqCompressorGetInfo().
  */
-#define EQ_COMPRESSOR_DATATYPE_INVALID      0xeffffffeu
+#define EQ_COMPRESSOR_DATATYPE_INVALID 0xeffffffeu
 
 /**
  * Private token types -FOR DEVELOPMENT ONLY-.
@@ -134,7 +134,7 @@
  * and testing. As soon as the Compressor DSO is distributed, request public
  * types free of charge from info@equalizergraphics.com.
  */
-#define EQ_COMPRESSOR_DATATYPE_PRIVATE      0xefffffffu
+#define EQ_COMPRESSOR_DATATYPE_PRIVATE 0xefffffffu
 /*@}*/
 
 #endif // EQ_PLUGINS_COMPRESSOR_TOKENS
