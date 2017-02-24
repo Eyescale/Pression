@@ -1,5 +1,5 @@
 
-/* Copyright (c) 2009-2016, Cedric Stalder <cedric.stalder@gmail.com>
+/* Copyright (c) 2009-2017, Cedric Stalder <cedric.stalder@gmail.com>
  *                          Stefan Eilemann <eile@eyescale.ch>
  *
  * This file is part of Collage <https://github.com/Eyescale/Collage>
@@ -78,6 +78,7 @@ public:
 
         char cwd[MAXPATHLEN];
         loadDirectory(getcwd(cwd, MAXPATHLEN));
+        loadDirectory(lunchbox::getLibraryPath());
 
         char* env = getenv("PRESSION_PLUGIN_PATH");
         std::string envString;
