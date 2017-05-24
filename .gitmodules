@@ -4,3 +4,7 @@
 [submodule "pression/data/snappy"]
 	path = pression/data/snappy
 	url = https://github.com/google/snappy
+[submodule "CMake/common"]
+	path = CMake/common
+	url = https://github.com/Eyescale/CMake
+	shallow = true

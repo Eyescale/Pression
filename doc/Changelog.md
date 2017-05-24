@@ -2,6 +2,8 @@
 
 # git master
 
+# Version 2.0 (24-May-2017)
+
 * [23](https://github.com/Eyescale/Pression/pull/23):
   Introduce new lossless data compression API.
 * [20](https://github.com/Eyescale/Pression/pull/20):
