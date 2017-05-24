@@ -46,10 +46,10 @@ environments are tested:
 Building from source is as simple as:
 
 
-    git clone https://github.com/Eyescale/Pression.git
+    git clone --recursive https://github.com/Eyescale/Pression.git
     mkdir Pression/build
     cd Pression/build
-    cmake -GNinja ..
+    cmake -GNinja .. -DCLONE_SUBPROJECTS=ON
     ninja
 
 # FAQ
