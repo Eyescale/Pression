@@ -7,4 +7,3 @@
 [submodule "CMake/common"]
 	path = CMake/common
 	url = https://github.com/Eyescale/CMake
-	shallow = true

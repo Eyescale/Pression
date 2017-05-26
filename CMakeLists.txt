@@ -11,9 +11,6 @@ if(NOT EXISTS ${CMAKE_SOURCE_DIR}/CMake/common/Common.cmake)
   message(FATAL_ERROR "CMake/common missing, run: git submodule update --init")
 endif()
 
-
-include(GitExternal)
-
 set(DPUT_HOST "ppa:eilemann/equalizer-dev")
 
 set(PRESSION_DESCRIPTION "Compressor, decompressor, uploader and downloader plugins")
