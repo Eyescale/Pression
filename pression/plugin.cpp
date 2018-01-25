@@ -24,10 +24,10 @@
 #include "pluginRegistry.h"
 #include "pluginVisitor.h"
 
-#include <cmath>
 #include <lunchbox/debug.h>
 #include <lunchbox/log.h>
 #include <lunchbox/os.h>
+#include <math.h>
 
 namespace pression
 {
