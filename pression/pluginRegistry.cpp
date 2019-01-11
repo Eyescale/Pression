@@ -65,14 +65,15 @@ public:
     PluginRegistry()
     {
 #ifdef PRESSION_DSO_NAME
-        loadFile(PRESSION_DSO_NAME);
-        loadFile(std::string(PRESSION_BUILD_DIR) + "lib/" + PRESSION_DSO_NAME);
+        loadFile(PRESSION_DSO_NAME) ||
+            loadFile(std::string(PRESSION_BUILD_DIR) + "lib/" +
+                     PRESSION_DSO_NAME) ||
 #ifdef NDEBUG
-        loadFile(std::string(PRESSION_BUILD_DIR) + "lib/Release/" +
-                 PRESSION_DSO_NAME);
+            loadFile(std::string(PRESSION_BUILD_DIR) + "lib/Release/" +
+                     PRESSION_DSO_NAME);
 #else
-        loadFile(std::string(PRESSION_BUILD_DIR) + "lib/Debug/" +
-                 PRESSION_DSO_NAME);
+            loadFile(std::string(PRESSION_BUILD_DIR) + "lib/Debug/" +
+                     PRESSION_DSO_NAME);
 #endif
 #endif
 

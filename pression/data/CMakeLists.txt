@@ -87,6 +87,10 @@ set(PRESSIONDATA_INCLUDE_NAME pression/data)
 set(PRESSIONDATA_NAMESPACE pressiondata)
 common_library(PressionData)
 
+# Suppress falltrough warnings with gcc (>=7, old versions ignore the flag)
+target_compile_options(PressionData
+  PRIVATE "$<$<CXX_COMPILER_ID:GNU>:-Wno-implicit-fallthrough>")
+
 if(MSVC)
   target_compile_definitions(PressionData PRIVATE HAVE_CONFIG_H) # for snappy
 endif()

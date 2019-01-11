@@ -165,7 +165,7 @@ typedef const u8 *LZF_HSLOT;
 
 typedef LZF_HSLOT LZF_STATE[1 << (HLOG)];
 
-#if !STRICT_ALIGN
+#ifndef STRICT_ALIGN
 /* for unaligned accesses we need a 16 bit datatype. */
 #if USHRT_MAX == 65535
 typedef unsigned short u16;
