@@ -19,6 +19,12 @@ set(SNAPPY_SOURCES
   snappy/snappy-sinksource.cc
 )
 
+set(LZF_SOURCES
+  liblzf/lzf.h
+  liblzf/lzf_c.c
+  liblzf/lzf_d.c
+)
+
 set(ac_cv_have_stdint_h 1)
 set(ac_cv_have_stddef_h 1)
 set(ac_cv_have_sys_uio_h 0)
@@ -34,14 +40,6 @@ if(MSVC)
     "typedef SSIZE_T ssize_t;\n\n")
 endif()
 
-if(CMAKE_COMPILER_IS_GCC OR CMAKE_COMPILER_IS_CLANG)
-  set_source_files_properties(${SNAPPY_SOURCES} PROPERTIES COMPILE_FLAGS
-    "-Wno-unused-parameter -Wno-header-hygiene -Wno-sign-compare")
-elseif(MSVC)
-  set_source_files_properties(${SNAPPY_SOURCES} PROPERTIES COMPILE_FLAGS
-    "/w")
-endif()
-
 set(PRESSIONDATA_COMPRESSORS
   CompressorFastLZ.cpp
   CompressorLZF.cpp
@@ -50,9 +48,7 @@ set(PRESSIONDATA_COMPRESSORS
   CompressorZSTD.cpp
   fastlz/fastlz.c
   fastlz/fastlz.h
-  liblzf/lzf.h
-  liblzf/lzf_c.c
-  liblzf/lzf_d.c
+  ${LZF_SOURCES}
   ${SNAPPY_SOURCES}
   zstd/lib/common/entropy_common.c
   zstd/lib/common/fse_decompress.c
@@ -68,6 +64,15 @@ set(PRESSIONDATA_COMPRESSORS
   zstd/lib/dictBuilder/divsufsort.c
   zstd/lib/dictBuilder/zdict.c
 )
+
+if(CMAKE_COMPILER_IS_GCC OR CMAKE_COMPILER_IS_CLANG)
+  set_source_files_properties(${PRESSIONDATA_COMPRESSORS} PROPERTIES COMPILE_FLAGS
+    "-Wno-implicit-fallthrough -Wno-unused-parameter -Wno-header-hygiene -Wno-sign-compare")
+elseif(MSVC)
+  set_source_files_properties(${SNAPPY_SOURCES} PROPERTIES COMPILE_FLAGS
+    "/w")
+endif()
+
 
 set(PRESSIONDATA_SOURCES
   ${PRESSIONDATA_COMPRESSORS}
